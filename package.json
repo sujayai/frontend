@@ -1,0 +1,16 @@
+{
+  "name": "sujay-ai-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open --port 5173",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext js,ts,json --report-unused-disable-directives --max-warnings 0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "eslint": "^8.57.0"
+  }
+}

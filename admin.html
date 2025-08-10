@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin — Upload Post</title>
+  <link rel="stylesheet" href="/styles.css"/>
+  <script defer src="/admin.js"></script>
+</head>
+<body class="admin">
+  <main class="wrap section">
+    <h1>Upload Post</h1>
+    <form id="form" class="admin-form">
+      <label>Admin Key <input type="password" name="key" required></label>
+      <label>Title <input type="text" name="title" required></label>
+      <label>Date <input type="date" name="date"></label>
+      <label>Tags (comma separated) <input type="text" name="tags" placeholder="agents, evals"></label>
+      <label>Summary <input type="text" name="summary" maxlength="240"></label>
+      <label>Cover Alt Text <input type="text" name="coverAlt" maxlength="120"></label>
+      <label>Cover Image <input type="file" name="cover" accept="image/png,image/jpeg,image/webp"></label>
+      <label>Markdown File <input type="file" name="mdFile" accept=".md,text/markdown,text/plain"></label>
+      <label>Or paste Markdown<textarea name="content" rows="10" placeholder="# Title"></textarea></label>
+      <button class="btn primary" type="submit">Publish</button>
+      <p class="muted small">Writes to DATA_ROOT with atomic saves.</p>
+    </form>
+    <p id="status" class="muted"></p>
+  </main>
+</body>
+</html>
