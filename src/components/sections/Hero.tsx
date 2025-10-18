@@ -8,7 +8,7 @@ const Hero: React.FC = () => {
   const [currentRole, setCurrentRole] = useState(0);
   const roles = [
     'Supercompute Network Engineer',
-    'Data Center Network Engineer'
+    'Technical Solutions Engineer'
   ];
 
   useEffect(() => {
@@ -256,14 +256,12 @@ const Hero: React.FC = () => {
         </motion.div>
 
         <motion.p variants={itemVariants} className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-16 leading-relaxed">
-          Specializing in AI infra networking, supercompute scaling, and Linux systems. Former <span className="font-semibold text-emerald-600 dark:text-emerald-400">xAI</span> and <span className="font-semibold text-blue-600 dark:text-blue-400">Tesla</span> engineer building the future of AI infrastructure.
+          I love playing with packets and AI Infra. Former <span className="font-semibold text-emerald-600 dark:text-emerald-400">xAI</span> and <span className="font-semibold text-blue-600 dark:text-blue-400">Tesla</span> engineer interested in building the AI infrastructure network.
         </motion.p>
 
-        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-16">
+        <motion.div variants={itemVariants} className="flex justify-center mb-16">
           {[
-            { icon: Cpu, value: '5+', label: 'GitHub Stars' },
-            { icon: Network, value: '6+', label: 'Open Source Projects' },
-            { icon: TermIcon, value: 'MS', label: 'Computer Networking' }
+            { icon: TermIcon, value: 'Master of Science', label: 'Computer Networking @ North Carolina State University' }
           ].map((stat, i) => (
             <motion.div 
               key={i} 
@@ -278,27 +276,31 @@ const Hero: React.FC = () => {
           ))}
         </motion.div>
 
-        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+        <motion.div variants={itemVariants} className="flex justify-center gap-4 max-w-3xl mx-auto mb-16">
+          {[
+            { value: '1.5+', label: 'Years Experience' },
+            { value: '200k', label: 'GPUs Managed' }
+          ].map((stat, i) => (
+            <motion.div 
+              key={i} 
+              className="card-blur rounded-xl p-5 text-center group w-48"
+              whileHover={{ scale: 1.02, y: -2 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-xl font-bold text-gray-900 dark:text-white mb-1">{stat.value}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="flex justify-center items-center mb-16">
           <Button 
             variant="neon" 
             size="lg" 
             className="px-8 py-3"
-            onClick={() => {
-              const projectsSection = document.getElementById('projects');
-              if (projectsSection) {
-                projectsSection.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
+            onClick={() => window.open('https://github.com/sujaysreedharg', '_blank')}
           >
             View My Work
-          </Button>
-          <Button 
-            variant="cyber" 
-            size="lg" 
-            className="px-8 py-3"
-            onClick={() => window.open('/resume-sujay-supercompute-engineer.pdf', '_blank')}
-          >
-            Download Resume
           </Button>
         </motion.div>
 

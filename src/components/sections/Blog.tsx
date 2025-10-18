@@ -78,6 +78,7 @@ const Blog: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
 
   useEffect(() => {
     let filteredPosts = selectedCategory === 'All' 
@@ -97,6 +98,16 @@ const Blog: React.FC = () => {
     const sortedPosts = filteredPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     setPosts(sortedPosts.slice(0, visiblePosts));
   }, [visiblePosts, selectedCategory, searchTerm]);
+
+  // Listen for openArticle event
+  useEffect(() => {
+    const handleOpenArticle = (event: CustomEvent) => {
+      setSelectedPost(event.detail);
+    };
+
+    window.addEventListener('openArticle', handleOpenArticle as EventListener);
+    return () => window.removeEventListener('openArticle', handleOpenArticle as EventListener);
+  }, []);
 
   const loadMorePosts = () => {
     setLoading(true);
@@ -243,29 +254,6 @@ const Blog: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {/* Popular Topics */}
-              <Card className="card-blur">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-lg text-gray-900 dark:text-white">
-                    <Tag className="w-5 h-5 mr-2 text-purple-500" />
-                    Popular Topics
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {['CDN Architecture', 'Network Performance', 'Edge Computing', 'Load Balancing', 'Cache Management', 'Geographic Routing'].map((topic, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSearchTerm(topic)}
-                        className="block w-full text-left px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-emerald-100 hover:text-emerald-700 dark:hover:bg-white/5 dark:hover:text-emerald-400 transition-all duration-300 text-sm button-hover"
-                      >
-                        #{topic}
-                      </button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
               {/* Newsletter */}
               <Card className="card-blur border border-emerald-500/20 dark:border-emerald-500/30">
                 <CardContent className="p-6">
@@ -279,9 +267,7 @@ const Blog: React.FC = () => {
                   <Button 
                     variant="neon" 
                     className="w-full"
-                    onClick={() => {
-                      alert('Thanks for your interest! Newsletter signup functionality will be implemented soon. 📧');
-                    }}
+                    onClick={() => setShowSubscribeModal(true)}
                   >
                     Subscribe to Updates
                   </Button>
@@ -290,6 +276,38 @@ const Blog: React.FC = () => {
             </div>
           </aside>
         </div>
+
+        {/* Subscribe Modal */}
+        {showSubscribeModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowSubscribeModal(false)}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="card-blur rounded-2xl p-8 max-w-md w-full border border-emerald-500/20"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">📧</span>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                  Coming Soon!
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Thanks for your interest! Newsletter signup functionality will be implemented soon. Stay tuned for updates!
+                </p>
+                <Button 
+                  variant="neon" 
+                  className="w-full"
+                  onClick={() => setShowSubscribeModal(false)}
+                >
+                  Got it!
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
       </div>
     </section>
   );

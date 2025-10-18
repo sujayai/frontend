@@ -12,35 +12,39 @@ const Experience: React.FC = () => {
   const experiences = [
     {
       company: 'Arista Networks',
-      role: 'Data Center Network Engineer',
-      duration: '2024 - Present',
-      description: 'Currently working as a data center network engineer, providing expertise in network infrastructure and solutions.',
-      technologies: ['Network Solutions', 'Technical Engineering', 'Infrastructure', 'Arista EOS'],
-      logo: '🌐'
+      role: 'Technical Solutions Engineer',
+      duration: '2025 - Present',
+      location: 'San Francisco, California',
+      description: 'Currently working as a technical solutions engineer debugging network topologies and providing expertise in network infrastructure solutions.',
+      technologies: ['Network Topologies', 'Technical Solutions', 'Debugging', 'Arista EOS', 'Network Infrastructure'],
+      logo: ''
     },
     {
       company: 'xAI',
       role: 'Supercompute Network Engineer',
       duration: '2024 - 2025',
+      location: 'Memphis, Tennessee',
       description: 'Core contributor from start to end of the Grok 3\'s supercompute 200k GPU infrastructure, ensuring that pre-training was smooth without breaking the training jobs.',
       technologies: ['GPU Infrastructure', 'Supercomputing', 'Network Engineering', 'Training Jobs', 'Pre-training'],
-      logo: '🚀'
+      logo: ''
     },
     {
       company: 'Tesla',
-      role: 'Network Engineer',
+      role: 'Software Engineering Intern',
       duration: '2023 - 2024',
-      description: 'Worked on cybertruck and model y manufacturing networks, ensuring robust network infrastructure for production.',
-      technologies: ['Manufacturing Networks', 'Production Infrastructure', 'Network Engineering', 'Tesla Manufacturing'],
-      logo: '⚡'
+      location: 'Austin, Texas',
+      description: 'Software engineering intern working on various software projects and gaining experience in large-scale software development.',
+      technologies: ['Software Engineering', 'Software Development', 'Internship', 'Tesla', 'Large-scale Systems'],
+      logo: ''
     },
     {
       company: 'Lenovo',
       role: 'Security Software Engineering Intern',
       duration: '2022 - 2023',
+      location: 'Morrisville, North Carolina',
       description: 'Worked on Global Security Lab for Lenovo Products, developing security solutions using modern web technologies.',
       technologies: ['Security Engineering', 'Global Security Lab', 'NestJS', 'Software Development', 'Lenovo Products'],
-      logo: '🛡️'
+      logo: ''
     }
   ];
 
@@ -121,14 +125,14 @@ const Experience: React.FC = () => {
                         <Building2 className="w-4 h-4 mr-2" />
                         {exp.company}
                       </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        {exp.location}
+                      </div>
                     </div>
                     <div className="flex flex-col lg:items-end text-sm text-gray-500 dark:text-gray-400 mt-2 lg:mt-0">
                       <div className="flex items-center">
                         <Calendar className="w-4 h-4 mr-2" />
                         {exp.duration}
-                      </div>
-                      <div className="flex items-center mt-1">
-                        <span className="text-2xl">{exp.logo}</span>
                       </div>
                     </div>
                   </div>
@@ -160,25 +164,6 @@ const Experience: React.FC = () => {
           ))}
         </motion.div>
 
-        {/* Stats section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {[
-            { value: '2+', label: 'Years Experience' },
-            { value: '6+', label: 'Open Source Projects' },
-            { value: '5+', label: 'GitHub Stars' },
-            { value: 'MS', label: 'Computer Networking' },
-          ].map((stat, index) => (
-            <div key={index} className="text-center card-blur rounded-lg p-4">
-              <div className="text-3xl font-bold text-gradient mb-2">{stat.value}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
-            </div>
-          ))}
-        </motion.div>
       </div>
     </section>
   );

@@ -50,6 +50,29 @@ function Shell() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Listen for custom tab switch events
+  useEffect(() => {
+    const handleTabSwitch = (event: CustomEvent) => {
+      const detail = event.detail;
+      if (typeof detail === 'string') {
+        // Simple tab switch
+        switchTab(detail);
+      } else if (detail && detail.tab) {
+        // Tab switch with additional data (like article slug)
+        switchTab(detail.tab);
+        // If there's a slug, dispatch another event to open that article
+        if (detail.slug) {
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('openArticle', { detail: detail.slug }));
+          }, 100);
+        }
+      }
+    };
+
+    window.addEventListener('switchTab', handleTabSwitch as EventListener);
+    return () => window.removeEventListener('switchTab', handleTabSwitch as EventListener);
+  }, []);
   
   const navigation = [
     { id: 'home', label: 'Home', href: '#home' },
@@ -144,113 +167,11 @@ function Shell() {
           <>
             <Hero />
             
-            {/* Featured Writings - Positioned prominently after Hero */}
-            <section className="py-16 relative bg-gradient-to-br from-emerald-50/50 via-blue-50/30 to-purple-50/50 dark:from-emerald-950/20 dark:via-blue-950/10 dark:to-purple-950/20" id="writings">
-              <div className="container mx-auto px-6">
-                <div className="text-center mb-12">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-full border border-emerald-500/20 mb-6">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-medium text-sm">Research & Insights</span>
-                  </div>
-                  <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                    <span className="text-gradient">Research & Development</span>
-                  </h2>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                    Deep dives into AI infrastructure, content delivery networks, and machine learning systems
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                  {[
-                    {
-                      title: "Content Delivery Networks at Scale",
-                      excerpt: "Building tenant-isolated CDN infrastructure using Linux, Docker, and virtualization",
-                      category: "Infrastructure",
-                      readTime: "8 min",
-                      impact: "Multi-tenant isolation",
-                      icon: "🌐"
-                    },
-                    {
-                      title: "Machine Learning Deployment Patterns",
-                      excerpt: "Containerized ML models with automated deployment on cloud platforms",
-                      category: "ML Engineering",
-                      readTime: "12 min", 
-                      impact: "Automated deployment",
-                      icon: "🤖"
-                    },
-                    {
-                      title: "Time Series Forecasting with Prophet",
-                      excerpt: "Advanced forecasting techniques for COVID-19 and business applications",
-                      category: "Data Science",
-                      readTime: "15 min",
-                      impact: "Predictive analytics",
-                      icon: "📊"
-                    }
-                  ].map((article, index) => (
-                    <div key={index} className="group cursor-pointer" onClick={() => switchTab('blog')}>
-                      <div className="card-blur rounded-2xl p-6 h-full border-2 border-transparent hover:border-emerald-400/30 transition-all duration-500 relative overflow-hidden">
-                        {/* Subtle background pattern */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        
-                        <div className="relative z-10">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="text-3xl">{article.icon}</div>
-                            <span className="px-2 py-1 bg-gradient-to-r from-emerald-500/15 to-blue-500/15 rounded-lg text-xs font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                              {article.category}
-                            </span>
-                          </div>
-                          
-                          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300 leading-tight">
-                            {article.title}
-                          </h3>
-                          
-                          <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed">
-                            {article.excerpt}
-                          </p>
-                          
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-gray-500 dark:text-gray-400">{article.readTime} read</span>
-                              <span className="font-medium text-emerald-600 dark:text-emerald-400">{article.impact}</span>
-                            </div>
-                            <div className="h-0.5 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-full overflow-hidden">
-                              <div className="h-full bg-gradient-to-r from-emerald-500 to-blue-500 w-0 group-hover:w-full transition-all duration-700 ease-out"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="text-center">
-                  <button 
-                    onClick={() => switchTab('blog')}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-emerald-500/25 transition-all duration-300 transform hover:scale-105"
-                  >
-                    <span>Explore All Research</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </section>
             
-            <section className="py-10">
-              <div className="marquee">
-                <div className="marquee__track">
-                  {['CUDA','NCCL','InfiniBand','Kubernetes','vLLM','TPU','NVLink','RoCE','Mellanox','TensorRT','RDMA','gRPC'].flatMap((t,i)=>[
-                    <span key={i} className="px-4 py-2 text-sm rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300">{t}</span>,
-                    <span key={`d_${i}`} className="px-4 py-2 text-sm rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300">{t}</span>
-                  ])}
-                </div>
-              </div>
-            </section>
             
+            <Experience />
             <FeaturedBlog />
             <Projects />
-            <Experience />
             <Contact />
           </>
         )}

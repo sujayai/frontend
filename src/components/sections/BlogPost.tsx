@@ -9,196 +9,177 @@ interface BlogPostProps {
 }
 
 const blogPosts: Record<string, any> = {
-  'building-high-performance-cdn': {
-    title: "Building a High-Performance CDN: From Concept to Production",
-    summary: "A deep dive into architecting and implementing a content delivery network that scales to handle millions of requests while maintaining sub-100ms latency.",
-    category: "Infrastructure",
+  'how-i-built-this-website': {
+    title: "How I Built This Website (I Didn't)",
+    summary: "A brutally honest tale of how this sleek portfolio came to life. Featuring: Docker containers, React components, and an AI that codes better than I do.",
+    category: "Meta",
     author: { name: "Sujay Sreedhar", avatar: "" },
-    date: "Dec 19, 2024",
-    readTime: "8 min read",
+    date: "Oct 18, 2025",
+    readTime: "5 min read",
     content: `
-# Building a High-Performance CDN: From Concept to Production
+# How I Built This Website (I Didn't)
 
-## Introduction
+## Let's be honest
 
-Content Delivery Networks (CDNs) are the backbone of modern web performance, serving as the critical infrastructure that ensures fast, reliable content delivery to users worldwide. In this technical deep-dive, I'll walk through the architecture, implementation challenges, and optimization strategies behind building a high-performance CDN from the ground up.
+So you're on this website with all the fancy animations, dark mode, and those green gradients everywhere. There's Docker, Kubernetes, a Go backend—the whole nine yards.
 
-## Architecture Overview
+Here's the thing: I wrote this blog post. Everything else? AI coded it.
 
-### Edge Node Distribution
-Our CDN architecture follows a multi-tier approach with strategically placed edge nodes across major geographic regions:
+Yeah, welcome to 2025.
 
-- **Tier 1**: Major metropolitan areas (NYC, LA, London, Tokyo)
-- **Tier 2**: Secondary cities with high traffic density
-- **Tier 3**: Regional distribution centers for broader coverage
+## How it started
 
-### Core Components
+Saturday afternoon, needed to update my portfolio. Should've been simple, right? Just throw up some HTML, call it a day.
 
-#### 1. Load Balancer Layer
-- **Global Load Balancing**: Geographic routing based on user location
-- **Health Checks**: Real-time monitoring of edge node availability
-- **Failover Mechanisms**: Automatic routing to healthy nodes
+Instead, I ended up with this full production setup. Why? Because I got curious about what's actually possible when you work with AI tools.
 
-#### 2. Edge Node Architecture
-- **Nginx + OpenResty**: High-performance web server with Lua scripting
-- **Redis**: In-memory caching for frequently accessed content
-- **Local Storage**: SSD-based storage for static assets
-- **Custom Middleware**: Request processing and optimization
+Opened Cursor, started describing what I wanted, and honestly? It was weird at first. You're basically telling something what to build, and it just... builds it. No Stack Overflow tabs, no "why won't this CSS work" moments. Just conversation.
 
-#### 3. Origin Server Integration
-- **Origin Pull**: Automatic content fetching from source servers
-- **Cache Invalidation**: Real-time cache management
-- **Compression**: Gzip/Brotli compression for bandwidth optimization
+"Make it look modern" turned into a whole design system.
+"Add a terminal thing" became an interactive component.
+"Make it feel tech-y" got me matrix effects.
 
-## Implementation Challenges
+It kept going from there.
 
-### 1. Latency Optimization
-Achieving sub-100ms response times required careful optimization at every layer:
+## What's actually running
 
-\`\`\`nginx
-# Nginx configuration for optimal performance
-location / {
-    expires 1y;
-    add_header Cache-Control "public, immutable";
-    
-    # Enable gzip compression
-    gzip on;
-    gzip_vary on;
-    gzip_min_length 1024;
-    gzip_types text/plain text/css application/json application/javascript;
-    
-    # Custom headers for performance
-    add_header X-Cache-Status $upstream_cache_status;
-    add_header X-Response-Time $request_time;
-}
+**Frontend:** React, TypeScript, Vite. Tailwind for styling because I'm not writing CSS from scratch. Framer Motion handles all the animations: every hover, every fade, all of it.
+
+\`\`\`typescript
+// Example: The animated hero section
+const Hero = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <h1>Technical Solutions Engineer</h1>
+      {/* Stats, buttons, all animated */}
+    </motion.div>
+  );
+};
 \`\`\`
 
-### 2. Cache Management
-Implementing intelligent cache invalidation and management:
-
-\`\`\`lua
--- OpenResty Lua script for cache management
-local function invalidate_cache(path_pattern)
-    local redis = require "resty.redis"
-    local red = redis:new()
-    
-    -- Connect to Redis
-    local ok, err = red:connect("127.0.0.1", 6379)
-    if not ok then
-        ngx.log(ngx.ERR, "Failed to connect to Redis: ", err)
-        return
-    end
-    
-    -- Invalidate matching cache keys
-    local keys = red:keys(path_pattern)
-    for _, key in ipairs(keys) do
-        red:del(key)
-    end
-    
-    red:close()
-end
-\`\`\`
-
-### 3. Geographic Routing
-Implementing intelligent routing based on user location:
+**Backend:** Go with Gin framework. Serves the blog posts, handles uploads, has some basic auth. Compiles to one binary which is nice.
 
 \`\`\`go
-// Go service for geographic routing
-type GeoRouter struct {
-    geoDB    *geoip2.Reader
-    edgeNodes map[string][]EdgeNode
-}
-
-func (gr *GeoRouter) RouteRequest(clientIP string) *EdgeNode {
-    // Resolve client location
-    record, err := gr.geoDB.City(net.ParseIP(clientIP))
-    if err != nil {
-        return gr.getDefaultNode()
-    }
+// Simple API setup
+func main() {
+    r := gin.Default()
     
-    // Find closest edge node
-    closest := gr.findClosestNode(record.Location.Latitude, record.Location.Longitude)
-    return closest
+    // Serve blog posts
+    r.GET("/api/posts", func(c *gin.Context) {
+        c.JSON(200, posts)
+    })
+    
+    // Admin routes with auth
+    admin := r.Group("/api/admin")
+    admin.Use(AuthMiddleware())
+    
+    r.Run(":8080")
 }
 \`\`\`
 
-## Performance Metrics
+**Infrastructure:** Docker containers, Kubernetes configs, behind Cloudflare. 
 
-### Latency Benchmarks
-- **Edge Node Response**: 15-25ms
-- **Cache Hit Response**: 5-15ms
-- **Origin Pull**: 100-500ms (depending on origin location)
-- **Global Average**: 45ms
+\`\`\`dockerfile
+# Multi-stage build keeps it lean
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
 
-### Throughput Results
-- **Peak Requests**: 2.5M requests/second
-- **Bandwidth**: 15 Gbps sustained
-- **Cache Hit Ratio**: 94.2%
-- **Uptime**: 99.99%
-
-## Monitoring and Observability
-
-### Real-time Metrics
-- **Response Time**: Per-edge-node latency tracking
-- **Cache Performance**: Hit/miss ratios and eviction rates
-- **Bandwidth Usage**: Traffic patterns and peak utilization
-- **Error Rates**: 4xx/5xx response monitoring
-
-### Alerting System
-- **Latency Thresholds**: Alerts when response times exceed 100ms
-- **Cache Miss Spikes**: Notifications for unusual cache behavior
-- **Geographic Anomalies**: Alerts for region-specific performance issues
-
-## Future Optimizations
-
-### 1. HTTP/3 and QUIC
-Implementing HTTP/3 for improved connection establishment and multiplexing:
-
-\`\`\`nginx
-# Future HTTP/3 configuration
-http3 on;
-http3_hq on;
-quic_bpf on;
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
 \`\`\`
 
-### 2. Edge Computing
-Adding serverless functions at the edge for dynamic content processing:
+Is it overkill for a personal site? Probably. But it works and I learned a lot watching it come together.
 
-\`\`\`javascript
-// Edge function for dynamic content
-addEventListener('fetch', event => {
-    event.respondWith(handleRequest(event.request))
-})
+## The process
 
-async function handleRequest(request) {
-    // Process request at the edge
-    const response = await fetch(request)
-    
-    // Add custom headers
-    const modifiedResponse = new Response(response.body, response)
-    modifiedResponse.headers.set('X-Edge-Processed', 'true')
-    
-    return modifiedResponse
-}
+Started simple: "clean portfolio, show my experience."
+
+Then came the additions. Terminal component. Blog section. Animated stats. Matrix background. Glowing buttons. Custom favicon. 
+
+And yeah, I kept changing my mind. "Center this. Actually move it left. No wait, center it again." You know how it goes.
+
+The AI just kept adjusting. No complaints, no "are you sure about this?" Just made the changes.
+
+That's basically the workflow. Describe what you want, review what it builds, iterate.
+
+## What I learned
+
+Being specific matters. "Make it pretty" doesn't work. "Add an emerald to blue gradient with blur" does.
+
+Modern web dev has a lot of moving parts. Components, state, animations, routing, Docker, Kubernetes. Watching it all come together was educational.
+
+This isn't about replacing developers. It's about working differently. I focused on what to build and why. The AI handled the how.
+
+Building software is changing. It's becoming more about knowing what you want than knowing every syntax detail.
+
+I spent time on UX decisions, content strategy, architecture choices. The AI wrote TypeScript, configured Docker, organized the CSS.
+
+Is that cheating? I don't think so. It's just using available tools.
+
+## Bottom line
+
+This website has:
+- Go backend (didn't write it)
+- React components (didn't create them)
+- Docker containers (didn't configure them)
+- Kubernetes setup (didn't build it)
+- Cloudflare CDN (okay, I did set that up)
+
+The code is real. The infrastructure works. I just didn't write most of it myself.
+
+\`\`\`yaml
+# Kubernetes deployment (AI generated)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sujay-frontend
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: frontend
+        image: sujay-frontend:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-hpa
+spec:
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
 \`\`\`
 
-### 3. AI-Powered Routing
-Implementing machine learning for predictive routing and cache warming.
+And that's fine. It works, looks decent, shows what I do. How it got built is just an implementation detail.
 
-## Conclusion
+## Credits
 
-Building a high-performance CDN requires careful consideration of architecture, implementation details, and ongoing optimization. The key success factors include:
+I wrote this blog post. Every word here is mine.
 
-- **Strategic Edge Placement**: Minimize latency through geographic distribution
-- **Intelligent Caching**: Implement smart cache management and invalidation
-- **Performance Monitoring**: Real-time visibility into system performance
-- **Continuous Optimization**: Iterative improvements based on metrics and user feedback
-
-The result is a CDN that delivers exceptional performance while maintaining reliability and scalability for millions of users worldwide.
+Everything else on the site? Claude coded it. The AI tool in Cursor. It handled all the TypeScript, React, Go, Docker configs, everything.
 
 ---
 
-*This project demonstrates the complexity and engineering challenges involved in building production-grade infrastructure that powers the modern web.*
+If you're wondering if you can do this too? Sure, yeah, you can. This is just how things work now in 2025.
+
+Bugs are probably the AI's fault. Good design choices were definitely mine.
     `
   }
 };

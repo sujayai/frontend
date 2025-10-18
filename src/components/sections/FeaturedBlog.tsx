@@ -9,12 +9,14 @@ const FeaturedBlog: React.FC = () => {
   // Get the most recent blog post by date
   const featuredPost = samplePosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
 
-  const handleReadMore = () => {
-    // Navigate to the full blog section
-    const blogSection = document.getElementById('blog-section');
-    if (blogSection) {
-      blogSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleReadFullArticle = () => {
+    // Dispatch custom event to switch to blog tab and open specific article
+    window.dispatchEvent(new CustomEvent('switchTab', { detail: { tab: 'blog', slug: featuredPost.slug } }));
+  };
+
+  const handleViewAllArticles = () => {
+    // Dispatch custom event to switch to blog tab
+    window.dispatchEvent(new CustomEvent('switchTab', { detail: { tab: 'blog' } }));
   };
 
   return (
@@ -90,7 +92,7 @@ const FeaturedBlog: React.FC = () => {
                   variant="neon" 
                   size="lg" 
                   className="px-6 py-3 group-hover:scale-105 transition-all duration-300"
-                  onClick={handleReadMore}
+                  onClick={handleReadFullArticle}
                 >
                   <span className="mr-2">Read Full Article</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -114,7 +116,7 @@ const FeaturedBlog: React.FC = () => {
             variant="outline" 
             size="lg" 
             className="px-8 py-3 border-emerald-500 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all duration-300"
-            onClick={handleReadMore}
+            onClick={handleViewAllArticles}
           >
             View All Articles
           </Button>

@@ -17,16 +17,16 @@ const Terminal: React.FC = () => {
   const profile = useMemo(() => ({
     name: 'Sujay',
     handle: 'sujay@supercompute',
-    title: 'Supercompute Network Engineer',
+    title: 'Technical Solutions Engineer',
     roles: ['Distributed Systems Expert','AI Infrastructure Architect','GPU Cluster Optimizer'],
     skills: ['CUDA / NCCL / TensorRT','Kubernetes / GPU Operators','RDMA / RoCE / InfiniBand / NVLink','Go, Rust, C++','PyTorch / JAX / TPU'],
     socials: {
       github: 'https://github.com/sujayai',
       linkedin: 'https://www.linkedin.com/in/sujay',
-      twitter: 'https://x.com/sujay',
+      twitter: 'https://x.com/sujay_sreedhar',
       website: 'https://sujay.ai'
     },
-    contact: 'sujay@supercompute.dev',
+    contact: 'support@sujay.ai',
   }), []);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const Terminal: React.FC = () => {
     skills: () => (<ul className="list-disc pl-5 text-gray-700 dark:text-gray-300">{profile.skills.map(s => <li key={s}>{s}</li>)}</ul>),
     stack: () => (<div className="text-gray-700 dark:text-gray-300">Go, Rust, C++, Python, Kubernetes, CUDA, NCCL, NVLink, RoCE, RDMA, PyTorch, JAX</div>),
     projects: () => (<div className="text-gray-700 dark:text-gray-300">See the projects section below for featured work: GPU Orchestrator, NN Compiler, Petascale Pipeline.</div>),
-    experience: () => (<div className="text-gray-700 dark:text-gray-300">OpenAI (Infra), NVIDIA (Systems), DeepMind (ML Infra), Meta (Research Eng).</div>),
+    experience: () => (<div className="text-gray-700 dark:text-gray-300">Arista Networks, xAI, Tesla & Lenovo</div>),
     socials: () => (
       <ul className="list-disc pl-5 text-gray-300">
         <li>GitHub: <a className="text-emerald-600 dark:text-emerald-400" href={profile.socials.github} target="_blank" rel="noreferrer">{profile.socials.github}</a></li>

@@ -7,8 +7,7 @@ import {
   MapPin, 
   Clock, 
   Github,
-  Linkedin,
-  Twitter
+  Linkedin
 } from 'lucide-react';
 
 
@@ -81,14 +80,8 @@ const Contact: React.FC = () => {
     {
       icon: MapPin,
       label: 'Location',
-      value: 'Remote / NC State Alumni',
+      value: 'San Francisco, CA',
       link: null,
-    },
-    {
-      icon: Clock,
-      label: 'Schedule Call',
-      value: 'Book a meeting',
-      link: 'https://calendly.com/sujay-sreedhar',
     },
   ];
 
@@ -106,10 +99,15 @@ const Contact: React.FC = () => {
       color: 'hover:text-blue-400',
     },
     {
-      icon: Twitter,
+      icon: null,
       label: 'X',
       url: 'https://x.com/sujay_sreedhar',
       color: 'hover:text-gray-200',
+      customIcon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      ),
     },
   ];
 
@@ -286,7 +284,7 @@ const Contact: React.FC = () => {
                       whileTap={{ scale: 0.95 }}
                       className={`w-12 h-12 rounded-lg flex items-center justify-center border transition-all duration-300 bg-gray-100 border-gray-200 hover:border-emerald-500/50 dark:bg-white/5 dark:border-white/10 ${social.color}`}
                     >
-                      <social.icon className="w-6 h-6" />
+                      {social.customIcon || <social.icon className="w-6 h-6" />}
                     </motion.a>
                   ))}
                 </div>
