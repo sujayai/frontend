@@ -13,6 +13,7 @@ const Terminal: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLSpanElement>(null);
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
 
   const profile = useMemo(() => ({
     name: 'Sujay',
@@ -110,17 +111,55 @@ const Terminal: React.FC = () => {
     }
   };
 
+  const handleTerminalClick = () => {
+    // Focus the hidden input to trigger mobile keyboard
+    hiddenInputRef.current?.focus();
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (busy) return;
+    const value = e.target.value;
+    if (value.endsWith('\n')) {
+      const current = buffer;
+      setBuffer('');
+      run(current);
+      e.target.value = '';
+    } else {
+      setBuffer(value);
+    }
+  };
+
   return (
     <motion.div
-      className="terminal-blur rounded-xl p-4 mb-6 max-w-xl mx-auto text-left backdrop-blur-sm"
+      className="terminal-blur rounded-xl p-4 mb-6 max-w-xl mx-auto text-left backdrop-blur-sm relative"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       tabIndex={0}
       onKeyDown={onKeyDown}
+      onClick={handleTerminalClick}
       role="region"
       aria-label="Interactive terminal"
     >
+      {/* Hidden input for mobile keyboard */}
+      <input
+        ref={hiddenInputRef}
+        type="text"
+        value={buffer}
+        onChange={handleInputChange}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const current = buffer;
+            setBuffer('');
+            run(current);
+            e.currentTarget.value = '';
+          }
+        }}
+        className="absolute opacity-0 pointer-events-none"
+        aria-hidden="true"
+      />
+      
       <div className="flex items-center mb-3">
         <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse" />
         <span className="text-emerald-700 dark:text-emerald-500 font-mono text-sm">{profile.handle}:~$</span>

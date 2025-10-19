@@ -80,8 +80,8 @@ function Shell() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-gray-200 transition-colors duration-300">
-      <div className="mesh-bg" />
+    <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-gray-200 transition-colors duration-300 relative overflow-x-hidden">
+      <div className="mesh-bg fixed inset-0 z-0" />
       {showGrid && <div className="absolute inset-0 cyber-grid z-0" />}
       <Effects />
 

@@ -96,7 +96,7 @@ const Experience: React.FC = () => {
           className="relative"
         >
           {/* Timeline line */}
-          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500 via-blue-500 to-purple-500" />
+          <div className="absolute left-4 md:left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500 via-blue-500 to-purple-500" />
 
           {experiences.map((exp, index) => (
             <motion.div
@@ -105,12 +105,12 @@ const Experience: React.FC = () => {
               className="relative flex items-start mb-12 last:mb-0"
             >
               {/* Timeline dot */}
-              <div className="absolute left-6 w-4 h-4 rounded-full bg-emerald-500 border-4 border-background z-10 shadow-lg">
+              <div className="absolute left-2.5 md:left-6 w-4 h-4 rounded-full bg-emerald-500 border-4 border-background z-10 shadow-lg">
                 <div className="absolute inset-0 rounded-full bg-emerald-500 animate-ping opacity-20" />
               </div>
 
               {/* Content card */}
-              <div className="ml-20 w-full">
+              <div className="ml-12 md:ml-20 w-full">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   className="card-blur rounded-lg p-6 group cursor-pointer"

@@ -276,14 +276,14 @@ const Hero: React.FC = () => {
           ))}
         </motion.div>
 
-        <motion.div variants={itemVariants} className="flex justify-center gap-4 max-w-3xl mx-auto mb-16">
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-center gap-4 max-w-3xl mx-auto mb-16 px-4">
           {[
             { value: '1.5+', label: 'Years Experience' },
             { value: '200k', label: 'GPUs Managed' }
           ].map((stat, i) => (
             <motion.div 
               key={i} 
-              className="card-blur rounded-xl p-5 text-center group w-48"
+              className="card-blur rounded-xl p-5 text-center group w-full sm:w-48"
               whileHover={{ scale: 1.02, y: -2 }}
               transition={{ type: "spring", stiffness: 300 }}
             >

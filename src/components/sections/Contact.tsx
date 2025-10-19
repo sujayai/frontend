@@ -160,7 +160,8 @@ const Contact: React.FC = () => {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                         placeholder="Your full name"
                         required
-                        className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400"
+                        autoComplete="name"
+                        className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 text-base"
                       />
                     </div>
                     <div className="space-y-2">
@@ -174,7 +175,8 @@ const Contact: React.FC = () => {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                         placeholder="your.email@example.com"
                         required
-                        className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400"
+                        autoComplete="email"
+                        className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 text-base"
                       />
                     </div>
                   </div>
@@ -189,7 +191,7 @@ const Contact: React.FC = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
                       placeholder="What's this about?"
                       required
-                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400"
+                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 text-base"
                     />
                   </div>
                   <div className="space-y-2">
@@ -203,7 +205,7 @@ const Contact: React.FC = () => {
                       placeholder="Tell me about your project, collaboration idea, or just say hello!"
                       required
                       rows={6}
-                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 resize-none"
+                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 resize-none text-base"
                     />
                   </div>
                   <Button 

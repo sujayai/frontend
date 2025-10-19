@@ -68,6 +68,22 @@ body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
   overflow-x: hidden;
+  /* Prevent pull-to-refresh and overscroll effects */
+  overscroll-behavior-y: none;
+  /* Prevent tap highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
+  /* Improve touch scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+html, body {
+  /* Prevent zoom on double-tap */
+  touch-action: manipulation;
+  /* Ensure full viewport coverage */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  width: 100%;
+  position: relative;
 }
 
 /* Custom scrollbar */
