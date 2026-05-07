@@ -1,202 +1,294 @@
 import { useEffect, useState } from 'react';
-import MatrixBackground from './components/effects/MatrixBackground';
-import ParticleField from './components/effects/ParticleField';
+import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './components/sections/Hero';
 import Projects from './components/sections/Projects';
 import Experience from './components/sections/Experience';
 import Contact from './components/sections/Contact';
 import Blog from './components/sections/Blog';
 import FeaturedBlog from './components/sections/FeaturedBlog';
+import Spotlight from './components/effects/Spotlight';
 import { EasterEggsProvider, useEasterEggs } from './components/providers/EasterEggsProvider';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ThemeToggle } from './components/ui/ThemeToggle';
+import { Github, Linkedin, Menu, X } from 'lucide-react';
+import { cn } from './lib/utils';
 
-function Effects() {
-  const { showMatrix, showParticles } = useEasterEggs();
-  return (
-    <>
-      {showMatrix && <MatrixBackground />}
-      {showParticles && <ParticleField />}
-    </>
-  );
-}
+const NAV = [
+  { id: 'home', label: 'Home' },
+  { id: 'blog', label: 'Writing' },
+];
+
+const SOCIAL = [
+  { icon: Github, href: 'https://github.com/sujaysreedharg', label: 'GitHub' },
+  { icon: Linkedin, href: 'https://linkedin.com/in/sujaysreedharg', label: 'LinkedIn' },
+];
 
 function Shell() {
-  const { showGrid } = useEasterEggs();
-  const [activeTab, setActiveTab] = useState('home');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { turboGlow } = useEasterEggs();
+  const [activeTab, setActiveTab] = useState<'home' | 'blog'>('home');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const switchTab = (tab: string) => {
+  const switchTab = (tab: 'home' | 'blog') => {
     setActiveTab(tab);
-    setMobileMenuOpen(false);
-    // Ensure we land at the top of the new view
-    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+    setMobileOpen(false);
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
   };
 
-  // Close mobile menu when clicking outside
+  // Track scroll for header treatment
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const mobileMenu = document.getElementById('mobile-menu');
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      
-      if (mobileMenu && mobileMenuButton && 
-          !mobileMenu.contains(event.target as Node) && 
-          !mobileMenuButton.contains(event.target as Node)) {
-        setMobileMenuOpen(false);
-        mobileMenu.classList.add('hidden');
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Listen for custom tab switch events
+  // Custom tab-switch event (used by FeaturedBlog → article deep-link)
   useEffect(() => {
-    const handleTabSwitch = (event: CustomEvent) => {
-      const detail = event.detail;
-      if (typeof detail === 'string') {
-        // Simple tab switch
+    const handleTabSwitch = (event: Event) => {
+      const detail = (event as CustomEvent).detail;
+      if (typeof detail === 'string' && (detail === 'home' || detail === 'blog')) {
         switchTab(detail);
       } else if (detail && detail.tab) {
-        // Tab switch with additional data (like article slug)
         switchTab(detail.tab);
-        // If there's a slug, dispatch another event to open that article
         if (detail.slug) {
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent('openArticle', { detail: detail.slug }));
-          }, 100);
+          }, 120);
         }
       }
     };
-
-    window.addEventListener('switchTab', handleTabSwitch as EventListener);
-    return () => window.removeEventListener('switchTab', handleTabSwitch as EventListener);
+    window.addEventListener('switchTab', handleTabSwitch);
+    return () => window.removeEventListener('switchTab', handleTabSwitch);
   }, []);
-  
-  const navigation = [
-    { id: 'home', label: 'Home', href: '#home' },
-    { id: 'blog', label: 'Blog', href: '#blog' },
-  ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-gray-200 transition-colors duration-300 relative overflow-x-hidden">
-      <div className="mesh-bg fixed inset-0 z-0" />
-      {showGrid && <div className="absolute inset-0 cyber-grid z-0" />}
-      <Effects />
+    <div className="relative min-h-screen bg-background text-foreground antialiased selection:bg-primary/20">
+      {/* Subtle global mouse spotlight */}
+      <Spotlight />
 
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-black/30 border-b border-gray-200/80 dark:border-white/10">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <button 
+      {/* Optional turbo glow easter-egg accent */}
+      {turboGlow && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-0"
+          style={{
+            background:
+              'radial-gradient(800px circle at 50% 0%, hsl(var(--primary) / 0.15), transparent 60%)',
+          }}
+        />
+      )}
+
+      {/* Header */}
+      <header
+        className={cn(
+          'sticky top-0 z-40 transition-all duration-300',
+          scrolled
+            ? 'backdrop-blur-xl bg-background/75 border-b border-border-subtle'
+            : 'bg-transparent border-b border-transparent'
+        )}
+      >
+        <div className="container flex items-center justify-between h-16">
+          {/* Logo */}
+          <button
             onClick={() => switchTab('home')}
-            className="font-bold text-xl tracking-tight text-gray-900 dark:text-white hover:text-emerald-500 dark:hover:text-emerald-400 transition-all duration-300 transform hover:scale-105"
+            className="group inline-flex items-center gap-2 text-foreground"
+            aria-label="Home"
           >
-            sujay<span className="text-emerald-500 dark:text-emerald-400">.ai</span>
+            <span className="grid place-items-center w-8 h-8 rounded-lg bg-foreground text-background font-mono text-sm font-bold tracking-tight">
+              s
+            </span>
+            <span className="font-display text-base font-semibold tracking-tight">
+              sujay<span className="text-foreground-muted">.ai</span>
+            </span>
           </button>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <nav className="flex items-center gap-8 text-sm text-gray-600 dark:text-gray-300">
-              {navigation.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => switchTab(item.id)}
-                  className={`relative font-medium py-2 px-3 rounded-lg transition-all duration-300 ${
-                    activeTab === item.id 
-                      ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10' 
-                      : 'hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
-                  }`}
-                >
-                  {item.label}
-                  {activeTab === item.id && (
-                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-emerald-500 dark:bg-emerald-400 rounded-full"></div>
-                  )}
-                </button>
-              ))}
-            </nav>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {NAV.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => switchTab(item.id as 'home' | 'blog')}
+                className={cn(
+                  'relative px-3.5 py-2 rounded-md text-sm font-medium transition-colors duration-200',
+                  activeTab === item.id
+                    ? 'text-foreground'
+                    : 'text-foreground-muted hover:text-foreground'
+                )}
+              >
+                {item.label}
+                {activeTab === item.id && (
+                  <motion.span
+                    layoutId="nav-indicator"
+                    className="absolute inset-0 -z-10 rounded-md bg-background-subtle"
+                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                  />
+                )}
+              </button>
+            ))}
+          </nav>
+
+          {/* Desktop actions */}
+          <div className="hidden md:flex items-center gap-2">
+            {SOCIAL.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="grid place-items-center w-9 h-9 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-subtle transition-colors"
+              >
+                <s.icon className="w-4 h-4" strokeWidth={1.75} />
+              </a>
+            ))}
+            <div className="w-px h-5 bg-border mx-1" />
             <ThemeToggle size="sm" />
+            <a
+              href="mailto:support@sujay.ai"
+              className="ml-2 inline-flex items-center h-9 px-3.5 text-sm font-medium rounded-lg bg-foreground text-background hover:bg-foreground/90 transition-colors"
+            >
+              Get in touch
+            </a>
           </div>
 
-          {/* Mobile Navigation */}
-          <div className="md:hidden flex items-center gap-4">
+          {/* Mobile actions */}
+          <div className="md:hidden flex items-center gap-2">
             <ThemeToggle size="sm" />
             <button
-              id="mobile-menu-button"
-              onClick={() => {
-                setMobileMenuOpen(!mobileMenuOpen);
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (mobileMenu) {
-                  mobileMenu.classList.toggle('hidden');
-                }
-              }}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+              className="grid place-items-center w-9 h-9 rounded-lg text-foreground hover:bg-background-subtle transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        <div id="mobile-menu" className={`md:hidden border-t border-gray-200/80 dark:border-white/10 bg-white/95 dark:bg-black/95 backdrop-blur-md transition-all duration-300 ${mobileMenuOpen ? 'block' : 'hidden'}`}>
-          <div className="container mx-auto px-6 py-4">
-            <nav className="flex flex-col space-y-2">
-              {navigation.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    switchTab(item.id);
-                  }}
-                  className={`text-left py-3 px-4 rounded-lg font-medium transition-all duration-300 ${
-                    activeTab === item.id 
-                      ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10' 
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden border-t border-border-subtle bg-background/95 backdrop-blur-xl overflow-hidden"
+            >
+              <nav className="container py-4 flex flex-col gap-1">
+                {NAV.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => switchTab(item.id as 'home' | 'blog')}
+                    className={cn(
+                      'text-left px-3 py-3 rounded-lg text-base font-medium transition-colors',
+                      activeTab === item.id
+                        ? 'text-foreground bg-background-subtle'
+                        : 'text-foreground-muted hover:text-foreground hover:bg-background-subtle'
+                    )}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+                <div className="h-px bg-border my-2" />
+                <div className="flex items-center gap-2 px-3 py-2">
+                  {SOCIAL.map((s) => (
+                    <a
+                      key={s.label}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={s.label}
+                      className="grid place-items-center w-10 h-10 rounded-lg border border-border bg-background-subtle text-foreground-muted hover:text-foreground"
+                    >
+                      <s.icon className="w-4 h-4" strokeWidth={1.75} />
+                    </a>
+                  ))}
+                  <a
+                    href="mailto:support@sujay.ai"
+                    className="ml-auto inline-flex items-center h-10 px-4 text-sm font-medium rounded-lg bg-foreground text-background hover:bg-foreground/90 transition-colors"
+                  >
+                    Get in touch
+                  </a>
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
+      {/* Main */}
       <main className="relative z-10">
-        {activeTab === 'home' && (
-          <>
-            <Hero />
-            
-            
-            
-            <Experience />
-            <FeaturedBlog />
-            <Projects />
-            <Contact />
-          </>
-        )}
-        
-        {activeTab === 'projects' && (
-          <div id="projects" className="carousel-3d"><Projects /></div>
-        )}
-        
-        {activeTab === 'blog' && (
-          <div id="blog"><Blog /></div>
-        )}
-        
-        {activeTab === 'experience' && (
-          <div id="experience"><Experience /></div>
-        )}
-        
-        {activeTab === 'contact' && (
-          <div id="contact"><Contact /></div>
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {activeTab === 'home' && (
+              <>
+                <Hero />
+                <Experience />
+                <FeaturedBlog />
+                <Projects />
+                <Contact />
+              </>
+            )}
+            {activeTab === 'blog' && <Blog />}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
-      <footer className="relative z-10 py-8 text-center text-gray-500 dark:text-gray-400 border-t border-gray-200/80 dark:border-white/10">
-        <div className="container mx-auto px-6">
-          <p className="text-sm">&copy; 2024 Sujay. Built with React, TypeScript, and cutting-edge web technologies.</p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">Hotkeys: g=grid, m=matrix, p=particles, t=glow, c=confetti, Konami=turbo</p>
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-border-subtle mt-24">
+        <div className="container py-12">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <button
+                onClick={() => switchTab('home')}
+                className="inline-flex items-center gap-2"
+              >
+                <span className="grid place-items-center w-7 h-7 rounded-md bg-foreground text-background font-mono text-xs font-bold">
+                  s
+                </span>
+                <span className="font-display text-sm font-semibold tracking-tight">
+                  sujay<span className="text-foreground-muted">.ai</span>
+                </span>
+              </button>
+              <p className="mt-3 text-sm text-foreground-muted max-w-md">
+                Building the network fabric behind large-scale AI training.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {SOCIAL.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="grid place-items-center w-9 h-9 rounded-lg border border-border-subtle text-foreground-muted hover:text-foreground hover:border-border transition-colors"
+                >
+                  <s.icon className="w-4 h-4" strokeWidth={1.75} />
+                </a>
+              ))}
+              <a
+                href="mailto:support@sujay.ai"
+                className="grid place-items-center px-3 h-9 rounded-lg border border-border-subtle text-sm text-foreground-muted hover:text-foreground hover:border-border transition-colors"
+              >
+                support@sujay.ai
+              </a>
+            </div>
+          </div>
+          <div className="mt-10 pt-6 border-t border-border-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-foreground-subtle">
+            <p>© {new Date().getFullYear()} Sujay Sreedhar. All rights reserved.</p>
+            <p className="font-mono">
+              press <kbd className="px-1.5 py-0.5 rounded bg-background-subtle border border-border-subtle text-foreground-muted">g</kbd> for grid, <kbd className="px-1.5 py-0.5 rounded bg-background-subtle border border-border-subtle text-foreground-muted">t</kbd> for glow
+            </p>
+          </div>
         </div>
       </footer>
     </div>

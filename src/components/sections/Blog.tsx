@@ -1,316 +1,296 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Search, ArrowUpRight, Mail } from 'lucide-react';
+import Section from '@/components/ui/Section';
 import { Button } from '@/components/ui/button';
-import { Search, Calendar, User, ArrowRight, Tag } from 'lucide-react';
 import BlogPost from './BlogPost';
 import { samplePosts, BlogPostInterface, categories } from '@/data/blogPosts';
+import { fadeUpStagger, item, inViewProps } from '@/lib/motion';
 
-const BlogCard: React.FC<{ post: BlogPostInterface; index: number; onClick: () => void }> = ({ post, index, onClick }) => {
+const POSTS_PER_PAGE = 9;
+
+const BlogCard: React.FC<{ post: BlogPostInterface; onClick: () => void }> = ({
+  post,
+  onClick,
+}) => {
+  const handleMouseMove: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty('--spotlight-x', `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty('--spotlight-y', `${e.clientY - rect.top}px`);
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      transition={{ 
-        duration: 0.6, 
-        delay: index * 0.1,
-        type: "spring", 
-        stiffness: 300, 
-        damping: 20 
-      }}
-      className="group"
+    <motion.button
+      variants={item}
+      onClick={onClick}
+      onMouseMove={handleMouseMove as React.MouseEventHandler<HTMLButtonElement>}
+      className="spotlight surface surface-hover relative text-left overflow-hidden group flex flex-col h-full transition-transform duration-300 hover:-translate-y-0.5"
     >
-      <Card className="h-full card-blur blog-card-hover blog-card group cursor-pointer overflow-hidden border-0 transform transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20" onClick={onClick}>
-        <div className="relative overflow-hidden">
-          <div className="w-full h-48 bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-purple-500/20 flex items-center justify-center group-hover:from-emerald-500/30 group-hover:via-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300">
-            <div className="text-6xl opacity-30 group-hover:opacity-50 transition-opacity duration-300">{post.category === 'AI' ? '🤖' : post.category === 'Quantum' ? '⚛️' : post.category === 'Space' ? '🚀' : post.category === 'Blockchain' ? '⛓️' : '💻'}</div>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent group-hover:from-black/40 transition-all duration-300"></div>
-          <div className="absolute top-4 left-4">
-            <span className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full text-xs font-semibold text-white shadow-lg">
-              {post.category}
+      <div className="relative z-[2] p-6 flex flex-col flex-1">
+        <div className="flex items-center justify-between">
+          <span className="chip">{post.category}</span>
+          <ArrowUpRight className="w-4 h-4 text-foreground-subtle group-hover:text-foreground transition-colors" />
+        </div>
+
+        <h3 className="mt-5 font-display text-xl font-semibold tracking-tight text-foreground leading-snug text-balance">
+          {post.title}
+        </h3>
+
+        <p className="mt-3 text-sm text-foreground-muted leading-relaxed line-clamp-3 flex-1">
+          {post.summary}
+        </p>
+
+        <div className="mt-6 pt-5 border-t border-border-subtle flex items-center justify-between text-xs text-foreground-subtle">
+          <div className="flex items-center gap-2">
+            <span className="grid place-items-center w-6 h-6 rounded-full bg-foreground text-background font-mono font-bold text-[10px]">
+              {post.author.name.charAt(0)}
             </span>
+            <span className="text-foreground-muted">{post.author.name}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span>{post.date}</span>
+            <span className="text-border">·</span>
+            <span>{post.readTime}</span>
           </div>
         </div>
-        
-        <CardContent className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-all duration-300">
-            {post.title}
-          </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors duration-300">
-            {post.summary}
-          </p>
-          
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <Calendar className="w-3 h-3" />
-                <span>{post.date}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <span>{post.readTime}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-gradient-to-r from-emerald-400 to-blue-400 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                {post.author.name.charAt(0)}
-              </div>
-              <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">{post.author.name}</span>
-            </div>
-            <Button variant="ghost" size="sm" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-500/10 p-2 group-hover:scale-110 transition-all duration-300">
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
+      </div>
+    </motion.button>
   );
 };
 
 const Blog: React.FC = () => {
-  const [posts, setPosts] = useState<BlogPostInterface[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [visiblePosts, setVisiblePosts] = useState(6);
+  const [visiblePosts, setVisiblePosts] = useState(POSTS_PER_PAGE);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    let filteredPosts = selectedCategory === 'All' 
-      ? samplePosts 
-      : samplePosts.filter(post => post.category === selectedCategory);
-    
-    // Apply search filter
-    if (searchTerm) {
-      filteredPosts = filteredPosts.filter(post => 
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPosts = useMemo(() => {
+    let posts = selectedCategory === 'All'
+      ? samplePosts
+      : samplePosts.filter((p) => p.category === selectedCategory);
+
+    if (searchTerm.trim()) {
+      const q = searchTerm.toLowerCase();
+      posts = posts.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.summary.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
       );
     }
-    
-    // Sort by date (newest first) and then slice
-    const sortedPosts = filteredPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    setPosts(sortedPosts.slice(0, visiblePosts));
-  }, [visiblePosts, selectedCategory, searchTerm]);
 
-  // Listen for openArticle event
+    return posts.slice().sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [selectedCategory, searchTerm]);
+
+  const visible = filteredPosts.slice(0, visiblePosts);
+
+  // Listen for openArticle event (from FeaturedBlog deep-link)
   useEffect(() => {
-    const handleOpenArticle = (event: CustomEvent) => {
-      setSelectedPost(event.detail);
+    const handleOpenArticle = (event: Event) => {
+      setSelectedPost((event as CustomEvent).detail);
     };
-
-    window.addEventListener('openArticle', handleOpenArticle as EventListener);
-    return () => window.removeEventListener('openArticle', handleOpenArticle as EventListener);
+    window.addEventListener('openArticle', handleOpenArticle);
+    return () => window.removeEventListener('openArticle', handleOpenArticle);
   }, []);
 
   const loadMorePosts = () => {
     setLoading(true);
     setTimeout(() => {
-      setVisiblePosts(prev => Math.min(prev + 3, samplePosts.length));
+      setVisiblePosts((prev) => Math.min(prev + 6, filteredPosts.length));
       setLoading(false);
-    }, 800);
+    }, 400);
   };
 
   // Show individual blog post
   if (selectedPost) {
-    return (
-      <BlogPost 
-        postId={selectedPost} 
-        onBack={() => setSelectedPost(null)} 
-      />
-    );
+    return <BlogPost postId={selectedPost} onBack={() => setSelectedPost(null)} />;
   }
 
   return (
-    <section id="blog-section" className="py-20 relative">
-      <div className="container mx-auto px-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16 blog-header"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="text-gradient">Technical Blog</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-            Deep technical insights on supercomputing, AI infrastructure, and cutting-edge engineering solutions
-          </p>
-        </motion.div>
+    <>
+      {/* Hero header for blog */}
+      <Section
+        id="blog"
+        eyebrow="Writing"
+        title="Notes from the field."
+        subtitle="Deep technical posts on AI infrastructure, networking, distributed training, and the engineering reality behind production-scale systems."
+        tight
+      />
 
-        {/* Search Section - Mobile First */}
-        <div className="lg:hidden mb-8 search-section-mobile">
-          <Card className="card-blur">
-            <CardHeader>
-              <CardTitle className="flex items-center text-lg text-gray-900 dark:text-white">
-                <Search className="w-5 h-5 mr-2 text-emerald-500" />
-                Search Articles
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search technical topics..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-lg px-4 py-3 bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white"
-                />
-                <Search className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
-              </div>
-            </CardContent>
-          </Card>
+      {/* Search + filter bar */}
+      <div className="container">
+        <div className="surface p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-4">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle" />
+            <input
+              type="text"
+              placeholder="Search articles..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setVisiblePosts(POSTS_PER_PAGE);
+              }}
+              className="w-full pl-10 pr-3 h-10 rounded-lg bg-background-subtle border border-border-subtle text-sm placeholder:text-foreground-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none transition-all"
+            />
+          </div>
+
+          {/* Categories */}
+          <div className="flex flex-wrap gap-1.5">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setVisiblePosts(POSTS_PER_PAGE);
+                }}
+                className={`px-3 h-8 rounded-full text-xs font-medium transition-colors ${
+                  selectedCategory === category
+                    ? 'bg-foreground text-background'
+                    : 'bg-background-subtle text-foreground-muted hover:text-foreground hover:bg-background-elevated border border-border-subtle'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Main Content */}
-          <main className="flex-1 order-2 lg:order-1">
-            {/* Category Filter */}
-            <div className="mb-8 category-filters">
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => {
-                      setSelectedCategory(category);
-                      setVisiblePosts(6);
-                    }}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 button-hover ${
-                      selectedCategory === category
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-emerald-100 hover:text-emerald-700 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Blog Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12 blog-grid">
-              {posts.map((post, index) => (
-                <BlogCard 
-                  key={post.id} 
-                  post={post} 
-                  index={index}
-                  onClick={() => setSelectedPost(post.slug)}
-                />
-              ))}
-            </div>
-
-            {/* Load More */}
-            {visiblePosts < samplePosts.length && (
-              <div className="text-center">
-                <Button
-                  onClick={loadMorePosts}
-                  disabled={loading}
-                  variant="cyber"
-                  size="lg"
-                  className="px-8 py-4"
-                >
-                  {loading ? (
-                    <span className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                      <span>Loading...</span>
-                    </span>
-                  ) : (
-                    'Load More Articles'
-                  )}
-                </Button>
-              </div>
-            )}
-          </main>
-
-          {/* Sidebar - Desktop Only */}
-          <aside className="hidden lg:block w-80 order-1 lg:order-2">
-            <div className="sticky top-24 space-y-6">
-              {/* Search */}
-              <Card className="card-blur">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-lg text-gray-900 dark:text-white">
-                    <Search className="w-5 h-5 mr-2 text-emerald-500" />
-                    Search Articles
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Search technical topics..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full rounded-lg px-4 py-3 bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white"
-                    />
-                    <Search className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Newsletter */}
-              <Card className="card-blur border border-emerald-500/20 dark:border-emerald-500/30">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center">
-                    <User className="w-5 h-5 mr-2 text-emerald-500" />
-                    Stay Updated
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
-                    Get the latest technical insights and infrastructure deep-dives delivered directly to your inbox.
-                  </p>
-                  <Button 
-                    variant="neon" 
-                    className="w-full"
-                    onClick={() => setShowSubscribeModal(true)}
-                  >
-                    Subscribe to Updates
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </aside>
-        </div>
-
-        {/* Subscribe Modal */}
-        {showSubscribeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowSubscribeModal(false)}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="card-blur rounded-2xl p-8 max-w-md w-full border border-emerald-500/20"
-              onClick={(e) => e.stopPropagation()}
+      {/* Posts grid */}
+      <Section tight>
+        {visible.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-foreground-muted">
+              No articles match{' '}
+              <span className="text-foreground font-medium">"{searchTerm}"</span>.
+            </p>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedCategory('All');
+              }}
+              className="mt-4"
             >
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">📧</span>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                  Coming Soon!
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Thanks for your interest! Newsletter signup functionality will be implemented soon. Stay tuned for updates!
-                </p>
-                <Button 
-                  variant="neon" 
-                  className="w-full"
-                  onClick={() => setShowSubscribeModal(false)}
-                >
-                  Got it!
-                </Button>
-              </div>
-            </motion.div>
+              Clear filters
+            </Button>
+          </div>
+        ) : (
+          <motion.div
+            {...inViewProps}
+            variants={fadeUpStagger(0, 0.06)}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
+          >
+            {visible.map((post) => (
+              <BlogCard
+                key={post.id}
+                post={post}
+                onClick={() => setSelectedPost(post.slug)}
+              />
+            ))}
+          </motion.div>
+        )}
+
+        {visiblePosts < filteredPosts.length && (
+          <div className="mt-12 flex justify-center">
+            <Button
+              onClick={loadMorePosts}
+              disabled={loading}
+              variant="outline"
+              size="lg"
+            >
+              {loading ? (
+                <>
+                  <span className="w-3 h-3 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                  Loading
+                </>
+              ) : (
+                'Load more articles'
+              )}
+            </Button>
           </div>
         )}
-      </div>
-    </section>
+
+        {/* Newsletter card */}
+        <motion.div
+          {...inViewProps}
+          variants={item}
+          className="mt-20 surface relative overflow-hidden"
+        >
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{
+              background:
+                'radial-gradient(800px circle at 80% 0%, hsl(var(--primary) / 0.18), transparent 50%)',
+            }}
+          />
+          <div className="relative p-8 md:p-12 grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div className="eyebrow mb-4">Stay updated</div>
+              <h3 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-foreground text-balance">
+                Get new posts in your inbox.
+              </h3>
+              <p className="mt-3 text-foreground-muted text-pretty">
+                Occasional posts on AI infrastructure, networking, and the engineering reality
+                behind production-scale systems. No spam.
+              </p>
+            </div>
+            <div className="flex md:justify-end">
+              <Button
+                size="lg"
+                onClick={() => setShowSubscribeModal(true)}
+                className="group"
+              >
+                <Mail className="w-4 h-4" />
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      </Section>
+
+      {/* Subscribe modal */}
+      {showSubscribeModal && (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center p-4 bg-foreground/40 backdrop-blur-sm"
+          onClick={() => setShowSubscribeModal(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="surface w-full max-w-md p-8 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="grid place-items-center w-12 h-12 mx-auto rounded-xl bg-primary-subtle text-primary">
+              <Mail className="w-5 h-5" />
+            </div>
+            <h3 className="mt-5 font-display text-xl font-semibold text-foreground">
+              Coming soon
+            </h3>
+            <p className="mt-2 text-foreground-muted">
+              Newsletter signup isn't live yet. In the meantime, check{' '}
+              <a
+                href="https://x.com/sujay_sreedhar"
+                className="text-primary link-underline"
+                target="_blank"
+                rel="noreferrer"
+              >
+                X
+              </a>{' '}
+              for updates.
+            </p>
+            <Button onClick={() => setShowSubscribeModal(false)} className="mt-6 w-full">
+              Got it
+            </Button>
+          </motion.div>
+        </div>
+      )}
+    </>
   );
 };
 
-export default Blog; 
+export default Blog;

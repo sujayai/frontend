@@ -1,234 +1,179 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { ExternalLink, Github, Zap, Brain, Network, Database } from 'lucide-react';
-import Tilt from 'react-parallax-tilt';
+import Section from '@/components/ui/Section';
+import { Button } from '@/components/ui/button';
+import { fadeUpStagger, item, inViewProps } from '@/lib/motion';
 
-const Projects: React.FC = () => {
-  const projects = [
-    {
-      title: 'Quickly v2 - Content Delivery Network',
-      description: 'CDN service that deploys infrastructure on Linux machines with tenant isolation using Ansible, OvSwitch, Docker, and Libvirt.',
-      icon: Zap,
-      tech: ['Python', 'Ansible', 'OvSwitch', 'Docker', 'Libvirt', 'Virsh', 'etcd'],
-      gradient: 'from-yellow-400 to-orange-500',
-      status: 'Production',
-      github: 'https://github.com/sujaysreedharg/quicklyv2',
-      demo: null,
-    },
-    {
-      title: 'Graduate Admission Prediction ML',
-      description: 'Machine Learning model for graduate admission prediction with Docker containerized deployment on Heroku cloud platform.',
-      icon: Brain,
-      tech: ['Python', 'Docker', 'Heroku', 'Machine Learning', 'HTML'],
-      gradient: 'from-purple-500 to-pink-500',
-      status: 'Production',
-      github: 'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
-      demo: null,
-    },
-    {
-      title: 'COVID-19 Time Series Forecasting',
-      description: 'Time series analysis using Prophet model for COVID-19 future predictions, widely applicable in corporate, medical, and financial sectors.',
-      icon: Network,
-      tech: ['Python', 'Prophet', 'Jupyter Notebook', 'Time Series Analysis'],
-      gradient: 'from-blue-500 to-cyan-500',
-      status: 'Research',
-      github: 'https://github.com/sujaysreedharg/Covid-19-future-prediction-with-time-series-forecasting-using-prophet-model',
-      demo: null,
-    },
-    {
-      title: 'Auctions Django Web App',
-      description: 'eBay-like e-commerce auction site allowing users to post listings, place bids, comment, and manage watchlists.',
-      icon: Database,
-      tech: ['Python', 'Django', 'Heroku', 'Web Development', 'e-Commerce'],
-      gradient: 'from-emerald-500 to-teal-500',
-      status: 'Production',
-      github: 'https://github.com/sujaysreedharg/Auctions-django-web-app-deployment-on-Heroku',
-      demo: null,
-    },
-  ];
+interface Project {
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  tech: string[];
+  status: 'Production' | 'Research' | 'Archived';
+  github: string;
+  demo: string | null;
+}
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+const PROJECTS: Project[] = [
+  {
+    title: 'Quickly v2 — Content Delivery Network',
+    description:
+      'A multi-tenant CDN that provisions infrastructure on bare-metal Linux hosts with strong tenant isolation using Ansible, Open vSwitch, Docker, and Libvirt.',
+    icon: Zap,
+    tech: ['Python', 'Ansible', 'Open vSwitch', 'Docker', 'Libvirt', 'etcd'],
+    status: 'Production',
+    github: 'https://github.com/sujaysreedharg/quicklyv2',
+    demo: null,
+  },
+  {
+    title: 'Graduate Admission Prediction',
+    description:
+      'A machine-learning model predicting graduate admission outcomes, packaged into a Docker image and deployed to Heroku for one-click access.',
+    icon: Brain,
+    tech: ['Python', 'scikit-learn', 'Docker', 'Heroku'],
+    status: 'Production',
+    github:
+      'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
+    demo: null,
+  },
+  {
+    title: 'COVID-19 Time Series Forecasting',
+    description:
+      'A forecasting pipeline using Facebook Prophet to predict COVID-19 trends — a template that generalizes to corporate, medical, and financial time series.',
+    icon: Network,
+    tech: ['Python', 'Prophet', 'Jupyter', 'Time Series'],
+    status: 'Research',
+    github:
+      'https://github.com/sujaysreedharg/Covid-19-future-prediction-with-time-series-forecasting-using-prophet-model',
+    demo: null,
+  },
+  {
+    title: 'Auctions — Django Web App',
+    description:
+      "An eBay-like auctioning platform with listings, bidding, comments, and watchlists. Deployed to Heroku end-to-end.",
+    icon: Database,
+    tech: ['Python', 'Django', 'PostgreSQL', 'Heroku'],
+    status: 'Archived',
+    github: 'https://github.com/sujaysreedharg/Auctions-django-web-app-deployment-on-Heroku',
+    demo: null,
+  },
+];
 
-  const cardVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+const statusColor: Record<Project['status'], string> = {
+  Production: 'bg-success/10 text-[hsl(var(--success))] border-[hsl(var(--success))]/20',
+  Research: 'bg-primary-subtle border-primary/20 text-primary dark:text-[hsl(var(--accent-foreground))]',
+  Archived: 'bg-background-subtle border-border text-foreground-muted',
+};
 
+const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
   const handleMouseMove: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    const target = e.currentTarget as HTMLDivElement;
-    const rect = target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    target.style.setProperty('--x', `${x}px`);
-    target.style.setProperty('--y', `${y}px`);
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty('--spotlight-x', `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty('--spotlight-y', `${e.clientY - rect.top}px`);
   };
+
+  const Icon = project.icon;
 
   return (
-    <section className="py-20 relative" id="projects">
-      <div className="container mx-auto px-6">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="text-gradient">Featured Projects</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Pushing the boundaries of computational infrastructure and AI systems at enterprise scale
-          </p>
-        </motion.div>
-
-        {/* Projects grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-        >
-          {projects.map((project, index) => (
-            <motion.div key={index} variants={cardVariants}>
-              <div className="spotlight" onMouseMove={handleMouseMove}>
-                <Tilt
-                  tiltMaxAngleX={5}
-                  tiltMaxAngleY={5}
-                  perspective={1000}
-                  scale={1.02}
-                  transitionSpeed={2000}
-                  gyroscope={true}
-                >
-                  <Card className="h-full group cursor-pointer relative z-10 overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md hover:ring-2 hover:ring-emerald-400 dark:hover:ring-emerald-500 hover:ring-offset-2 ring-offset-white dark:ring-offset-black transition-all duration-300">
-                    {/* Animated background gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                    
-                    {/* Removed heavy glow to prevent uneven borders on hover */}
-                    
-                    <CardHeader className="relative z-10">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-lg bg-gradient-to-br ${project.gradient} group-hover:scale-110 transition-transform duration-300`}>
-                            <project.icon className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-xl text-gray-900 dark:text-white group-hover:text-gradient transition-all duration-300">
-                              {project.title}
-                            </CardTitle>
-                            <div className="flex items-center mt-2">
-                              <span className={`px-2 py-1 text-xs rounded-full ${
-                                project.status === 'Production' 
-                                  ? 'bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
-                                  : project.status === 'Research'
-                                  ? 'bg-purple-500/15 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400'
-                                  : 'bg-blue-500/15 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400'
-                              }`}>
-                                {project.status}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="relative z-10">
-                      <CardDescription className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                        {project.description}
-                      </CardDescription>
-
-                      {/* Tech stack */}
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {project.tech.map((tech, techIndex) => (
-                          <span
-                            key={techIndex}
-                            className="px-3 py-1 text-xs rounded-full border transition-colors duration-300 bg-gray-100 text-gray-700 border-gray-200 group-hover:border-emerald-500/50 dark:bg-white/10 dark:text-gray-300 dark:border-white/20"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Action buttons */}
-                      <div className="flex space-x-3">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-500/10"
-                          onClick={() => window.open(project.github, '_blank')}
-                        >
-                          <Github className="w-4 h-4 mr-2" />
-                          Code
-                        </Button>
-                        {project.demo && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-500/10"
-                            onClick={() => project.demo && window.open(project.demo, '_blank')}
-                          >
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Live Demo
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-
-                    {/* Hover effect particles */}
-                    <div className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                      {[...Array(6)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="absolute w-1 h-1 bg-emerald-500 rounded-full animate-ping"
-                          style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            animationDelay: `${Math.random() * 2}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </Card>
-                </Tilt>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* View all projects button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <Button 
-            variant="cyber" 
-            size="lg" 
-            className="text-lg px-8 py-4"
-            onClick={() => window.open('https://github.com/sujaysreedharg?tab=repositories', '_blank')}
+    <motion.article
+      variants={item}
+      onMouseMove={handleMouseMove}
+      className="spotlight surface surface-hover relative h-full p-6 md:p-7 group hover:-translate-y-0.5 transition-transform duration-300"
+    >
+      <div className="relative z-[2] flex flex-col h-full">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="grid place-items-center w-10 h-10 rounded-lg bg-background-subtle border border-border-subtle text-foreground-muted group-hover:text-foreground group-hover:border-border transition-colors">
+            <Icon className="w-5 h-5" />
+          </div>
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-medium rounded-full border ${statusColor[project.status]}`}
           >
-            View All Projects
-          </Button>
-        </motion.div>
+            {project.status === 'Production' && (
+              <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+            )}
+            {project.status}
+          </span>
+        </div>
+
+        <h3 className="mt-5 font-display font-semibold text-xl text-foreground tracking-tight leading-snug">
+          {project.title}
+        </h3>
+
+        <p className="mt-3 text-sm text-foreground-muted leading-relaxed flex-1 text-pretty">
+          {project.description}
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-1.5">
+          {project.tech.map((t) => (
+            <span key={t} className="chip">
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-6 pt-5 border-t border-border-subtle flex items-center gap-3">
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+          >
+            <Github className="w-4 h-4" /> Code
+          </a>
+          {project.demo && (
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" /> Live demo
+            </a>
+          )}
+        </div>
       </div>
-    </section>
+    </motion.article>
+  );
+};
+
+const Projects: React.FC = () => {
+  return (
+    <Section
+      id="projects"
+      eyebrow="Selected work"
+      title="Things I've built along the way."
+      subtitle="A mix of side projects and coursework — from CDNs and Linux automation to ML pipelines and small web apps."
+    >
+      <motion.div
+        {...inViewProps}
+        variants={fadeUpStagger(0, 0.1)}
+        className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6"
+      >
+        {PROJECTS.map((p) => (
+          <ProjectCard key={p.title} project={p} />
+        ))}
+      </motion.div>
+
+      <div className="mt-12 flex justify-center">
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() =>
+            window.open(
+              'https://github.com/sujaysreedharg?tab=repositories',
+              '_blank',
+              'noopener,noreferrer'
+            )
+          }
+          className="group"
+        >
+          View all repositories
+          <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </Button>
+      </div>
+    </Section>
   );
 };
 

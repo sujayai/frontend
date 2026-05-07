@@ -1,461 +1,395 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { ArrowLeft, Share2, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Share2 } from 'lucide-react';
+import { samplePosts } from '@/data/blogPosts';
 
 interface BlogPostProps {
   postId: string;
   onBack: () => void;
 }
 
-const blogPosts: Record<string, any> = {
-  'how-i-built-this-website': {
-    title: "How I Built This Website (I Didn't)",
-    summary: "A brutally honest tale of how this sleek portfolio came to life. Featuring: Docker containers, React components, and an AI that codes better than I do.",
-    category: "Meta",
-    author: { name: "Sujay Sreedhar", avatar: "" },
-    date: "Oct 18, 2025",
-    readTime: "5 min read",
-    content: `
-# How I Built This Website (I Didn't)
+interface CodeBlockProps {
+  lang: string;
+  code: string;
+}
 
-## Let's be honest
+const CodeBlock: React.FC<CodeBlockProps> = ({ lang, code }) => {
+  const [copied, setCopied] = useState(false);
 
-So you're on this website with all the fancy animations, dark mode, and those green gradients everywhere. There's Docker, Kubernetes, a Go backend—the whole nine yards.
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    });
+  };
 
-Here's the thing: I wrote this blog post. Everything else? AI coded it.
-
-Yeah, welcome to 2025.
-
-## How it started
-
-Saturday afternoon, needed to update my portfolio. Should've been simple, right? Just throw up some HTML, call it a day.
-
-Instead, I ended up with this full production setup. Why? Because I got curious about what's actually possible when you work with AI tools.
-
-Opened Cursor, started describing what I wanted, and honestly? It was weird at first. You're basically telling something what to build, and it just... builds it. No Stack Overflow tabs, no "why won't this CSS work" moments. Just conversation.
-
-"Make it look modern" turned into a whole design system.
-"Add a terminal thing" became an interactive component.
-"Make it feel tech-y" got me matrix effects.
-
-It kept going from there.
-
-## What's actually running
-
-**Frontend:** React, TypeScript, Vite. Tailwind for styling because I'm not writing CSS from scratch. Framer Motion handles all the animations: every hover, every fade, all of it.
-
-\`\`\`typescript
-// Example: The animated hero section
-const Hero = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-    >
-      <h1>Technical Solutions Engineer</h1>
-      {/* Stats, buttons, all animated */}
-    </motion.div>
+    <div className="code-block my-8">
+      <div className="code-block-header">
+        <span className="label-mono text-[10px]">{lang}</span>
+        <button
+          onClick={handleCopy}
+          className="inline-flex items-center gap-1.5 px-2 h-7 rounded-md text-xs font-medium text-foreground-muted hover:text-foreground hover:bg-background-subtle transition-colors"
+          aria-label="Copy code"
+        >
+          {copied ? (
+            <>
+              <Check className="w-3.5 h-3.5" /> Copied
+            </>
+          ) : (
+            <>
+              <Copy className="w-3.5 h-3.5" /> Copy
+            </>
+          )}
+        </button>
+      </div>
+      <div className="overflow-x-auto">
+        <pre className="p-5 m-0 text-[13px] leading-[1.7]">
+          <code className={`language-${lang}`}>
+            {code.split('\n').map((line, lineIndex) => (
+              <div key={lineIndex} className="code-line">
+                <span className="line-number text-[11px]">{lineIndex + 1}</span>
+                <span className="line-content">{line || ' '}</span>
+              </div>
+            ))}
+          </code>
+        </pre>
+      </div>
+    </div>
   );
 };
-\`\`\`
 
-**Backend:** Go with Gin framework. Serves the blog posts, handles uploads, has some basic auth. Compiles to one binary which is nice.
+const renderInline = (text: string): React.ReactNode => {
+  // Process bold (**...**), italic (*...*), inline code (`...`)
+  const parts: React.ReactNode[] = [];
+  let i = 0;
+  let key = 0;
+  let buffer = '';
 
-\`\`\`go
-// Simple API setup
-func main() {
-    r := gin.Default()
-    
-    // Serve blog posts
-    r.GET("/api/posts", func(c *gin.Context) {
-        c.JSON(200, posts)
-    })
-    
-    // Admin routes with auth
-    admin := r.Group("/api/admin")
-    admin.Use(AuthMiddleware())
-    
-    r.Run(":8080")
-}
-\`\`\`
+  const flush = () => {
+    if (buffer) {
+      parts.push(buffer);
+      buffer = '';
+    }
+  };
 
-**Infrastructure:** Docker containers, Kubernetes configs, behind Cloudflare. 
+  while (i < text.length) {
+    if (text[i] === '`') {
+      const end = text.indexOf('`', i + 1);
+      if (end !== -1) {
+        flush();
+        parts.push(<code key={key++}>{text.slice(i + 1, end)}</code>);
+        i = end + 1;
+        continue;
+      }
+    }
+    if (text.startsWith('**', i)) {
+      const end = text.indexOf('**', i + 2);
+      if (end !== -1) {
+        flush();
+        parts.push(<strong key={key++}>{text.slice(i + 2, end)}</strong>);
+        i = end + 2;
+        continue;
+      }
+    }
+    if (text[i] === '*' && text[i + 1] !== '*') {
+      const end = text.indexOf('*', i + 1);
+      if (end !== -1) {
+        flush();
+        parts.push(<em key={key++}>{text.slice(i + 1, end)}</em>);
+        i = end + 1;
+        continue;
+      }
+    }
+    buffer += text[i];
+    i++;
+  }
+  flush();
+  return parts;
+};
 
-\`\`\`dockerfile
-# Multi-stage build keeps it lean
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+const renderContent = (content: string): React.ReactNode => {
+  if (!content) return null;
 
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-\`\`\`
+  // Split into code blocks vs other content
+  const sections = content.split(/(```[\s\S]*?```)/);
 
-Is it overkill for a personal site? Probably. But it works and I learned a lot watching it come together.
+  return sections.map((section, index) => {
+    const codeMatch = section.match(/```(\w+)?\n([\s\S]*?)```/);
+    if (codeMatch) {
+      const lang = codeMatch[1] || 'text';
+      const code = codeMatch[2].trimEnd();
+      return <CodeBlock key={index} lang={lang} code={code} />;
+    }
 
-## The process
+    if (!section.trim()) return null;
 
-Started simple: "clean portfolio, show my experience."
+    // Process line by line: headings, lists, paragraphs, hr
+    const lines = section.split('\n');
+    const elements: React.ReactNode[] = [];
+    let listBuf: string[] = [];
+    let listType: 'ul' | 'ol' | null = null;
 
-Then came the additions. Terminal component. Blog section. Animated stats. Matrix background. Glowing buttons. Custom favicon. 
+    const flushList = () => {
+      if (listBuf.length === 0) return;
+      const items = listBuf.map((l, k) => <li key={k}>{renderInline(l)}</li>);
+      elements.push(
+        listType === 'ol' ? (
+          <ol key={`list-${elements.length}`}>{items}</ol>
+        ) : (
+          <ul key={`list-${elements.length}`}>{items}</ul>
+        )
+      );
+      listBuf = [];
+      listType = null;
+    };
 
-And yeah, I kept changing my mind. "Center this. Actually move it left. No wait, center it again." You know how it goes.
+    for (let li = 0; li < lines.length; li++) {
+      const raw = lines[li];
+      const line = raw.trimEnd();
 
-The AI just kept adjusting. No complaints, no "are you sure about this?" Just made the changes.
+      if (!line.trim()) {
+        flushList();
+        continue;
+      }
 
-That's basically the workflow. Describe what you want, review what it builds, iterate.
+      if (line.startsWith('# ')) {
+        flushList();
+        elements.push(<h1 key={`h1-${li}`}>{renderInline(line.slice(2))}</h1>);
+      } else if (line.startsWith('## ')) {
+        flushList();
+        elements.push(<h2 key={`h2-${li}`}>{renderInline(line.slice(3))}</h2>);
+      } else if (line.startsWith('### ')) {
+        flushList();
+        elements.push(<h3 key={`h3-${li}`}>{renderInline(line.slice(4))}</h3>);
+      } else if (line.startsWith('---')) {
+        flushList();
+        elements.push(<hr key={`hr-${li}`} />);
+      } else if (line.match(/^\s*-\s+/)) {
+        if (listType === 'ol') flushList();
+        listType = 'ul';
+        listBuf.push(line.replace(/^\s*-\s+/, ''));
+      } else if (line.match(/^\s*\d+\.\s+/)) {
+        if (listType === 'ul') flushList();
+        listType = 'ol';
+        listBuf.push(line.replace(/^\s*\d+\.\s+/, ''));
+      } else {
+        flushList();
+        elements.push(<p key={`p-${li}`}>{renderInline(line)}</p>);
+      }
+    }
+    flushList();
 
-## What I learned
+    return <div key={index}>{elements}</div>;
+  });
+};
 
-Being specific matters. "Make it pretty" doesn't work. "Add an emerald to blue gradient with blur" does.
-
-Modern web dev has a lot of moving parts. Components, state, animations, routing, Docker, Kubernetes. Watching it all come together was educational.
-
-This isn't about replacing developers. It's about working differently. I focused on what to build and why. The AI handled the how.
-
-Building software is changing. It's becoming more about knowing what you want than knowing every syntax detail.
-
-I spent time on UX decisions, content strategy, architecture choices. The AI wrote TypeScript, configured Docker, organized the CSS.
-
-Is that cheating? I don't think so. It's just using available tools.
-
-## Bottom line
-
-This website has:
-- Go backend (didn't write it)
-- React components (didn't create them)
-- Docker containers (didn't configure them)
-- Kubernetes setup (didn't build it)
-- Cloudflare CDN (okay, I did set that up)
-
-The code is real. The infrastructure works. I just didn't write most of it myself.
-
-\`\`\`yaml
-# Kubernetes deployment (AI generated)
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sujay-frontend
-spec:
-  replicas: 2
-  template:
-    spec:
-      containers:
-      - name: frontend
-        image: sujay-frontend:latest
-        ports:
-        - containerPort: 80
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: frontend-hpa
-spec:
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-\`\`\`
-
-And that's fine. It works, looks decent, shows what I do. How it got built is just an implementation detail.
-
-## Credits
-
-I wrote this blog post. Every word here is mine.
-
-Everything else on the site? Claude coded it. The AI tool in Cursor. It handled all the TypeScript, React, Go, Docker configs, everything.
-
----
-
-If you're wondering if you can do this too? Sure, yeah, you can. This is just how things work now in 2025.
-
-Bugs are probably the AI's fault. Good design choices were definitely mine.
-    `
+const formatDate = (date: string): string => {
+  try {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  } catch {
+    return date;
   }
 };
 
 const BlogPost: React.FC<BlogPostProps> = ({ postId, onBack }) => {
-  const post = blogPosts[postId];
-  
-  // Simple content renderer that doesn't get stuck
-  const renderContent = (content: string) => {
-    if (!content) return null;
-    
-    // Split content into sections
-    const sections = content.split(/(```[\s\S]*?```)/);
-    
-    return sections.map((section, index) => {
-      // Check if this is a code block
-      const codeBlockMatch = section.match(/```(\w+)?\n([\s\S]*?)```/);
-      
-      if (codeBlockMatch) {
-        const lang = codeBlockMatch[1] || 'python';
-        const code = codeBlockMatch[2].trim();
-        
-        return (
-          <div key={index} className="code-block my-6 rounded-xl border overflow-hidden">
-            <div className="code-block-header px-4 py-2 border-b flex items-center justify-between bg-gray-50 dark:bg-gray-800">
-              <div className="language-selector flex items-center space-x-2">
-                <div className="lang-indicator flex items-center space-x-2 px-2 py-1 rounded text-xs font-medium bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200">
-                  <span className="lang-icon">
-                    {lang === 'python' ? '🐍' : lang === 'c' ? '⚡' : lang === 'cpp' ? '🔧' : lang === 'go' ? '🚀' : lang === 'bash' ? '💻' : lang === 'yaml' ? '📋' : '📄'}
-                  </span>
-                  <span className="lang-name">{lang.toUpperCase()}</span>
-                </div>
-              </div>
-              <div className="code-actions flex items-center space-x-2">
-                <button 
-                  className="action-btn copy-btn p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  onClick={() => {
-                    navigator.clipboard.writeText(code);
-                    const btn = event?.target as HTMLElement;
-                    if (btn) {
-                      const originalHTML = btn.innerHTML;
-                      btn.innerHTML = '✓';
-                      btn.classList.add('text-green-600');
-                      setTimeout(() => {
-                        btn.innerHTML = originalHTML;
-                        btn.classList.remove('text-green-600');
-                      }, 2000);
-                    }
-                  }}
-                  title="Copy code"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                  </svg>
-                </button>
-                <button 
-                  className="action-btn expand-btn p-2 rounded border hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  onClick={(e) => {
-                    const codeBlock = (e.target as HTMLElement).closest('.code-block');
-                    if (codeBlock) {
-                      codeBlock.classList.toggle('fullscreen');
-                      if (codeBlock.classList.contains('fullscreen')) {
-                        document.body.classList.add('code-fullscreen-active');
-                      } else {
-                        document.body.classList.remove('code-fullscreen-active');
-                      }
-                    }
-                  }}
-                  title="Expand"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="code-block-content overflow-x-auto">
-              <pre className="p-4 m-0 bg-gray-50 dark:bg-gray-900">
-                <code className={`language-${lang} text-sm`}>
-                  {code.split('\n').map((line, lineIndex) => (
-                    <div key={lineIndex} className="code-line flex">
-                      <span className="line-number w-12 text-right pr-4 text-gray-500 select-none border-r border-gray-200 dark:border-gray-700">
-                        {lineIndex + 1}
-                      </span>
-                      <span className="line-content pl-4 flex-1">{line || ' '}</span>
-                    </div>
-                  ))}
-                </code>
-              </pre>
-            </div>
-          </div>
-        );
-      }
-      
-      // Regular text content
-      if (section.trim()) {
-        return (
-          <div key={index} className="mb-4">
-            {section.split('\n').map((line, lineIndex) => {
-              if (!line.trim()) return <br key={lineIndex} />;
-              
-              // Handle headers
-              if (line.startsWith('# ')) {
-                return <h1 key={lineIndex} className="text-3xl font-bold text-gray-900 dark:text-white mt-12 mb-6">{line.substring(2)}</h1>;
-              }
-              if (line.startsWith('## ')) {
-                return <h2 key={lineIndex} className="text-2xl font-bold text-gray-900 dark:text-white mt-10 mb-4">{line.substring(3)}</h2>;
-              }
-              if (line.startsWith('### ')) {
-                return <h3 key={lineIndex} className="text-xl font-bold text-emerald-400 mt-8 mb-3">{line.substring(4)}</h3>;
-              }
-              
-              // Handle bold text
-              if (line.includes('**')) {
-                const processedLine = line
-                  .replace(/\*\*(.+?)\*\*/g, '<strong class="text-gray-900 dark:text-white">$1</strong>')
-                  .replace(/\*(.+?)\*/g, '<em class="text-emerald-700 dark:text-emerald-300">$1</em>');
-                return <p key={lineIndex} className="mb-4" dangerouslySetInnerHTML={{ __html: processedLine }} />;
-              }
-              
-              // Handle inline code
-              if (line.includes('`')) {
-                const processedLine = line.replace(/`([^`]+)`/g, '<code class="inline-code bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono">$1</code>');
-                return <p key={lineIndex} className="mb-4" dangerouslySetInnerHTML={{ __html: processedLine }} />;
-              }
-              
-              // Regular paragraph
-              return <p key={lineIndex} className="mb-4 text-gray-700 dark:text-gray-300">{line}</p>;
-            })}
-          </div>
-        );
-      }
-      
-      return null;
-      });
-    };
+  const [copied, setCopied] = useState(false);
+  const [readProgress, setReadProgress] = useState(0);
 
-  React.useEffect(() => {
-    // Add keyboard support for fullscreen mode
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        const fullscreenBlock = document.querySelector('.code-block.fullscreen');
-        if (fullscreenBlock) {
-          fullscreenBlock.classList.remove('fullscreen');
-          document.body.classList.remove('code-fullscreen-active');
-        }
-      }
+  const post = samplePosts.find((p) => p.slug === postId);
+
+  // Reading progress bar
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setReadProgress(docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0);
     };
-    
-    document.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.classList.remove('code-fullscreen-active');
-    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
-  
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [postId]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    });
+  };
+
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen grid place-items-center px-6">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Post Not Found</h1>
-          <Button onClick={onBack} variant="cyber">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Blog
+          <h1 className="font-display text-3xl font-semibold text-foreground">
+            Post not found
+          </h1>
+          <p className="mt-3 text-foreground-muted">
+            We couldn't find that article.
+          </p>
+          <Button onClick={onBack} variant="outline" className="mt-6">
+            <ArrowLeft className="w-4 h-4" />
+            Back to writing
           </Button>
         </div>
       </div>
     );
   }
 
+  const shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(window.location.href)}`;
+  const shareLinkedIn = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+
   return (
-    <div className="min-h-screen py-8">
-      <div className="container mx-auto px-6 max-w-4xl">
-        {/* Back Button */}
-        <Button 
-          onClick={onBack} 
-          variant="ghost" 
-          className="mb-8 text-emerald-400 hover:text-emerald-300"
+    <div className="relative">
+      {/* Reading progress */}
+      <div
+        className="fixed top-16 left-0 right-0 h-px z-30"
+        style={{
+          background: `linear-gradient(to right, hsl(var(--primary)) ${readProgress}%, transparent ${readProgress}%)`,
+        }}
+        aria-hidden="true"
+      />
+
+      <article className="container max-w-3xl py-12 md:py-16">
+        {/* Back link */}
+        <Button
+          onClick={onBack}
+          variant="ghost"
+          size="sm"
+          className="mb-10 -ml-3"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Blog
+          <ArrowLeft className="w-4 h-4" />
+          Back to writing
         </Button>
 
-        {/* Article Header */}
+        {/* Header */}
         <motion.header
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mb-12"
         >
-          <div className="mb-6">
-            <span className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full text-xs font-semibold text-white">
-              {post.category}
-            </span>
+          <div className="flex items-center gap-2">
+            <span className="chip chip-primary">{post.category}</span>
+            <span className="text-foreground-subtle text-xs">·</span>
+            <span className="label-mono text-[10px]">{post.readTime}</span>
           </div>
-          
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+          <h1 className="mt-5 font-display text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tightest text-foreground leading-[1.05] text-balance">
             {post.title}
           </h1>
-          
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+          <p className="mt-6 text-lg md:text-xl text-foreground-muted leading-relaxed text-pretty">
             {post.summary}
           </p>
-          
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-emerald-400 to-blue-400 rounded-full flex items-center justify-center text-lg font-bold">
+
+          <div className="mt-10 pb-8 border-b border-border-subtle flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="grid place-items-center w-10 h-10 rounded-full bg-foreground text-background font-mono font-bold">
                 {post.author.name.charAt(0)}
               </div>
               <div>
-                <div className="text-gray-900 dark:text-white font-medium">{post.author.name}</div>
-                <div className="text-gray-500 dark:text-gray-400 text-sm">{post.date} • {post.readTime}</div>
+                <div className="text-foreground font-medium text-sm">
+                  {post.author.name}
+                </div>
+                <div className="text-xs text-foreground-muted">
+                  {formatDate(post.date)}
+                </div>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-gray-400 hover:text-emerald-400"
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  // Show feedback
-                  const btn = document.activeElement as HTMLElement;
 
-                  btn.textContent = 'Copied!';
-                  setTimeout(() => {
-                    btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path></svg>';
-                  }, 2000);
-                }}
+            <div className="flex items-center gap-1">
+              <a
+                href={shareTwitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on X"
+                className="grid place-items-center w-9 h-9 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-subtle transition-colors"
               >
-                <Share2 className="w-5 h-5" />
-              </Button>
+                <Twitter className="w-4 h-4" strokeWidth={1.75} />
+              </a>
+              <a
+                href={shareLinkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on LinkedIn"
+                className="grid place-items-center w-9 h-9 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-subtle transition-colors"
+              >
+                <Linkedin className="w-4 h-4" strokeWidth={1.75} />
+              </a>
+              <button
+                onClick={handleCopy}
+                aria-label="Copy link"
+                className="grid place-items-center w-9 h-9 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-subtle transition-colors"
+              >
+                {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" strokeWidth={1.75} />}
+              </button>
             </div>
           </div>
         </motion.header>
 
-        {/* Article Content */}
-        <motion.article
-          initial={{ opacity: 0, y: 20 }}
+        {/* Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="prose prose-emerald max-w-none blog-content dark:prose-invert"
+          transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          className="prose-sujay"
         >
-          {renderContent(post.content)}
-        </motion.article>
+          {renderContent(post.content || '')}
+        </motion.div>
 
-        {/* Article Footer */}
+        {/* Footer */}
         <motion.footer
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-16 pt-8 border-t border-gray-200 dark:border-white/10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-16 pt-10 border-t border-border-subtle"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-600 dark:text-gray-400">Share this article:</span>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-blue-400">
-                Twitter
-              </Button>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-blue-600">
-                LinkedIn
-              </Button>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-orange-500">
-                Reddit
-              </Button>
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div>
+              <div className="label-mono text-[10px] mb-2">Share</div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={shareTwitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 h-9 rounded-lg border border-border-subtle bg-background-subtle text-sm text-foreground-muted hover:text-foreground hover:border-border transition-colors"
+                >
+                  <Twitter className="w-4 h-4" /> X
+                </a>
+                <a
+                  href={shareLinkedIn}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 h-9 rounded-lg border border-border-subtle bg-background-subtle text-sm text-foreground-muted hover:text-foreground hover:border-border transition-colors"
+                >
+                  <Linkedin className="w-4 h-4" /> LinkedIn
+                </a>
+                <button
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-2 px-3 h-9 rounded-lg border border-border-subtle bg-background-subtle text-sm text-foreground-muted hover:text-foreground hover:border-border transition-colors"
+                >
+                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {copied ? 'Copied' : 'Copy link'}
+                </button>
+              </div>
             </div>
-            
-            <Button onClick={onBack} variant="cyber">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Blog
+
+            <Button onClick={onBack} variant="outline">
+              <ArrowLeft className="w-4 h-4" />
+              All writing
             </Button>
           </div>
         </motion.footer>
-      </div>
+      </article>
     </div>
   );
 };

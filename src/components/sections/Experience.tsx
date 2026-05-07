@@ -1,171 +1,144 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { Building2, Calendar } from 'lucide-react';
+import { MapPin, ExternalLink } from 'lucide-react';
+import Section from '@/components/ui/Section';
+import { fadeUp, fadeUpStagger, item, inViewProps } from '@/lib/motion';
+
+interface Job {
+  company: string;
+  role: string;
+  duration: string;
+  location: string;
+  description: string;
+  technologies: string[];
+  href?: string;
+}
+
+const EXPERIENCES: Job[] = [
+  {
+    company: 'Arista Networks',
+    role: 'Technical Solutions Engineer',
+    duration: '2025 — Present',
+    location: 'San Francisco, CA',
+    description:
+      'Debugging large-scale network topologies and partnering with hyperscaler customers on EOS-based fabric design, performance, and rollout.',
+    technologies: ['EOS', 'BGP / EVPN', 'RoCE', 'Network Topology', 'Performance'],
+    href: 'https://www.arista.com',
+  },
+  {
+    company: 'xAI',
+    role: 'Supercompute Network Engineer',
+    duration: '2024 — 2025',
+    location: 'Memphis, TN',
+    description:
+      'Core contributor to the 200k-GPU supercompute powering Grok 3 training. Owned network reliability through pre-training so multi-week jobs ran clean.',
+    technologies: ['200k GPUs', 'Distributed Training', 'NCCL', 'InfiniBand', 'Reliability'],
+    href: 'https://x.ai',
+  },
+  {
+    company: 'Tesla',
+    role: 'Software Engineering Intern',
+    duration: '2023 — 2024',
+    location: 'Austin, TX',
+    description:
+      'Built internal tooling on a fast-moving software team. Got hands-on with large-scale systems and shipping software at Tesla velocity.',
+    technologies: ['Python', 'Internal Tooling', 'Systems', 'Velocity'],
+    href: 'https://www.tesla.com',
+  },
+  {
+    company: 'Lenovo',
+    role: 'Security Software Engineering Intern',
+    duration: '2022 — 2023',
+    location: 'Morrisville, NC',
+    description:
+      'Built features for the Global Security Lab, developing security tooling and services across Lenovo product lines.',
+    technologies: ['NestJS', 'TypeScript', 'Security', 'Web Services'],
+    href: 'https://www.lenovo.com',
+  },
+];
 
 const Experience: React.FC = () => {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
-  const experiences = [
-    {
-      company: 'Arista Networks',
-      role: 'Technical Solutions Engineer',
-      duration: '2025 - Present',
-      location: 'San Francisco, California',
-      description: 'Currently working as a technical solutions engineer debugging network topologies and providing expertise in network infrastructure solutions.',
-      technologies: ['Network Topologies', 'Technical Solutions', 'Debugging', 'Arista EOS', 'Network Infrastructure'],
-      logo: ''
-    },
-    {
-      company: 'xAI',
-      role: 'Supercompute Network Engineer',
-      duration: '2024 - 2025',
-      location: 'Memphis, Tennessee',
-      description: 'Core contributor from start to end of the Grok 3\'s supercompute 200k GPU infrastructure, ensuring that pre-training was smooth without breaking the training jobs.',
-      technologies: ['GPU Infrastructure', 'Supercomputing', 'Network Engineering', 'Training Jobs', 'Pre-training'],
-      logo: ''
-    },
-    {
-      company: 'Tesla',
-      role: 'Software Engineering Intern',
-      duration: '2023 - 2024',
-      location: 'Austin, Texas',
-      description: 'Software engineering intern working on various software projects and gaining experience in large-scale software development.',
-      technologies: ['Software Engineering', 'Software Development', 'Internship', 'Tesla', 'Large-scale Systems'],
-      logo: ''
-    },
-    {
-      company: 'Lenovo',
-      role: 'Security Software Engineering Intern',
-      duration: '2022 - 2023',
-      location: 'Morrisville, North Carolina',
-      description: 'Worked on Global Security Lab for Lenovo Products, developing security solutions using modern web technologies.',
-      technologies: ['Security Engineering', 'Global Security Lab', 'NestJS', 'Software Development', 'Lenovo Products'],
-      logo: ''
-    }
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { x: -50, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
-
   return (
-    <section className="py-20 relative" ref={ref}>
-      <div className="container mx-auto px-6">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="text-gradient">Experience</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Building the future of AI infrastructure at the world's leading tech companies
-          </p>
-        </motion.div>
+    <Section
+      id="experience"
+      eyebrow="Experience"
+      title="A short tour of where I've shipped."
+      subtitle="From security tooling at Lenovo, to building the network underneath one of the world's largest GPU clusters at xAI, to debugging hyperscaler fabrics at Arista today."
+    >
+      <motion.ol
+        {...inViewProps}
+        variants={fadeUpStagger(0, 0.1)}
+        className="relative space-y-3"
+      >
+        {/* Vertical line */}
+        <div
+          aria-hidden="true"
+          className="absolute left-[7px] top-3 bottom-3 w-px bg-gradient-to-b from-border via-border to-transparent"
+        />
 
-        {/* Timeline */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          className="relative"
-        >
-          {/* Timeline line */}
-          <div className="absolute left-4 md:left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500 via-blue-500 to-purple-500" />
+        {EXPERIENCES.map((exp, i) => (
+          <motion.li
+            key={`${exp.company}-${i}`}
+            variants={item}
+            className="relative pl-10 group"
+          >
+            {/* Dot */}
+            <span className="absolute left-0 top-7 grid place-items-center w-[15px] h-[15px]">
+              <span className="absolute inset-0 rounded-full bg-background-elevated border border-border" />
+              <span className="relative w-1.5 h-1.5 rounded-full bg-foreground-muted group-hover:bg-primary transition-colors" />
+              {i === 0 && (
+                <span className="absolute inset-0 rounded-full bg-primary/30 animate-ping-soft" />
+              )}
+            </span>
 
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="relative flex items-start mb-12 last:mb-0"
-            >
-              {/* Timeline dot */}
-              <div className="absolute left-2.5 md:left-6 w-4 h-4 rounded-full bg-emerald-500 border-4 border-background z-10 shadow-lg">
-                <div className="absolute inset-0 rounded-full bg-emerald-500 animate-ping opacity-20" />
-              </div>
-
-              {/* Content card */}
-              <div className="ml-12 md:ml-20 w-full">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="card-blur rounded-lg p-6 group cursor-pointer"
-                >
-                  {/* Header */}
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-gradient transition-all duration-300">
-                        {exp.role}
-                      </h3>
-                      <div className="flex items-center text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-                        <Building2 className="w-4 h-4 mr-2" />
-                        {exp.company}
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {exp.location}
-                      </div>
-                    </div>
-                    <div className="flex flex-col lg:items-end text-sm text-gray-500 dark:text-gray-400 mt-2 lg:mt-0">
-                      <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {exp.duration}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <div className="mb-4">
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {exp.description}
-                    </p>
-                  </div>
-
-                  {/* Tech stack */}
-                  <div className="flex flex-wrap gap-2">
-                    {exp.technologies.map((tech, techIndex) => (
-                      <span
-                        key={techIndex}
-                        className="px-3 py-1 text-xs bg-emerald-500/20 text-emerald-400 rounded-full border border-emerald-500/30 group-hover:border-emerald-500/60 transition-colors duration-300"
+            {/* Card */}
+            <div className="surface surface-hover p-6 md:p-7 transition-transform duration-300 group-hover:-translate-y-0.5">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-display font-semibold text-lg md:text-xl text-foreground tracking-tight">
+                      {exp.role}
+                    </h3>
+                    <span className="text-foreground-subtle">·</span>
+                    {exp.href ? (
+                      <a
+                        href={exp.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-foreground-muted hover:text-foreground transition-colors group/link"
                       >
-                        {tech}
-                      </span>
-                    ))}
+                        <span className="font-medium">{exp.company}</span>
+                        <ExternalLink className="w-3 h-3 opacity-0 group-hover/link:opacity-100 transition-opacity" />
+                      </a>
+                    ) : (
+                      <span className="text-foreground-muted font-medium">{exp.company}</span>
+                    )}
                   </div>
-
-                  {/* Hover effect overlay */}
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                </motion.div>
+                  <div className="mt-1 flex items-center gap-3 text-xs text-foreground-subtle">
+                    <span className="inline-flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> {exp.location}
+                    </span>
+                  </div>
+                </div>
+                <div className="label-mono text-[10px] md:mt-1 shrink-0">{exp.duration}</div>
               </div>
-            </motion.div>
-          ))}
-        </motion.div>
 
-      </div>
-    </section>
+              <p className="mt-4 text-foreground-muted leading-relaxed text-pretty">
+                {exp.description}
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-1.5">
+                {exp.technologies.map((t) => (
+                  <span key={t} className="chip">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </motion.li>
+        ))}
+      </motion.ol>
+    </Section>
   );
 };
 
