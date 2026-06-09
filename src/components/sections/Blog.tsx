@@ -240,6 +240,7 @@ const Blog: React.FC = () => {
             </div>
             <div className="flex md:justify-end">
               <Button
+                variant="primary"
                 size="lg"
                 onClick={() => setShowSubscribeModal(true)}
                 className="group"

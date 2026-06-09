@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -6,86 +7,90 @@
 @tailwind utilities;
 
 /* ======================================================================
-   Design tokens — Linear/Vercel-inspired, restrained palette
+   Design tokens — Claude/Anthropic design language
+   Warm paper surfaces, clay accent, serif display type.
+   Light: ivory #FAF9F5 / #F0EEE6, ink #141413
+   Dark:  warm charcoal #1E1D1C / #262524, warm ivory text
+   Accent: Clay / Book Cloth (#D97757 / #CC785C)
    ====================================================================== */
 :root {
-  /* Surfaces */
-  --background: 0 0% 100%;
-  --background-subtle: 240 5% 98%;
-  --background-elevated: 0 0% 100%;
+  /* Surfaces — warm paper */
+  --background: 48 33% 97%;
+  --background-subtle: 48 25% 92%;
+  --background-elevated: 48 40% 99%;
 
-  /* Foreground */
-  --foreground: 240 10% 4%;
-  --foreground-muted: 240 4% 46%;
-  --foreground-subtle: 240 4% 64%;
+  /* Foreground — warm ink */
+  --foreground: 60 3% 8%;
+  --foreground-muted: 50 4% 40%;
+  --foreground-subtle: 50 4% 56%;
 
-  /* Borders */
-  --border: 240 6% 90%;
-  --border-subtle: 240 6% 95%;
-  --input: 240 6% 90%;
+  /* Borders — warm gray */
+  --border: 46 12% 85%;
+  --border-subtle: 47 15% 90%;
+  --input: 46 12% 85%;
 
-  /* Accent — refined indigo/violet (single accent system) */
-  --primary: 244 75% 60%;
-  --primary-foreground: 0 0% 100%;
-  --primary-subtle: 244 75% 96%;
+  /* Accent — clay / book cloth */
+  --primary: 15 58% 55%;
+  --primary-foreground: 48 33% 99%;
+  --primary-subtle: 17 50% 93%;
 
   /* Semantic */
-  --success: 142 70% 45%;
-  --destructive: 0 75% 55%;
-  --destructive-foreground: 0 0% 100%;
+  --success: 145 45% 38%;
+  --destructive: 5 65% 50%;
+  --destructive-foreground: 48 33% 99%;
 
   /* shadcn parity */
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 4%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 4%;
-  --secondary: 240 5% 96%;
-  --secondary-foreground: 240 10% 12%;
-  --muted: 240 5% 96%;
-  --muted-foreground: 240 4% 46%;
-  --accent: 244 75% 96%;
-  --accent-foreground: 244 75% 35%;
-  --ring: 244 75% 60%;
+  --card: 48 40% 99%;
+  --card-foreground: 60 3% 8%;
+  --popover: 48 40% 99%;
+  --popover-foreground: 60 3% 8%;
+  --secondary: 48 25% 92%;
+  --secondary-foreground: 60 3% 12%;
+  --muted: 48 25% 92%;
+  --muted-foreground: 50 4% 40%;
+  --accent: 17 50% 93%;
+  --accent-foreground: 15 55% 36%;
+  --ring: 15 58% 55%;
   --radius: 0.75rem;
 }
 
 .dark {
-  /* Surfaces — near-black, layered */
-  --background: 240 10% 4%;
-  --background-subtle: 240 8% 7%;
-  --background-elevated: 240 8% 9%;
+  /* Surfaces — warm charcoal, never pure black */
+  --background: 40 3% 11%;
+  --background-subtle: 42 4% 14%;
+  --background-elevated: 42 4% 16%;
 
-  /* Foreground */
-  --foreground: 0 0% 98%;
-  --foreground-muted: 240 5% 64%;
-  --foreground-subtle: 240 5% 46%;
+  /* Foreground — warm ivory */
+  --foreground: 48 25% 94%;
+  --foreground-muted: 45 7% 64%;
+  --foreground-subtle: 45 5% 47%;
 
   /* Borders */
-  --border: 240 5% 15%;
-  --border-subtle: 240 5% 12%;
-  --input: 240 5% 15%;
+  --border: 44 5% 23%;
+  --border-subtle: 44 5% 18%;
+  --input: 44 5% 23%;
 
-  /* Accent */
-  --primary: 244 90% 70%;
-  --primary-foreground: 240 10% 4%;
-  --primary-subtle: 244 50% 16%;
+  /* Accent — clay, slightly brighter for dark surfaces */
+  --primary: 17 62% 64%;
+  --primary-foreground: 40 5% 10%;
+  --primary-subtle: 16 30% 19%;
 
   /* Semantic */
-  --success: 142 70% 55%;
-  --destructive: 0 70% 60%;
-  --destructive-foreground: 0 0% 100%;
+  --success: 145 42% 52%;
+  --destructive: 5 62% 58%;
+  --destructive-foreground: 48 33% 97%;
 
-  --card: 240 8% 7%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 8% 9%;
-  --popover-foreground: 0 0% 98%;
-  --secondary: 240 5% 12%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 5% 12%;
-  --muted-foreground: 240 5% 64%;
-  --accent: 244 50% 16%;
-  --accent-foreground: 244 90% 80%;
-  --ring: 244 90% 70%;
+  --card: 42 4% 14%;
+  --card-foreground: 48 25% 94%;
+  --popover: 42 4% 16%;
+  --popover-foreground: 48 25% 94%;
+  --secondary: 44 5% 18%;
+  --secondary-foreground: 48 25% 94%;
+  --muted: 44 5% 18%;
+  --muted-foreground: 45 7% 64%;
+  --accent: 16 30% 19%;
+  --accent-foreground: 18 60% 76%;
+  --ring: 17 62% 64%;
 }
 
 /* ======================================================================
@@ -105,7 +110,7 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01", "ss03";
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     overscroll-behavior-y: none;
     -webkit-tap-highlight-color: transparent;
     -webkit-overflow-scrolling: touch;
@@ -117,15 +122,15 @@
     width: 100%;
   }
 
-  /* Selection */
+  /* Selection — clay wash */
   ::selection {
-    background: hsl(var(--primary) / 0.25);
+    background: hsl(var(--primary) / 0.28);
     color: hsl(var(--foreground));
   }
 
   /* Focus ring */
   :focus-visible {
-    outline: 2px solid hsl(var(--primary) / 0.5);
+    outline: 2px solid hsl(var(--primary) / 0.55);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -172,30 +177,31 @@
 
   /* Eyebrow — small uppercase label above section headings */
   .eyebrow {
-    @apply inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-foreground-muted;
+    @apply inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-primary dark:text-[hsl(var(--accent-foreground))];
   }
 
   .eyebrow::before {
     content: "";
-    @apply inline-block w-6 h-px bg-foreground-muted/60;
+    @apply inline-block w-6 h-px bg-primary/60;
   }
 
-  /* Section heading */
+  /* Section heading — serif display, the Claude signature */
   .section-title {
-    @apply text-4xl md:text-5xl lg:text-6xl font-display font-semibold tracking-tightest text-foreground;
+    @apply text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-tight text-foreground;
   }
 
   .section-subtitle {
-    @apply mt-4 text-lg md:text-xl text-foreground-muted max-w-2xl leading-relaxed;
+    @apply mt-5 text-lg md:text-xl text-foreground-muted max-w-2xl leading-relaxed;
   }
 
-  /* Card — refined surface */
+  /* Card — refined paper surface */
   .surface {
     @apply rounded-xl border border-border bg-background-elevated transition-colors duration-300;
+    box-shadow: 0 1px 2px hsl(var(--foreground) / 0.03);
   }
 
   .surface-hover {
-    @apply hover:border-foreground/20 dark:hover:border-foreground/30;
+    @apply hover:border-foreground/25;
   }
 
   /* Glass — subtle, no heavy blur */
@@ -203,7 +209,6 @@
     @apply backdrop-blur-xl bg-background/70 border border-border-subtle;
   }
 
-  /* Subtle gradient text — used SPARINGLY (only on hero name/key headings) */
   .text-balance {
     text-wrap: balance;
   }
@@ -220,7 +225,7 @@
   }
 
   .chip-primary {
-    @apply bg-primary-subtle border-primary/20 text-primary dark:text-[hsl(var(--accent-foreground))];
+    @apply bg-primary-subtle border-primary/25 text-[hsl(var(--accent-foreground))];
   }
 
   /* Link — animated underline */
@@ -257,7 +262,7 @@
     border-radius: inherit;
     background: radial-gradient(
       400px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
-      hsl(var(--primary) / 0.12),
+      hsl(var(--primary) / 0.1),
       transparent 40%
     );
     opacity: 0;
@@ -267,23 +272,6 @@
   }
   .spotlight:hover::before {
     opacity: 1;
-  }
-
-  /* Animated dotted/grid background — subtle, light/dark aware */
-  .grid-bg {
-    background-image: var(--grid-image);
-    background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 90%);
-  }
-
-  :root {
-    --grid-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
-  }
-
-  .dark {
-    --grid-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
   }
 
   /* Input — refined */
@@ -308,11 +296,11 @@
     position: absolute;
     border-radius: 9999px;
     filter: blur(80px);
-    opacity: 0.55;
+    opacity: 0.45;
     will-change: transform;
   }
   .dark .aurora-blob {
-    opacity: 0.35;
+    opacity: 0.22;
   }
 
   /* Mono label — small uppercase monospace */
@@ -341,9 +329,9 @@
     @apply flex gap-12 animate-marquee whitespace-nowrap;
   }
 
-  /* Gradient brand mark — used ONLY on the hero name */
+  /* Warm brand gradient — clay → kraft. Used ONLY on the hero accent. */
   .gradient-brand {
-    background: linear-gradient(135deg, hsl(244 75% 60%), hsl(280 70% 60%) 50%, hsl(220 90% 60%));
+    background: linear-gradient(120deg, hsl(15 60% 50%), hsl(20 62% 56%) 50%, hsl(28 55% 58%));
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -351,7 +339,7 @@
   }
 
   .dark .gradient-brand {
-    background: linear-gradient(135deg, hsl(244 90% 75%), hsl(280 80% 70%) 50%, hsl(220 90% 75%));
+    background: linear-gradient(120deg, hsl(17 70% 68%), hsl(24 65% 68%) 50%, hsl(32 60% 72%));
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -372,21 +360,21 @@
     scrollbar-width: none;
   }
 
-  /* Prose tweaks for blog reader */
+  /* Prose tweaks for blog reader — serif headings, readable body */
   .prose-sujay {
     @apply max-w-none;
   }
   .prose-sujay h1 {
-    @apply text-4xl md:text-5xl font-display font-semibold tracking-extra-tight text-foreground mt-12 mb-6 first:mt-0;
+    @apply text-4xl md:text-5xl font-display font-medium tracking-tight text-foreground mt-12 mb-6 first:mt-0;
   }
   .prose-sujay h2 {
-    @apply text-2xl md:text-3xl font-display font-semibold tracking-tight text-foreground mt-12 mb-4;
+    @apply text-2xl md:text-3xl font-display font-medium tracking-tight text-foreground mt-12 mb-4;
   }
   .prose-sujay h3 {
-    @apply text-xl md:text-2xl font-display font-semibold text-foreground mt-8 mb-3;
+    @apply text-xl md:text-2xl font-display font-medium text-foreground mt-8 mb-3;
   }
   .prose-sujay p {
-    @apply text-[1.0625rem] leading-[1.75] text-foreground/85 mb-5;
+    @apply text-[1.0625rem] leading-[1.8] text-foreground/85 mb-5;
   }
   .prose-sujay strong {
     @apply text-foreground font-semibold;
@@ -410,12 +398,12 @@
     @apply my-12 border-border;
   }
   .prose-sujay blockquote {
-    @apply border-l-2 border-primary/40 pl-5 italic text-foreground-muted my-6;
+    @apply border-l-2 border-primary/50 pl-5 italic font-display text-foreground-muted my-6;
   }
 }
 
 /* ======================================================================
-   Code block (used in BlogPost) — dark-only styling for elegance
+   Code block (used in BlogPost)
    ====================================================================== */
 .code-block {
   @apply font-mono text-sm rounded-xl border border-border overflow-hidden bg-background-subtle my-8;

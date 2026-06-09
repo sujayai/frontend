@@ -46,7 +46,7 @@ const FeaturedBlog: React.FC = () => {
               className="absolute inset-0 opacity-90 animate-aurora bg-[length:200%_200%]"
               style={{
                 backgroundImage:
-                  'linear-gradient(135deg, hsl(244 75% 60%), hsl(280 70% 60%), hsl(220 90% 60%), hsl(244 75% 60%))',
+                  'linear-gradient(135deg, hsl(15 58% 52%), hsl(25 55% 60%), hsl(38 50% 68%), hsl(15 58% 52%))',
               }}
             />
             <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
@@ -93,7 +93,7 @@ const FeaturedBlog: React.FC = () => {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button onClick={handleOpen} size="default" className="group">
+            <Button onClick={handleOpen} variant="primary" size="default" className="group">
               Read article
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </Button>

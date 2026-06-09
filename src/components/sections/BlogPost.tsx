@@ -284,7 +284,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ postId, onBack }) => {
             <span className="text-foreground-subtle text-xs">·</span>
             <span className="label-mono text-[10px]">{post.readTime}</span>
           </div>
-          <h1 className="mt-5 font-display text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tightest text-foreground leading-[1.05] text-balance">
+          <h1 className="mt-5 font-display text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-foreground leading-[1.1] text-balance">
             {post.title}
           </h1>
           <p className="mt-6 text-lg md:text-xl text-foreground-muted leading-relaxed text-pretty">

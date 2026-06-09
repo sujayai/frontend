@@ -2,6 +2,7 @@ import React from 'react';
 
 /**
  * Decorative drifting blurred blobs — sits behind hero / page header.
+ * Anthropic-warm palette: clay, kraft, manilla.
  * Pure CSS animation; no JS work per frame.
  */
 const Aurora: React.FC<{ className?: string }> = ({ className = '' }) => {
@@ -14,7 +15,7 @@ const Aurora: React.FC<{ className?: string }> = ({ className = '' }) => {
           top: '0%',
           width: 520,
           height: 520,
-          background: 'radial-gradient(circle at 30% 30%, hsl(244 90% 70%), transparent 60%)',
+          background: 'radial-gradient(circle at 30% 30%, hsl(15 63% 60%), transparent 60%)',
           animationDelay: '0s',
         }}
       />
@@ -25,7 +26,7 @@ const Aurora: React.FC<{ className?: string }> = ({ className = '' }) => {
           top: '10%',
           width: 600,
           height: 600,
-          background: 'radial-gradient(circle at 70% 30%, hsl(280 80% 65%), transparent 60%)',
+          background: 'radial-gradient(circle at 70% 30%, hsl(25 50% 66%), transparent 60%)',
           animationDelay: '-6s',
         }}
       />
@@ -36,7 +37,7 @@ const Aurora: React.FC<{ className?: string }> = ({ className = '' }) => {
           top: '-10%',
           width: 480,
           height: 480,
-          background: 'radial-gradient(circle at 50% 50%, hsl(220 90% 65%), transparent 60%)',
+          background: 'radial-gradient(circle at 50% 50%, hsl(40 54% 78%), transparent 60%)',
           animationDelay: '-12s',
         }}
       />

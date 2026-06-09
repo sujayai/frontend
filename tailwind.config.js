@@ -117,7 +117,9 @@ export default {
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        display: ["Inter", "system-ui", "sans-serif"],
+        // Display = bookish serif, the Claude/Anthropic signature (Tiempos-style)
+        display: ['"Source Serif 4"', "Georgia", "Cambria", "serif"],
+        serif: ['"Source Serif 4"', "Georgia", "Cambria", "serif"],
         mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       letterSpacing: {

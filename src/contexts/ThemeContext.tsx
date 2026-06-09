@@ -45,10 +45,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
     
-    // Update meta theme-color for mobile browsers
+    // Update meta theme-color for mobile browsers (warm charcoal / ivory)
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', theme === 'dark' ? '#000000' : '#ffffff');
+      metaThemeColor.setAttribute('content', theme === 'dark' ? '#1E1D1C' : '#FAF9F5');
     }
   }, [theme]);
 

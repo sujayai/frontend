@@ -226,10 +226,11 @@ const Terminal: React.FC = () => {
     >
       {/* Title bar */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle bg-background-subtle/50">
+        {/* Window dots in the Anthropic palette: clay, kraft, manilla */}
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-foreground/15" />
-          <span className="w-2.5 h-2.5 rounded-full bg-foreground/15" />
-          <span className="w-2.5 h-2.5 rounded-full bg-foreground/15" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[hsl(15,63%,60%)]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[hsl(25,50%,66%)]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[hsl(40,54%,76%)]" />
         </div>
         <span className="label-mono text-[10px]">{profile.handle}</span>
         <span className="w-12" />

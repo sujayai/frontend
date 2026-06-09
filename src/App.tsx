@@ -95,10 +95,10 @@ function Shell() {
             className="group inline-flex items-center gap-2 text-foreground"
             aria-label="Home"
           >
-            <span className="grid place-items-center w-8 h-8 rounded-lg bg-foreground text-background font-mono text-sm font-bold tracking-tight">
+            <span className="grid place-items-center w-8 h-8 rounded-lg bg-primary text-primary-foreground font-display italic text-base font-semibold">
               s
             </span>
-            <span className="font-display text-base font-semibold tracking-tight">
+            <span className="font-display text-lg font-medium tracking-tight">
               sujay<span className="text-foreground-muted">.ai</span>
             </span>
           </button>
@@ -251,10 +251,10 @@ function Shell() {
                 onClick={() => switchTab('home')}
                 className="inline-flex items-center gap-2"
               >
-                <span className="grid place-items-center w-7 h-7 rounded-md bg-foreground text-background font-mono text-xs font-bold">
+                <span className="grid place-items-center w-7 h-7 rounded-md bg-primary text-primary-foreground font-display italic text-sm font-semibold">
                   s
                 </span>
-                <span className="font-display text-sm font-semibold tracking-tight">
+                <span className="font-display text-base font-medium tracking-tight">
                   sujay<span className="text-foreground-muted">.ai</span>
                 </span>
               </button>

@@ -65,12 +65,15 @@ const Hero: React.FC = () => {
             {/* Headline */}
             <motion.h1
               variants={item}
-              className="mt-6 font-display font-semibold text-5xl sm:text-6xl lg:text-7xl xl:text-[88px] leading-[1.02] tracking-tightest text-foreground text-balance"
+              className="mt-6 font-display font-medium text-5xl sm:text-6xl lg:text-7xl xl:text-[84px] leading-[1.05] tracking-tight text-foreground text-balance"
             >
               Building the
               <br />
               network fabric for{' '}
-              <span className="gradient-brand whitespace-nowrap">large-scale AI</span>.
+              <em className="gradient-brand not-italic sm:italic whitespace-nowrap">
+                large-scale AI
+              </em>
+              .
             </motion.h1>
 
             {/* Rotating role */}
@@ -115,19 +118,19 @@ const Hero: React.FC = () => {
               className="mt-10 grid grid-cols-3 max-w-md divide-x divide-border"
             >
               <div className="pr-6">
-                <div className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+                <div className="font-display text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
                   200k
                 </div>
                 <div className="mt-1 label-mono text-[10px]">GPUs operated</div>
               </div>
               <div className="px-6">
-                <div className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+                <div className="font-display text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
                   1.5+
                 </div>
                 <div className="mt-1 label-mono text-[10px]">Years industry</div>
               </div>
               <div className="pl-6">
-                <div className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+                <div className="font-display text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
                   M.S.
                 </div>
                 <div className="mt-1 label-mono text-[10px]">NC State</div>
