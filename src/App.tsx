@@ -10,17 +10,12 @@ import Spotlight from './components/effects/Spotlight';
 import { EasterEggsProvider, useEasterEggs } from './components/providers/EasterEggsProvider';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ThemeToggle } from './components/ui/ThemeToggle';
-import { Github, Linkedin, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { cn } from './lib/utils';
 
 const NAV = [
-  { id: 'home', label: 'Home' },
-  { id: 'blog', label: 'Writing' },
-];
-
-const SOCIAL = [
-  { icon: Github, href: 'https://github.com/sujaysreedharg', label: 'GitHub' },
-  { icon: Linkedin, href: 'https://linkedin.com/in/sujaysreedharg', label: 'LinkedIn' },
+  { id: 'home', label: 'Codex' },
+  { id: 'blog', label: 'Folia' },
 ];
 
 function Shell() {
@@ -35,7 +30,6 @@ function Shell() {
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
   };
 
-  // Track scroll for header treatment
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -43,7 +37,6 @@ function Shell() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Custom tab-switch event (used by FeaturedBlog → article deep-link)
   useEffect(() => {
     const handleTabSwitch = (event: Event) => {
       const detail = (event as CustomEvent).detail;
@@ -63,18 +56,16 @@ function Shell() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground antialiased selection:bg-primary/20">
-      {/* Subtle global mouse spotlight */}
+    <div className="relative min-h-screen bg-background text-foreground antialiased">
       <Spotlight />
 
-      {/* Optional turbo glow easter-egg accent */}
       {turboGlow && (
         <div
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-0"
           style={{
             background:
-              'radial-gradient(800px circle at 50% 0%, hsl(var(--primary) / 0.15), transparent 60%)',
+              'radial-gradient(800px circle at 50% 0%, hsl(var(--gold) / 0.18), transparent 60%)',
           }}
         />
       )}
@@ -82,37 +73,37 @@ function Shell() {
       {/* Header */}
       <header
         className={cn(
-          'sticky top-0 z-40 transition-all duration-300',
+          'sticky top-0 z-40 transition-all duration-500',
           scrolled
-            ? 'backdrop-blur-xl bg-background/75 border-b border-border-subtle'
+            ? 'backdrop-blur-xl bg-background/80 border-b border-border-subtle'
             : 'bg-transparent border-b border-transparent'
         )}
       >
-        <div className="container flex items-center justify-between h-16">
-          {/* Logo */}
+        <div className="container flex items-center justify-between h-20">
+          {/* Wordmark — a gold-leaf monogram */}
           <button
             onClick={() => switchTab('home')}
-            className="group inline-flex items-center gap-2 text-foreground"
+            className="group inline-flex items-center gap-3 text-foreground"
             aria-label="Home"
           >
-            <span className="grid place-items-center w-8 h-8 rounded-lg bg-primary text-primary-foreground font-display italic text-base font-semibold">
-              s
+            <span className="grid place-items-center w-9 h-9 rounded-full border border-gold/40">
+              <span className="font-display text-xs uppercase tracking-[0.2em] shimmer">SS</span>
             </span>
-            <span className="font-display text-lg font-medium tracking-tight">
-              sujay<span className="text-foreground-muted">.ai</span>
+            <span className="font-display text-sm uppercase tracking-[0.32em] font-medium">
+              sujay<span className="text-primary">.</span>ai
             </span>
           </button>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {NAV.map((item) => (
               <button
                 key={item.id}
                 onClick={() => switchTab(item.id as 'home' | 'blog')}
                 className={cn(
-                  'relative px-3.5 py-2 rounded-md text-sm font-medium transition-colors duration-200',
+                  'relative px-4 py-2 font-display uppercase text-[11px] tracking-[0.3em] transition-colors duration-300',
                   activeTab === item.id
-                    ? 'text-foreground'
+                    ? 'text-primary'
                     : 'text-foreground-muted hover:text-foreground'
                 )}
               >
@@ -120,7 +111,7 @@ function Shell() {
                 {activeTab === item.id && (
                   <motion.span
                     layoutId="nav-indicator"
-                    className="absolute inset-0 -z-10 rounded-md bg-background-subtle"
+                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
                     transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                   />
                 )}
@@ -128,31 +119,10 @@ function Shell() {
             ))}
           </nav>
 
-          {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-2">
-            {SOCIAL.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                className="grid place-items-center w-9 h-9 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-subtle transition-colors"
-              >
-                <s.icon className="w-4 h-4" strokeWidth={1.75} />
-              </a>
-            ))}
-            <div className="w-px h-5 bg-border mx-1" />
             <ThemeToggle size="sm" />
-            <a
-              href="mailto:support@sujay.ai"
-              className="ml-2 inline-flex items-center h-9 px-3.5 text-sm font-medium rounded-lg bg-foreground text-background hover:bg-foreground/90 transition-colors"
-            >
-              Get in touch
-            </a>
           </div>
 
-          {/* Mobile actions */}
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle size="sm" />
             <button
@@ -166,7 +136,6 @@ function Shell() {
           </div>
         </div>
 
-        {/* Mobile menu */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -182,36 +151,15 @@ function Shell() {
                     key={item.id}
                     onClick={() => switchTab(item.id as 'home' | 'blog')}
                     className={cn(
-                      'text-left px-3 py-3 rounded-lg text-base font-medium transition-colors',
+                      'text-left px-3 py-3 rounded-lg font-display uppercase text-xs tracking-[0.3em] transition-colors',
                       activeTab === item.id
-                        ? 'text-foreground bg-background-subtle'
+                        ? 'text-primary bg-background-subtle'
                         : 'text-foreground-muted hover:text-foreground hover:bg-background-subtle'
                     )}
                   >
                     {item.label}
                   </button>
                 ))}
-                <div className="h-px bg-border my-2" />
-                <div className="flex items-center gap-2 px-3 py-2">
-                  {SOCIAL.map((s) => (
-                    <a
-                      key={s.label}
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={s.label}
-                      className="grid place-items-center w-10 h-10 rounded-lg border border-border bg-background-subtle text-foreground-muted hover:text-foreground"
-                    >
-                      <s.icon className="w-4 h-4" strokeWidth={1.75} />
-                    </a>
-                  ))}
-                  <a
-                    href="mailto:support@sujay.ai"
-                    className="ml-auto inline-flex items-center h-10 px-4 text-sm font-medium rounded-lg bg-foreground text-background hover:bg-foreground/90 transition-colors"
-                  >
-                    Get in touch
-                  </a>
-                </div>
               </nav>
             </motion.div>
           )}
@@ -226,14 +174,14 @@ function Shell() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
             {activeTab === 'home' && (
               <>
                 <Hero />
                 <Experience />
-                <FeaturedBlog />
                 <Projects />
+                <FeaturedBlog />
                 <Contact />
               </>
             )}
@@ -243,52 +191,14 @@ function Shell() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-border-subtle mt-24">
-        <div className="container py-12">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div>
-              <button
-                onClick={() => switchTab('home')}
-                className="inline-flex items-center gap-2"
-              >
-                <span className="grid place-items-center w-7 h-7 rounded-md bg-primary text-primary-foreground font-display italic text-sm font-semibold">
-                  s
-                </span>
-                <span className="font-display text-base font-medium tracking-tight">
-                  sujay<span className="text-foreground-muted">.ai</span>
-                </span>
-              </button>
-              <p className="mt-3 text-sm text-foreground-muted max-w-md">
-                Building the network fabric behind large-scale AI training.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {SOCIAL.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="grid place-items-center w-9 h-9 rounded-lg border border-border-subtle text-foreground-muted hover:text-foreground hover:border-border transition-colors"
-                >
-                  <s.icon className="w-4 h-4" strokeWidth={1.75} />
-                </a>
-              ))}
-              <a
-                href="mailto:support@sujay.ai"
-                className="grid place-items-center px-3 h-9 rounded-lg border border-border-subtle text-sm text-foreground-muted hover:text-foreground hover:border-border transition-colors"
-              >
-                support@sujay.ai
-              </a>
-            </div>
-          </div>
-          <div className="mt-10 pt-6 border-t border-border-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-foreground-subtle">
-            <p>© {new Date().getFullYear()} Sujay Sreedhar. All rights reserved.</p>
-            <p className="font-mono">
-              press <kbd className="px-1.5 py-0.5 rounded bg-background-subtle border border-border-subtle text-foreground-muted">g</kbd> for grid, <kbd className="px-1.5 py-0.5 rounded bg-background-subtle border border-border-subtle text-foreground-muted">t</kbd> for glow
-            </p>
-          </div>
+      <footer className="relative z-10 border-t border-border-subtle mt-16">
+        <div className="container py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <p className="font-display uppercase text-[10px] tracking-[0.4em] text-foreground-muted">
+            MMXXVI · Sujay Sreedhar
+          </p>
+          <p className="font-serif italic text-sm text-foreground-subtle">
+            Ars longa, vita brevis.
+          </p>
         </div>
       </footer>
     </div>

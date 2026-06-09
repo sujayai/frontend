@@ -104,6 +104,17 @@ export default {
           "0%": { transform: "scale(1)", opacity: "0.6" },
           "100%": { transform: "scale(2)", opacity: "0" },
         },
+        "draw-circle": {
+          "0%": { strokeDashoffset: "1000" },
+          "100%": { strokeDashoffset: "0" },
+        },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-12px)" },
+        },
+        "rotate-slow": {
+          to: { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -114,13 +125,19 @@ export default {
         "marquee": "marquee 30s linear infinite",
         "caret": "caret 1.1s steps(2) infinite",
         "ping-soft": "ping-soft 1.6s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "draw-circle": "draw-circle 3s ease-out forwards",
+        "float-slow": "float-slow 6s ease-in-out infinite",
+        "rotate-slow": "rotate-slow 36s linear infinite",
+        "rotate-slower": "rotate-slow 60s linear infinite",
+        "rotate-reverse": "rotate-slow 48s linear infinite reverse",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        // Display = bookish serif, the Claude/Anthropic signature (Tiempos-style)
-        display: ['"Source Serif 4"', "Georgia", "Cambria", "serif"],
-        serif: ['"Source Serif 4"', "Georgia", "Cambria", "serif"],
-        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+        // Renaissance Roman capitals for display headlines
+        display: ["Cinzel", "Trajan Pro", "Georgia", "serif"],
+        // Body serif — humanist, drawn from Garamond's 16c. originals
+        serif: ['"EB Garamond"', "Garamond", "Cormorant", "Georgia", "serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
       letterSpacing: {
         tightest: "-0.04em",

@@ -38,9 +38,22 @@ export const Section: React.FC<SectionProps> = ({
               align === 'center' && 'mx-auto text-center'
             )}
           >
-            {eyebrow && <div className="eyebrow mb-5">{eyebrow}</div>}
+            {eyebrow && (
+              <div className={cn('mb-6', align === 'center' && 'justify-center flex')}>
+                <span className="eyebrow">{eyebrow}</span>
+              </div>
+            )}
             {title && <h2 className="section-title text-balance">{title}</h2>}
-            {subtitle && <p className="section-subtitle text-pretty">{subtitle}</p>}
+            {subtitle && (
+              <p
+                className={cn(
+                  'section-subtitle text-pretty',
+                  align === 'center' && 'mx-auto'
+                )}
+              >
+                {subtitle}
+              </p>
+            )}
           </motion.div>
         )}
         {children}
