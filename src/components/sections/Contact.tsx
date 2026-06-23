@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, ArrowUpRight } from 'lucide-react';
-import Section from '@/components/ui/Section';
+import { Github, Linkedin, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { fadeUp, inViewProps } from '@/lib/motion';
 
 const XIcon = ({ className }: { className?: string }) => (
@@ -18,53 +18,72 @@ const SOCIALS = [
 
 const Contact: React.FC = () => {
   return (
-    <Section
-      id="contact"
-      eyebrow="Epistula"
-      title="Correspond."
-      align="center"
-    >
-      <motion.div
-        {...inViewProps}
-        variants={fadeUp}
-        className="max-w-2xl mx-auto text-center"
-      >
-        <a
-          href="mailto:support@sujay.ai"
-          className="group inline-flex items-center gap-3 font-display uppercase tracking-[0.06em]
-                     text-3xl md:text-5xl font-medium text-foreground hover:text-primary
-                     transition-colors duration-300"
+    <section id="contact" className="section">
+      <div className="container">
+        <motion.div
+          {...inViewProps}
+          variants={fadeUp}
+          className="relative overflow-hidden rounded-3xl border border-border bg-background-elevated p-10 md:p-16"
         >
-          support@sujay.ai
-          <ArrowUpRight
-            className="w-7 h-7 md:w-9 md:h-9 text-foreground-subtle
-                       transition-all duration-500
-                       group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1"
+          {/* Soft accent backdrop — no rainbow */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(60% 80% at 100% 0%, hsl(var(--primary) / 0.18), transparent 70%)',
+            }}
           />
-        </a>
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 opacity-30"
+            style={{
+              backgroundImage:
+                'radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.08) 1px, transparent 0)',
+              backgroundSize: '28px 28px',
+              maskImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%)',
+            }}
+          />
 
-        <p className="mt-8 font-serif italic text-foreground-muted">
-          Open to consulting, design reviews, and the occasional letter from afar.
-        </p>
+          <div className="relative z-10 max-w-3xl">
+            <span className="eyebrow">Let&apos;s talk</span>
 
-        <div className="mt-14 flex items-center justify-center gap-3">
-          {SOCIALS.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={s.label}
-              className="grid place-items-center w-12 h-12 rounded-full border border-border
-                         bg-background-elevated text-foreground-muted hover:text-primary
-                         hover:border-primary transition-colors duration-300"
-            >
-              <s.icon className="w-4 h-4" />
-            </a>
-          ))}
-        </div>
-      </motion.div>
-    </Section>
+            <h2 className="mt-6 font-display text-4xl md:text-5xl lg:text-[56px] font-semibold tracking-tight text-foreground leading-[1.05] text-balance">
+              Have a hard infrastructure problem? <br className="hidden md:block" />
+              <span className="text-accent">Let&apos;s build the next one</span>.
+            </h2>
+
+            <p className="mt-6 text-lg md:text-xl text-foreground-muted leading-relaxed max-w-xl text-pretty">
+              Open to consulting, infrastructure design reviews, and conversations about
+              networking for AI training. Email is the fastest way in.
+            </p>
+
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <Button asChild size="lg" variant="primary" className="group">
+                <a href="mailto:support@sujay.ai">
+                  support@sujay.ai
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                </a>
+              </Button>
+              <div className="flex items-center gap-2">
+                {SOCIALS.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="grid place-items-center w-11 h-11 rounded-lg border border-border bg-background-elevated text-foreground-muted hover:text-foreground hover:border-foreground/30 transition-colors"
+                  >
+                    <s.icon className="w-4 h-4" strokeWidth={1.75} />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 };
 

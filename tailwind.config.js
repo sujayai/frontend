@@ -132,11 +132,10 @@ export default {
         "rotate-reverse": "rotate-slow 48s linear infinite reverse",
       },
       fontFamily: {
+        // Inter for everything — tight geometric humanist
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        // Renaissance Roman capitals for display headlines
-        display: ["Cinzel", "Trajan Pro", "Georgia", "serif"],
-        // Body serif — humanist, drawn from Garamond's 16c. originals
-        serif: ['"EB Garamond"', "Garamond", "Cormorant", "Georgia", "serif"],
+        display: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        serif: ['"Source Serif 4"', "Georgia", "serif"],
         mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
       letterSpacing: {

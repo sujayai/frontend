@@ -1,22 +1,52 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './components/sections/Hero';
-import Projects from './components/sections/Projects';
+import { TrustStrip, NetworkStory, ComputeStory, StatsStrip } from './components/sections/Story';
 import Experience from './components/sections/Experience';
+import Projects from './components/sections/Projects';
+import FeaturedBlog from './components/sections/FeaturedBlog';
 import Contact from './components/sections/Contact';
 import Blog from './components/sections/Blog';
-import FeaturedBlog from './components/sections/FeaturedBlog';
-import Spotlight from './components/effects/Spotlight';
 import { EasterEggsProvider, useEasterEggs } from './components/providers/EasterEggsProvider';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ThemeToggle } from './components/ui/ThemeToggle';
-import { Menu, X } from 'lucide-react';
+import { Github, Linkedin, Menu, X, ArrowRight } from 'lucide-react';
 import { cn } from './lib/utils';
 
 const NAV = [
-  { id: 'home', label: 'Codex' },
-  { id: 'blog', label: 'Folia' },
+  { id: 'home', label: 'Overview' },
+  { id: 'blog', label: 'Writing' },
 ];
+
+const SOCIAL = [
+  { icon: Github, href: 'https://github.com/sujaysreedharg', label: 'GitHub' },
+  { icon: Linkedin, href: 'https://linkedin.com/in/sujaysreedharg', label: 'LinkedIn' },
+];
+
+function Logo({ size = 'md' }: { size?: 'sm' | 'md' }) {
+  const sizes = size === 'sm'
+    ? { square: 'w-7 h-7 text-xs', text: 'text-sm' }
+    : { square: 'w-8 h-8 text-sm', text: 'text-base' };
+  return (
+    <span className="inline-flex items-center gap-2.5">
+      <span
+        className={cn(
+          'grid place-items-center rounded-md text-white font-display font-bold tracking-tight',
+          sizes.square
+        )}
+        style={{
+          background:
+            'linear-gradient(135deg, hsl(var(--primary)), hsl(207 100% 30%))',
+        }}
+      >
+        s
+      </span>
+      <span className={cn('font-display font-semibold tracking-tight text-foreground', sizes.text)}>
+        sujay<span className="text-foreground-muted">.ai</span>
+      </span>
+    </span>
+  );
+}
 
 function Shell() {
   const { turboGlow } = useEasterEggs();
@@ -57,20 +87,17 @@ function Shell() {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground antialiased">
-      <Spotlight />
-
       {turboGlow && (
         <div
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-0"
           style={{
             background:
-              'radial-gradient(800px circle at 50% 0%, hsl(var(--gold) / 0.18), transparent 60%)',
+              'radial-gradient(800px circle at 50% 0%, hsl(var(--primary) / 0.18), transparent 60%)',
           }}
         />
       )}
 
-      {/* Header */}
       <header
         className={cn(
           'sticky top-0 z-40 transition-all duration-500',
@@ -79,39 +106,28 @@ function Shell() {
             : 'bg-transparent border-b border-transparent'
         )}
       >
-        <div className="container flex items-center justify-between h-20">
-          {/* Wordmark — a gold-leaf monogram */}
-          <button
-            onClick={() => switchTab('home')}
-            className="group inline-flex items-center gap-3 text-foreground"
-            aria-label="Home"
-          >
-            <span className="grid place-items-center w-9 h-9 rounded-full border border-gold/40">
-              <span className="font-display text-xs uppercase tracking-[0.2em] shimmer">SS</span>
-            </span>
-            <span className="font-display text-sm uppercase tracking-[0.32em] font-medium">
-              sujay<span className="text-primary">.</span>ai
-            </span>
+        <div className="container flex items-center justify-between h-16 md:h-18">
+          <button onClick={() => switchTab('home')} className="group" aria-label="Home">
+            <Logo />
           </button>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
-            {NAV.map((item) => (
+          <nav className="hidden md:flex items-center gap-1">
+            {NAV.map((nav) => (
               <button
-                key={item.id}
-                onClick={() => switchTab(item.id as 'home' | 'blog')}
+                key={nav.id}
+                onClick={() => switchTab(nav.id as 'home' | 'blog')}
                 className={cn(
-                  'relative px-4 py-2 font-display uppercase text-[11px] tracking-[0.3em] transition-colors duration-300',
-                  activeTab === item.id
-                    ? 'text-primary'
+                  'relative px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200',
+                  activeTab === nav.id
+                    ? 'text-foreground'
                     : 'text-foreground-muted hover:text-foreground'
                 )}
               >
-                {item.label}
-                {activeTab === item.id && (
+                {nav.label}
+                {activeTab === nav.id && (
                   <motion.span
                     layoutId="nav-indicator"
-                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
+                    className="absolute inset-0 -z-10 rounded-md bg-background-subtle"
                     transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                   />
                 )}
@@ -120,7 +136,31 @@ function Shell() {
           </nav>
 
           <div className="hidden md:flex items-center gap-2">
+            {SOCIAL.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="grid place-items-center w-9 h-9 rounded-md text-foreground-muted hover:text-foreground hover:bg-background-subtle transition-colors"
+              >
+                <s.icon className="w-4 h-4" strokeWidth={1.75} />
+              </a>
+            ))}
+            <div className="w-px h-5 bg-border mx-1" />
             <ThemeToggle size="sm" />
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="ml-2 inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Contact
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
           </div>
 
           <div className="md:hidden flex items-center gap-2">
@@ -129,7 +169,7 @@ function Shell() {
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
-              className="grid place-items-center w-9 h-9 rounded-lg text-foreground hover:bg-background-subtle transition-colors"
+              className="grid place-items-center w-9 h-9 rounded-md text-foreground hover:bg-background-subtle transition-colors"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -146,27 +186,49 @@ function Shell() {
               className="md:hidden border-t border-border-subtle bg-background/95 backdrop-blur-xl overflow-hidden"
             >
               <nav className="container py-4 flex flex-col gap-1">
-                {NAV.map((item) => (
+                {NAV.map((nav) => (
                   <button
-                    key={item.id}
-                    onClick={() => switchTab(item.id as 'home' | 'blog')}
+                    key={nav.id}
+                    onClick={() => switchTab(nav.id as 'home' | 'blog')}
                     className={cn(
-                      'text-left px-3 py-3 rounded-lg font-display uppercase text-xs tracking-[0.3em] transition-colors',
-                      activeTab === item.id
-                        ? 'text-primary bg-background-subtle'
+                      'text-left px-3 py-3 rounded-md text-base font-medium transition-colors',
+                      activeTab === nav.id
+                        ? 'text-foreground bg-background-subtle'
                         : 'text-foreground-muted hover:text-foreground hover:bg-background-subtle'
                     )}
                   >
-                    {item.label}
+                    {nav.label}
                   </button>
                 ))}
+                <div className="h-px bg-border my-2" />
+                <div className="flex items-center gap-2 px-3 py-2">
+                  {SOCIAL.map((s) => (
+                    <a
+                      key={s.label}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={s.label}
+                      className="grid place-items-center w-10 h-10 rounded-md border border-border bg-background-subtle text-foreground-muted hover:text-foreground"
+                    >
+                      <s.icon className="w-4 h-4" strokeWidth={1.75} />
+                    </a>
+                  ))}
+                  <a
+                    href="#contact"
+                    onClick={() => setMobileOpen(false)}
+                    className="ml-auto inline-flex items-center gap-1.5 h-10 px-4 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  >
+                    Contact
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
               </nav>
             </motion.div>
           )}
         </AnimatePresence>
       </header>
 
-      {/* Main */}
       <main className="relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
@@ -179,6 +241,10 @@ function Shell() {
             {activeTab === 'home' && (
               <>
                 <Hero />
+                <TrustStrip />
+                <NetworkStory />
+                <ComputeStory />
+                <StatsStrip />
                 <Experience />
                 <Projects />
                 <FeaturedBlog />
@@ -190,15 +256,45 @@ function Shell() {
         </AnimatePresence>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-border-subtle mt-16">
-        <div className="container py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <p className="font-display uppercase text-[10px] tracking-[0.4em] text-foreground-muted">
-            MMXXVI · Sujay Sreedhar
-          </p>
-          <p className="font-serif italic text-sm text-foreground-subtle">
-            Ars longa, vita brevis.
-          </p>
+      <footer className="relative z-10 border-t border-border-subtle mt-12">
+        <div className="container py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="col-span-2">
+            <Logo size="sm" />
+            <p className="mt-4 text-sm text-foreground-muted max-w-xs">
+              Network and infrastructure for large-scale AI training.
+            </p>
+          </div>
+          <div>
+            <div className="label-mono mb-4">Explore</div>
+            <ul className="space-y-2 text-sm">
+              <li><button onClick={() => switchTab('home')} className="text-foreground-muted hover:text-foreground transition-colors">Overview</button></li>
+              <li><button onClick={() => switchTab('blog')} className="text-foreground-muted hover:text-foreground transition-colors">Writing</button></li>
+              <li><a href="#contact" className="text-foreground-muted hover:text-foreground transition-colors">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="label-mono mb-4">Elsewhere</div>
+            <ul className="space-y-2 text-sm">
+              {SOCIAL.map((s) => (
+                <li key={s.label}>
+                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="text-foreground-muted hover:text-foreground transition-colors">
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a href="mailto:support@sujay.ai" className="text-foreground-muted hover:text-foreground transition-colors">
+                  support@sujay.ai
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-border-subtle">
+          <div className="container py-5 flex items-center justify-between text-xs text-foreground-subtle">
+            <span>© {new Date().getFullYear()} Sujay Sreedhar.</span>
+            <span className="font-mono">Crafted with React + Vite</span>
+          </div>
         </div>
       </footer>
     </div>

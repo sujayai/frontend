@@ -284,10 +284,10 @@ const BlogPost: React.FC<BlogPostProps> = ({ postId, onBack }) => {
             <span className="text-foreground-subtle text-xs">·</span>
             <span className="label-mono text-[10px]">{post.readTime}</span>
           </div>
-          <h1 className="mt-6 font-display uppercase tracking-[0.02em] text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.05] text-balance">
+          <h1 className="mt-6 font-display text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-foreground leading-[1.05] text-balance">
             {post.title}
           </h1>
-          <p className="mt-6 font-serif italic text-lg md:text-xl text-foreground-muted leading-relaxed text-pretty">
+          <p className="mt-6 text-lg md:text-xl text-foreground-muted leading-relaxed text-pretty">
             {post.summary}
           </p>
 
@@ -341,7 +341,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ postId, onBack }) => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="prose-codex"
+          className="prose-fabric"
         >
           {renderContent(post.content || '')}
         </motion.div>

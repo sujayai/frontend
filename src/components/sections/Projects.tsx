@@ -1,35 +1,42 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, ArrowUpRight } from 'lucide-react';
+import { Github, ExternalLink, ArrowUpRight } from 'lucide-react';
 import Section from '@/components/ui/Section';
+import { Button } from '@/components/ui/button';
+import { ArtCDN, ArtML, ArtForecast, ArtAuctions } from '@/components/illustrations/ProjectArt';
 import { fadeUpStagger, item, inViewProps } from '@/lib/motion';
 
 interface Project {
   title: string;
   blurb: string;
+  art: React.ComponentType<{ className?: string }>;
   tech: string[];
-  status: 'In Production' | 'Research' | 'Archived';
+  status: 'In production' | 'Research' | 'Archived';
   github: string;
 }
 
 const PROJECTS: Project[] = [
   {
     title: 'Quickly v2',
-    blurb: 'Multi-tenant CDN on bare metal.',
-    tech: ['Ansible', 'OvS', 'Docker', 'Libvirt', 'etcd'],
-    status: 'In Production',
+    blurb: 'A multi-tenant CDN provisioned on bare-metal Linux hosts with strong isolation.',
+    art: ArtCDN,
+    tech: ['Ansible', 'Open vSwitch', 'Docker', 'Libvirt', 'etcd'],
+    status: 'In production',
     github: 'https://github.com/sujaysreedharg/quicklyv2',
   },
   {
     title: 'Admission Oracle',
-    blurb: 'Graduate-admission ML, Dockerized.',
+    blurb: 'Graduate-admission ML model, containerized and deployed to Heroku.',
+    art: ArtML,
     tech: ['Python', 'scikit-learn', 'Docker', 'Heroku'],
-    status: 'In Production',
-    github: 'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
+    status: 'In production',
+    github:
+      'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
   },
   {
     title: 'Prophet Forecasts',
-    blurb: 'COVID-19 time-series prediction.',
+    blurb: 'A time-series forecasting pipeline using Facebook Prophet on COVID-19 data.',
+    art: ArtForecast,
     tech: ['Python', 'Prophet', 'Jupyter'],
     status: 'Research',
     github:
@@ -37,68 +44,66 @@ const PROJECTS: Project[] = [
   },
   {
     title: 'Auctions',
-    blurb: 'eBay-style marketplace, Django.',
-    tech: ['Django', 'Postgres', 'Heroku'],
+    blurb: "eBay-style auction platform with listings, bidding, comments, watchlists.",
+    art: ArtAuctions,
+    tech: ['Python', 'Django', 'Postgres', 'Heroku'],
     status: 'Archived',
     github: 'https://github.com/sujaysreedharg/Auctions-django-web-app-deployment-on-Heroku',
   },
 ];
 
-const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, index }) => {
-  const handleMouseMove: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty('--spotlight-x', `${e.clientX - rect.left}px`);
-    e.currentTarget.style.setProperty('--spotlight-y', `${e.clientY - rect.top}px`);
-  };
+const statusStyle: Record<Project['status'], string> = {
+  'In production': 'bg-success/10 text-[hsl(var(--success))] border-[hsl(var(--success))]/30',
+  'Research': 'chip-primary',
+  'Archived': '',
+};
 
+const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
+  const Art = project.art;
   return (
-    <motion.div variants={item}>
-      <a
-        href={project.github}
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseMove={handleMouseMove}
-        className="spotlight surface surface-hover relative block p-8 group h-full
-                   transition-transform duration-500 hover:-translate-y-1"
-      >
-        <div className="relative z-[2] flex flex-col h-full">
-          <div className="flex items-start justify-between gap-4">
-            <span className="font-mono text-xs text-foreground-subtle">
-              0{index + 1}
-            </span>
-            <span
-              className={`chip ${project.status === 'In Production' ? 'chip-primary' : ''}`}
-            >
-              {project.status === 'In Production' && (
-                <span className="w-1 h-1 rounded-full bg-current" />
-              )}
-              {project.status}
-            </span>
-          </div>
+    <motion.article
+      variants={item}
+      className="surface surface-hover overflow-hidden group flex flex-col h-full"
+    >
+      {/* Art */}
+      <div className="relative overflow-hidden border-b border-border">
+        <Art className="block w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]" />
+        <ArrowUpRight className="absolute top-3 right-3 w-4 h-4 text-foreground-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
 
-          <h3 className="mt-10 font-display uppercase tracking-[0.04em] text-3xl md:text-4xl font-medium text-foreground transition-colors duration-300 group-hover:text-primary">
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-display text-xl font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
             {project.title}
           </h3>
-
-          <p className="mt-3 font-serif italic text-foreground-muted">
-            {project.blurb}
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-1.5">
-            {project.tech.map((t) => (
-              <span key={t} className="chip">{t}</span>
-            ))}
-          </div>
-
-          <div className="mt-auto pt-8 flex items-center justify-between text-foreground-muted">
-            <span className="inline-flex items-center gap-2 text-sm">
-              <Github className="w-4 h-4" /> Repository
-            </span>
-            <ArrowUpRight className="w-5 h-5 transition-all duration-500 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </div>
+          <span className={`chip whitespace-nowrap ${statusStyle[project.status]}`}>
+            {project.status}
+          </span>
         </div>
-      </a>
-    </motion.div>
+
+        <p className="mt-3 text-sm text-foreground-muted leading-relaxed flex-1">
+          {project.blurb}
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-1.5">
+          {project.tech.map((t) => (
+            <span key={t} className="chip">{t}</span>
+          ))}
+        </div>
+
+        <div className="mt-6 pt-5 border-t border-border-subtle">
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-medium text-foreground-muted hover:text-primary transition-colors"
+          >
+            <Github className="w-4 h-4" />
+            Repository
+          </a>
+        </div>
+      </div>
+    </motion.article>
   );
 };
 
@@ -106,19 +111,32 @@ const Projects: React.FC = () => {
   return (
     <Section
       id="projects"
-      eyebrow="Opera"
-      title="Selected Works."
-      align="center"
+      eyebrow="Selected projects"
+      title="Things I've built."
+      subtitle="Side projects and coursework — from CDN automation to ML pipelines."
     >
       <motion.div
         {...inViewProps}
-        variants={fadeUpStagger(0, 0.1)}
-        className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6"
+        variants={fadeUpStagger(0, 0.08)}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
       >
-        {PROJECTS.map((p, i) => (
-          <ProjectCard key={p.title} project={p} index={i} />
+        {PROJECTS.map((p) => (
+          <ProjectCard key={p.title} project={p} />
         ))}
       </motion.div>
+
+      <div className="mt-12 flex justify-center">
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() =>
+            window.open('https://github.com/sujaysreedharg?tab=repositories', '_blank', 'noopener,noreferrer')
+          }
+        >
+          See all repositories
+          <ExternalLink className="w-4 h-4" />
+        </Button>
+      </div>
     </Section>
   );
 };
