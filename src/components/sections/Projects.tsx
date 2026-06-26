@@ -1,232 +1,135 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ExternalLink, Github, Zap, Brain, Network, Database } from 'lucide-react';
-import Tilt from 'react-parallax-tilt';
+import { Dingbat } from '@/components/painted/Ornament';
+import Watercolor from '@/components/painted/Watercolor';
+import { GlyphCDN, GlyphML, GlyphProphet, GlyphAuction } from '@/components/painted/PlateGlyphs';
+
+interface Plate {
+  no: string;
+  title: string;
+  blurb: string;
+  craft: string;
+  year: string;
+  href: string;
+  Glyph: React.FC<{ className?: string }>;
+}
+
+const PLATES: Plate[] = [
+  {
+    no: 'I',
+    title: 'Quickly · the second edition',
+    blurb: 'A delivery network laid into bare iron, every tenant kept in its own cloister.',
+    craft: 'Ansible · Open vSwitch · Libvirt · etcd',
+    year: 'MMXXI',
+    href: 'https://github.com/sujaysreedharg/quicklyv2',
+    Glyph: GlyphCDN,
+  },
+  {
+    no: 'II',
+    title: 'The Oracle of Admissions',
+    blurb: 'A small model that augurs a student’s passage into graduate study.',
+    craft: 'Python · scikit-learn · Docker',
+    year: 'MMXX',
+    href: 'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
+    Glyph: GlyphML,
+  },
+  {
+    no: 'III',
+    title: 'Of forecasts in a plague year',
+    blurb: 'Sine waves laid against the news; a time-series learning to draw the days ahead.',
+    craft: 'Python · Prophet · Jupyter',
+    year: 'MMXX',
+    href: 'https://github.com/sujaysreedharg/Covid-19-future-prediction-with-time-series-forecasting-using-prophet-model',
+    Glyph: GlyphProphet,
+  },
+  {
+    no: 'IV',
+    title: 'An auction-house',
+    blurb: 'Listings, bids, vigil-keepers — a Django marketplace in the old style.',
+    craft: 'Django · Postgres · Heroku',
+    year: 'MMXIX',
+    href: 'https://github.com/sujaysreedharg/Auctions-django-web-app-deployment-on-Heroku',
+    Glyph: GlyphAuction,
+  },
+];
 
 const Projects: React.FC = () => {
-  const projects = [
-    {
-      title: 'Quickly v2 - Content Delivery Network',
-      description: 'CDN service that deploys infrastructure on Linux machines with tenant isolation using Ansible, OvSwitch, Docker, and Libvirt.',
-      icon: Zap,
-      tech: ['Python', 'Ansible', 'OvSwitch', 'Docker', 'Libvirt', 'Virsh', 'etcd'],
-      gradient: 'from-yellow-400 to-orange-500',
-      status: 'Production',
-      github: 'https://github.com/sujaysreedharg/quicklyv2',
-      demo: null,
-    },
-    {
-      title: 'Graduate Admission Prediction ML',
-      description: 'Machine Learning model for graduate admission prediction with Docker containerized deployment on Heroku cloud platform.',
-      icon: Brain,
-      tech: ['Python', 'Docker', 'Heroku', 'Machine Learning', 'HTML'],
-      gradient: 'from-purple-500 to-pink-500',
-      status: 'Production',
-      github: 'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
-      demo: null,
-    },
-    {
-      title: 'COVID-19 Time Series Forecasting',
-      description: 'Time series analysis using Prophet model for COVID-19 future predictions, widely applicable in corporate, medical, and financial sectors.',
-      icon: Network,
-      tech: ['Python', 'Prophet', 'Jupyter Notebook', 'Time Series Analysis'],
-      gradient: 'from-blue-500 to-cyan-500',
-      status: 'Research',
-      github: 'https://github.com/sujaysreedharg/Covid-19-future-prediction-with-time-series-forecasting-using-prophet-model',
-      demo: null,
-    },
-    {
-      title: 'Auctions Django Web App',
-      description: 'eBay-like e-commerce auction site allowing users to post listings, place bids, comment, and manage watchlists.',
-      icon: Database,
-      tech: ['Python', 'Django', 'Heroku', 'Web Development', 'e-Commerce'],
-      gradient: 'from-emerald-500 to-teal-500',
-      status: 'Production',
-      github: 'https://github.com/sujaysreedharg/Auctions-django-web-app-deployment-on-Heroku',
-      demo: null,
-    },
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  const handleMouseMove: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    const target = e.currentTarget as HTMLDivElement;
-    const rect = target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    target.style.setProperty('--x', `${x}px`);
-    target.style.setProperty('--y', `${y}px`);
-  };
-
   return (
-    <section className="py-20 relative" id="projects">
-      <div className="container mx-auto px-6">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="text-gradient">Featured Projects</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Pushing the boundaries of computational infrastructure and AI systems at enterprise scale
-          </p>
-        </motion.div>
+    <section id="plates" className="section relative overflow-hidden">
+      <div className="pointer-events-none absolute left-[-12%] top-[40%] w-[520px] h-[520px] opacity-70">
+        <Watercolor pigment="oxblood" intensity={0.2} className="w-full h-full" />
+      </div>
+      <div className="pointer-events-none absolute right-[-8%] bottom-0 w-[480px] h-[480px] opacity-80">
+        <Watercolor pigment="persimmon" intensity={0.22} className="w-full h-full" />
+      </div>
 
-        {/* Projects grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-        >
-          {projects.map((project, index) => (
-            <motion.div key={index} variants={cardVariants}>
-              <div className="spotlight" onMouseMove={handleMouseMove}>
-                <Tilt
-                  tiltMaxAngleX={5}
-                  tiltMaxAngleY={5}
-                  perspective={1000}
-                  scale={1.02}
-                  transitionSpeed={2000}
-                  gyroscope={true}
-                >
-                  <Card className="h-full group cursor-pointer relative z-10 overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md hover:ring-2 hover:ring-emerald-400 dark:hover:ring-emerald-500 hover:ring-offset-2 ring-offset-white dark:ring-offset-black transition-all duration-300">
-                    {/* Animated background gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                    
-                    {/* Removed heavy glow to prevent uneven borders on hover */}
-                    
-                    <CardHeader className="relative z-10">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-lg bg-gradient-to-br ${project.gradient} group-hover:scale-110 transition-transform duration-300`}>
-                            <project.icon className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-xl text-gray-900 dark:text-white group-hover:text-gradient transition-all duration-300">
-                              {project.title}
-                            </CardTitle>
-                            <div className="flex items-center mt-2">
-                              <span className={`px-2 py-1 text-xs rounded-full ${
-                                project.status === 'Production' 
-                                  ? 'bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
-                                  : project.status === 'Research'
-                                  ? 'bg-purple-500/15 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400'
-                                  : 'bg-blue-500/15 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400'
-                              }`}>
-                                {project.status}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
+      <div className="container relative">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-6">
+            <div className="marginalia">Plate II</div>
+          </aside>
 
-                    <CardContent className="relative z-10">
-                      <CardDescription className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                        {project.description}
-                      </CardDescription>
-
-                      {/* Tech stack */}
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {project.tech.map((tech, techIndex) => (
-                          <span
-                            key={techIndex}
-                            className="px-3 py-1 text-xs rounded-full border transition-colors duration-300 bg-gray-100 text-gray-700 border-gray-200 group-hover:border-emerald-500/50 dark:bg-white/10 dark:text-gray-300 dark:border-white/20"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Action buttons */}
-                      <div className="flex space-x-3">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-500/10"
-                          onClick={() => window.open(project.github, '_blank')}
-                        >
-                          <Github className="w-4 h-4 mr-2" />
-                          Code
-                        </Button>
-                        {project.demo && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-500/10"
-                            onClick={() => project.demo && window.open(project.demo, '_blank')}
-                          >
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Live Demo
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-
-                    {/* Hover effect particles */}
-                    <div className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                      {[...Array(6)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="absolute w-1 h-1 bg-emerald-500 rounded-full animate-ping"
-                          style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            animationDelay: `${Math.random() * 2}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </Card>
-                </Tilt>
-              </div>
+          <div className="col-span-12 md:col-span-11">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.2 }}
+            >
+              <span className="folio">ii · Plates</span>
+              <h2 className="display mt-8 text-[clamp(2.4rem,6vw,4.5rem)] ink text-balance">
+                A small <span className="display-italic">portfolio</span>
+                <br /> kept in this hand.
+              </h2>
             </motion.div>
-          ))}
-        </motion.div>
 
-        {/* View all projects button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <Button 
-            variant="cyber" 
-            size="lg" 
-            className="text-lg px-8 py-4"
-            onClick={() => window.open('https://github.com/sujaysreedharg?tab=repositories', '_blank')}
-          >
-            View All Projects
-          </Button>
-        </motion.div>
+            <div className="mt-20 md:mt-28 space-y-24">
+              {PLATES.map((p, i) => {
+                const G = p.Glyph;
+                const reverse = i % 2 === 1;
+                return (
+                  <motion.a
+                    key={p.no}
+                    href={p.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-60px' }}
+                    transition={{ duration: 1.2, ease: 'easeOut' }}
+                    className="group block grid grid-cols-12 gap-x-6 md:gap-x-10 items-baseline"
+                  >
+                    {/* number */}
+                    <div className={`col-span-12 md:col-span-2 ${reverse ? 'md:order-last md:text-right' : ''}`}>
+                      <div className="plate-no">Plate · {p.no}</div>
+                      <div className="marginalia mt-2">{p.year}</div>
+                    </div>
+
+                    {/* glyph */}
+                    <div className={`col-span-3 md:col-span-2 ${reverse ? 'md:order-1' : ''}`}>
+                      <G className="w-20 h-20 md:w-24 md:h-24 text-sienna group-hover:scale-[1.04] transition-transform duration-700" />
+                    </div>
+
+                    {/* the typeset entry */}
+                    <div className={`col-span-9 md:col-span-8 ${reverse ? 'md:order-2 md:text-right' : ''}`}>
+                      <h3 className="display text-3xl md:text-5xl ink leading-[1.05] group-hover:text-sienna transition-colors duration-500 text-balance">
+                        {p.title}
+                      </h3>
+                      <p className="mt-4 font-serif italic text-base md:text-lg ink-soft max-w-xl text-pretty">
+                        {p.blurb}
+                      </p>
+                      <p className="mt-3 marginalia">{p.craft}</p>
+                    </div>
+                  </motion.a>
+                );
+              })}
+            </div>
+
+            <div className="mt-28 flex justify-center">
+              <Dingbat className="w-60 h-7 opacity-90" />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

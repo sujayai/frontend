@@ -1,202 +1,197 @@
 import { useEffect, useState } from 'react';
-import MatrixBackground from './components/effects/MatrixBackground';
-import ParticleField from './components/effects/ParticleField';
+import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './components/sections/Hero';
-import Projects from './components/sections/Projects';
 import Experience from './components/sections/Experience';
+import Projects from './components/sections/Projects';
+import FeaturedBlog from './components/sections/FeaturedBlog';
 import Contact from './components/sections/Contact';
 import Blog from './components/sections/Blog';
-import FeaturedBlog from './components/sections/FeaturedBlog';
-import { EasterEggsProvider, useEasterEggs } from './components/providers/EasterEggsProvider';
+import { EasterEggsProvider } from './components/providers/EasterEggsProvider';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ThemeToggle } from './components/ui/ThemeToggle';
+import { Menu, X } from 'lucide-react';
+import { cn } from './lib/utils';
 
-function Effects() {
-  const { showMatrix, showParticles } = useEasterEggs();
-  return (
-    <>
-      {showMatrix && <MatrixBackground />}
-      {showParticles && <ParticleField />}
-    </>
-  );
-}
+const NAV = [
+  { id: 'home', label: 'Index' },
+  { id: 'blog', label: 'Folia' },
+];
 
 function Shell() {
-  const { showGrid } = useEasterEggs();
-  const [activeTab, setActiveTab] = useState('home');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'home' | 'blog'>('home');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const switchTab = (tab: string) => {
+  const switchTab = (tab: 'home' | 'blog') => {
     setActiveTab(tab);
-    setMobileMenuOpen(false);
-    // Ensure we land at the top of the new view
-    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+    setMobileOpen(false);
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
   };
 
-  // Close mobile menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const mobileMenu = document.getElementById('mobile-menu');
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      
-      if (mobileMenu && mobileMenuButton && 
-          !mobileMenu.contains(event.target as Node) && 
-          !mobileMenuButton.contains(event.target as Node)) {
-        setMobileMenuOpen(false);
-        mobileMenu.classList.add('hidden');
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Listen for custom tab switch events
   useEffect(() => {
-    const handleTabSwitch = (event: CustomEvent) => {
-      const detail = event.detail;
-      if (typeof detail === 'string') {
-        // Simple tab switch
+    const handleTabSwitch = (event: Event) => {
+      const detail = (event as CustomEvent).detail;
+      if (typeof detail === 'string' && (detail === 'home' || detail === 'blog')) {
         switchTab(detail);
       } else if (detail && detail.tab) {
-        // Tab switch with additional data (like article slug)
         switchTab(detail.tab);
-        // If there's a slug, dispatch another event to open that article
         if (detail.slug) {
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent('openArticle', { detail: detail.slug }));
-          }, 100);
+          }, 140);
         }
       }
     };
-
-    window.addEventListener('switchTab', handleTabSwitch as EventListener);
-    return () => window.removeEventListener('switchTab', handleTabSwitch as EventListener);
+    window.addEventListener('switchTab', handleTabSwitch);
+    return () => window.removeEventListener('switchTab', handleTabSwitch);
   }, []);
-  
-  const navigation = [
-    { id: 'home', label: 'Home', href: '#home' },
-    { id: 'blog', label: 'Blog', href: '#blog' },
-  ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-gray-200 transition-colors duration-300 relative overflow-x-hidden">
-      <div className="mesh-bg fixed inset-0 z-0" />
-      {showGrid && <div className="absolute inset-0 cyber-grid z-0" />}
-      <Effects />
-
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-black/30 border-b border-gray-200/80 dark:border-white/10">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <button 
+    <div className="relative min-h-screen">
+      {/* Header — a typographic running head, no chrome */}
+      <header
+        className={cn(
+          'sticky top-0 z-40 transition-all duration-700',
+          scrolled
+            ? 'bg-[hsl(var(--paper)/0.92)] backdrop-blur-[2px] border-b border-[hsl(var(--rule)/0.25)]'
+            : 'bg-transparent'
+        )}
+      >
+        <div className="container flex items-baseline justify-between gap-6 h-16 md:h-20">
+          {/* the wordmark, set as a small running title */}
+          <button
             onClick={() => switchTab('home')}
-            className="font-bold text-xl tracking-tight text-gray-900 dark:text-white hover:text-emerald-500 dark:hover:text-emerald-400 transition-all duration-300 transform hover:scale-105"
+            className="display text-2xl ink hover:text-sienna transition-colors duration-300"
+            aria-label="Home"
           >
-            sujay<span className="text-emerald-500 dark:text-emerald-400">.ai</span>
+            Sujay <span className="display-italic">Sreedhar</span>
           </button>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <nav className="flex items-center gap-8 text-sm text-gray-600 dark:text-gray-300">
-              {navigation.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => switchTab(item.id)}
-                  className={`relative font-medium py-2 px-3 rounded-lg transition-all duration-300 ${
-                    activeTab === item.id 
-                      ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10' 
-                      : 'hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
-                  }`}
-                >
-                  {item.label}
-                  {activeTab === item.id && (
-                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-emerald-500 dark:bg-emerald-400 rounded-full"></div>
-                  )}
-                </button>
-              ))}
-            </nav>
-            <ThemeToggle size="sm" />
-          </div>
 
-          {/* Mobile Navigation */}
-          <div className="md:hidden flex items-center gap-4">
+          {/* center nav, the folio numbers */}
+          <nav className="hidden sm:flex items-baseline gap-8">
+            {NAV.map((nav) => (
+              <button
+                key={nav.id}
+                onClick={() => switchTab(nav.id as 'home' | 'blog')}
+                className={cn(
+                  'relative font-sc text-[0.74rem] tracking-[0.32em] uppercase pb-1 transition-colors duration-300',
+                  activeTab === nav.id ? 'text-sienna' : 'ink-faint hover:text-sienna'
+                )}
+              >
+                {nav.label}
+                {activeTab === nav.id && (
+                  <motion.span
+                    layoutId="folio-mark"
+                    className="absolute left-0 right-0 -bottom-0.5 h-px"
+                    style={{ background: 'hsl(var(--sienna))' }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                  />
+                )}
+              </button>
+            ))}
+          </nav>
+
+          <div className="flex items-baseline gap-5">
             <ThemeToggle size="sm" />
-            <button
-              id="mobile-menu-button"
-              onClick={() => {
-                setMobileMenuOpen(!mobileMenuOpen);
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (mobileMenu) {
-                  mobileMenu.classList.toggle('hidden');
-                }
+            <a
+              href="#epistola"
+              onClick={(e) => {
+                e.preventDefault();
+                if (activeTab !== 'home') switchTab('home');
+                setTimeout(
+                  () => document.getElementById('epistola')?.scrollIntoView({ behavior: 'smooth' }),
+                  activeTab !== 'home' ? 200 : 0
+                );
               }}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+              className="hidden sm:inline-block font-sc text-[0.74rem] tracking-[0.32em] uppercase ink-faint hover:text-sienna transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
+              Write
+            </a>
+            <button
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label="Menu"
+              className="sm:hidden ink"
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        <div id="mobile-menu" className={`md:hidden border-t border-gray-200/80 dark:border-white/10 bg-white/95 dark:bg-black/95 backdrop-blur-md transition-all duration-300 ${mobileMenuOpen ? 'block' : 'hidden'}`}>
-          <div className="container mx-auto px-6 py-4">
-            <nav className="flex flex-col space-y-2">
-              {navigation.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    switchTab(item.id);
-                  }}
-                  className={`text-left py-3 px-4 rounded-lg font-medium transition-all duration-300 ${
-                    activeTab === item.id 
-                      ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10' 
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
-                  }`}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.nav
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="sm:hidden overflow-hidden border-t border-[hsl(var(--rule)/0.25)] bg-[hsl(var(--paper)/0.95)] backdrop-blur-sm"
+            >
+              <div className="container py-6 flex flex-col gap-4">
+                {NAV.map((nav) => (
+                  <button
+                    key={nav.id}
+                    onClick={() => switchTab(nav.id as 'home' | 'blog')}
+                    className={cn(
+                      'text-left display text-3xl',
+                      activeTab === nav.id ? 'text-sienna' : 'ink hover:text-sienna'
+                    )}
+                  >
+                    {nav.label}
+                  </button>
+                ))}
+                <a
+                  href="#epistola"
+                  onClick={() => setMobileOpen(false)}
+                  className="display text-3xl gilded"
                 >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
+                  Write to me
+                </a>
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </header>
 
       <main className="relative z-10">
-        {activeTab === 'home' && (
-          <>
-            <Hero />
-            
-            
-            
-            <Experience />
-            <FeaturedBlog />
-            <Projects />
-            <Contact />
-          </>
-        )}
-        
-        {activeTab === 'projects' && (
-          <div id="projects" className="carousel-3d"><Projects /></div>
-        )}
-        
-        {activeTab === 'blog' && (
-          <div id="blog"><Blog /></div>
-        )}
-        
-        {activeTab === 'experience' && (
-          <div id="experience"><Experience /></div>
-        )}
-        
-        {activeTab === 'contact' && (
-          <div id="contact"><Contact /></div>
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0)' }}
+            exit={{ opacity: 0, y: -6, filter: 'blur(4px)' }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {activeTab === 'home' ? (
+              <>
+                <Hero />
+                <Experience />
+                <Projects />
+                <FeaturedBlog />
+                <Contact />
+              </>
+            ) : (
+              <Blog />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
-      <footer className="relative z-10 py-8 text-center text-gray-500 dark:text-gray-400 border-t border-gray-200/80 dark:border-white/10">
-        <div className="container mx-auto px-6">
-          <p className="text-sm">&copy; 2024 Sujay. Built with React, TypeScript, and cutting-edge web technologies.</p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">Hotkeys: g=grid, m=matrix, p=particles, t=glow, c=confetti, Konami=turbo</p>
+      {/* Footer — the colophon */}
+      <footer className="relative z-10">
+        <div className="container py-16 flex flex-col items-center text-center gap-2 border-t border-[hsl(var(--rule)/0.25)]">
+          <div className="folio">Colophon</div>
+          <p className="font-serif italic ink-soft mt-4 max-w-md text-pretty">
+            Set in Cormorant &amp; Garamond. Painted by hand, sent to press in the
+            {' '}{new Date().getFullYear()}<sup className="text-xs ml-0.5">th</sup> year of the common reckoning,
+            by S. Sreedhar of San Francisco.
+          </p>
         </div>
       </footer>
     </div>

@@ -23,13 +23,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       return savedTheme;
     }
     
-    // Check system preference
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    
-    // Default to dark mode
-    return 'dark';
+    // Default to the luminous light theme — the glass reads best lit
+    return 'light';
   });
 
   const toggleTheme = () => {
@@ -45,10 +40,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
     
-    // Update meta theme-color for mobile browsers
+    // Update meta theme-color for mobile browsers (warm charcoal / ivory)
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', theme === 'dark' ? '#000000' : '#ffffff');
+      metaThemeColor.setAttribute('content', theme === 'dark' ? '#1F1813' : '#ECE2C7');
     }
   }, [theme]);
 

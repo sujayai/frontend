@@ -1,313 +1,103 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { 
-  Mail, 
-  MapPin, 
-  Clock, 
-  Github,
-  Linkedin
-} from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
+import { Dingbat } from '@/components/painted/Ornament';
+import Watercolor from '@/components/painted/Watercolor';
 
+const XIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
 
+const SOCIALS = [
+  { icon: Github, href: 'https://github.com/sujaysreedharg', label: 'GitHub' },
+  { icon: Linkedin, href: 'https://linkedin.com/in/sujaysreedharg', label: 'LinkedIn' },
+  { icon: XIcon, href: 'https://x.com/sujay_sreedhar', label: 'X' },
+];
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
-      alert('Please fill in all fields.');
-      return;
-    }
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
-    
-    setIsSubmitting(true);
-
-    // Create mailto link with form data
-    const subject = encodeURIComponent(formData.subject);
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-    );
-    const mailtoLink = `mailto:support@sujay.ai?subject=${subject}&body=${body}`;
-    
-    // Open email client
-    try {
-      window.location.href = mailtoLink;
-      
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-      });
-      
-      // Show success message
-      alert('Email client opened! If it didn\'t open automatically, please email support@sujay.ai directly.');
-    } catch (error) {
-      console.error('Error opening email client:', error);
-      alert('Error opening email client. Please email support@sujay.ai directly.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-
-
-  const contactInfo = [
-    {
-      icon: Mail,
-      label: 'Email',
-      value: 'support@sujay.ai',
-      link: 'mailto:support@sujay.ai',
-    },
-    {
-      icon: MapPin,
-      label: 'Location',
-      value: 'San Francisco, CA',
-      link: null,
-    },
-  ];
-
-  const socialLinks = [
-    {
-      icon: Github,
-      label: 'GitHub',
-      url: 'https://github.com/sujaysreedharg',
-      color: 'hover:text-gray-300',
-    },
-    {
-      icon: Linkedin,
-      label: 'LinkedIn',
-      url: 'https://linkedin.com/in/sujaysreedharg',
-      color: 'hover:text-blue-400',
-    },
-    {
-      icon: null,
-      label: 'X',
-      url: 'https://x.com/sujay_sreedhar',
-      color: 'hover:text-gray-200',
-      customIcon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
-      ),
-    },
-  ];
-
   return (
-    <section className="py-20 relative">
-      <div className="container mx-auto px-6">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="text-gradient">Let's Connect</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Interested in collaborating on cutting-edge AI infrastructure projects? 
-            Let's discuss how we can push the boundaries together.
-          </p>
-        </motion.div>
+    <section id="epistola" className="section relative overflow-hidden">
+      <div className="pointer-events-none absolute left-[-10%] top-0 w-[600px] h-[600px] opacity-70">
+        <Watercolor pigment="sienna" intensity={0.22} className="w-full h-full" />
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact form */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Card className="card-blur">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Let's Build Something Amazing Together
-                </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-300">
-                  Ready to collaborate on cutting-edge AI infrastructure, supercomputing solutions, or innovative engineering projects? Let's connect!
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="name" className="text-gray-700 dark:text-gray-300">
-                        Name *
-                      </label>
-                      <input
-                        id="name"
-                        type="text"
-                        value={formData.name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="Your full name"
-                        required
-                        autoComplete="name"
-                        className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 text-base"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-gray-700 dark:text-gray-300">
-                        Email *
-                      </label>
-                      <input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                        placeholder="your.email@example.com"
-                        required
-                        autoComplete="email"
-                        className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 text-base"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="subject" className="text-gray-700 dark:text-gray-300">
-                      Subject *
-                    </label>
-                    <input
-                      id="subject"
-                      type="text"
-                      value={formData.subject}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
-                      placeholder="What's this about?"
-                      required
-                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 text-base"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-gray-700 dark:text-gray-300">
-                      Message *
-                    </label>
-                    <textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                      placeholder="Tell me about your project, collaboration idea, or just say hello!"
-                      required
-                      rows={6}
-                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors duration-300 dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-gray-400 resize-none text-base"
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    variant="neon" 
-                    size="lg" 
-                    className="w-full"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                        <span>Sending Message...</span>
-                      </span>
-                    ) : (
-                      'Send Message'
-                    )}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </motion.div>
+      <div className="container relative">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-6">
+            <div className="marginalia">Plate IV</div>
+          </aside>
 
-          {/* Contact info */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8"
-          >
-            {/* Contact methods */}
-            <Card className="card-blur">
-              <CardHeader>
-                <CardTitle className="text-2xl text-gray-900 dark:text-white">Get In Touch</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {contactInfo.map((info, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ x: 5 }}
-                    className="flex items-center group cursor-pointer"
-                  >
-                  <div className="w-12 h-12 bg-emerald-500/15 dark:bg-emerald-500/20 rounded-lg flex items-center justify-center mr-4 group-hover:bg-emerald-500/25 dark:group-hover:bg-emerald-500/30 transition-colors duration-300">
-                    <info.icon className="w-6 h-6 text-emerald-600 dark:text-emerald-500" />
-                    </div>
-                    <div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">{info.label}</div>
-                      {info.link ? (
-                        <a
-                          href={info.link}
-                        className="text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300"
-                        >
-                          {info.value}
-                        </a>
-                      ) : (
-                      <div className="text-gray-900 dark:text-white">{info.value}</div>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </CardContent>
-            </Card>
+          <div className="col-span-12 md:col-span-11 max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.2 }}
+            >
+              <span className="folio">iv · Epistola</span>
+              <h2 className="display mt-8 text-[clamp(2.6rem,7vw,5rem)] ink text-balance">
+                Write&nbsp;to&nbsp;me,
+                <br />
+                <span className="display-italic gilded">if you would.</span>
+              </h2>
+            </motion.div>
 
-            {/* Social links */}
-            <Card className="glass glass-hover">
-              <CardHeader>
-                <CardTitle className="text-2xl text-gray-900 dark:text-white">Follow Me</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex space-x-4">
-                  {socialLinks.map((social, index) => (
-                    <motion.a
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.1, rotate: 2 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`w-12 h-12 rounded-lg flex items-center justify-center border transition-all duration-300 bg-gray-100 border-gray-200 hover:border-emerald-500/50 dark:bg-white/5 dark:border-white/10 ${social.color}`}
-                    >
-                      {social.customIcon || <social.icon className="w-6 h-6" />}
-                    </motion.a>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 1.2, delay: 0.1 }}
+              className="dropcap mt-14 font-serif text-lg md:text-xl leading-[1.75] ink-soft max-w-2xl"
+            >
+              I take a small number of consulting engagements each year — usually
+              upon the network fabric for AI training, sometimes upon the design
+              of a new system. A short letter is the surest way.
+            </motion.p>
 
-            {/* Availability status */}
-            <Card className="glass glass-hover">
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-emerald-500 rounded-full mr-3 animate-pulse" />
-                  <div>
-                    <div className="text-gray-900 dark:text-white font-medium">Available for projects</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      Currently accepting new consulting opportunities
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+              className="mt-16"
+            >
+              <a
+                href="mailto:support@sujay.ai"
+                className="block display text-[clamp(2rem,5vw,3.4rem)] gilded leading-none hover:text-sienna transition-colors duration-500"
+              >
+                support@sujay.ai
+              </a>
+              <div className="mt-2 marginalia">Postmarked San Francisco</div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 1.2, delay: 0.35 }}
+              className="mt-14 flex items-center gap-8"
+            >
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="ink-button-quiet"
+                >
+                  <s.icon className="w-3.5 h-3.5" />
+                  {s.label}
+                </a>
+              ))}
+            </motion.div>
+
+            <div className="mt-24 flex justify-start">
+              <Dingbat className="w-60 h-7 opacity-90" />
+            </div>
+          </div>
         </div>
       </div>
     </section>

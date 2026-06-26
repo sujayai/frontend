@@ -1,169 +1,131 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { Building2, Calendar } from 'lucide-react';
+import { Dingbat, VineMargin } from '@/components/painted/Ornament';
+import Watercolor from '@/components/painted/Watercolor';
+
+interface Entry {
+  year: string;
+  company: string;
+  role: string;
+  place: string;
+  note: string;
+  href?: string;
+}
+
+const ENTRIES: Entry[] = [
+  {
+    year: 'MMXXV',
+    company: 'Arista Networks',
+    role: 'Technical Solutions',
+    place: 'San Francisco',
+    note: 'On the fabrics of hyperscalers; the inked routes through their cities of light.',
+    href: 'https://www.arista.com',
+  },
+  {
+    year: 'MMXXIV',
+    company: 'xAI',
+    role: 'Supercompute Network',
+    place: 'Memphis',
+    note: 'A cathedral of two hundred thousand minds, learning to think as one. I kept the choir in tune.',
+    href: 'https://x.ai',
+  },
+  {
+    year: 'MMXXIII',
+    company: 'Tesla',
+    role: 'Software Engineering',
+    place: 'Austin',
+    note: 'An intern among machines that drive themselves; small tools, swiftly forged.',
+    href: 'https://www.tesla.com',
+  },
+  {
+    year: 'MMXXII',
+    company: 'Lenovo',
+    role: 'Security Software',
+    place: 'Morrisville',
+    note: 'A first apprenticeship — the Global Security Lab, a workshop in trust.',
+    href: 'https://www.lenovo.com',
+  },
+];
 
 const Experience: React.FC = () => {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
-  const experiences = [
-    {
-      company: 'Arista Networks',
-      role: 'Technical Solutions Engineer',
-      duration: '2025 - Present',
-      location: 'San Francisco, California',
-      description: 'Currently working as a technical solutions engineer debugging network topologies and providing expertise in network infrastructure solutions.',
-      technologies: ['Network Topologies', 'Technical Solutions', 'Debugging', 'Arista EOS', 'Network Infrastructure'],
-      logo: ''
-    },
-    {
-      company: 'xAI',
-      role: 'Supercompute Network Engineer',
-      duration: '2024 - 2025',
-      location: 'Memphis, Tennessee',
-      description: 'Core contributor from start to end of the Grok 3\'s supercompute 200k GPU infrastructure, ensuring that pre-training was smooth without breaking the training jobs.',
-      technologies: ['GPU Infrastructure', 'Supercomputing', 'Network Engineering', 'Training Jobs', 'Pre-training'],
-      logo: ''
-    },
-    {
-      company: 'Tesla',
-      role: 'Software Engineering Intern',
-      duration: '2023 - 2024',
-      location: 'Austin, Texas',
-      description: 'Software engineering intern working on various software projects and gaining experience in large-scale software development.',
-      technologies: ['Software Engineering', 'Software Development', 'Internship', 'Tesla', 'Large-scale Systems'],
-      logo: ''
-    },
-    {
-      company: 'Lenovo',
-      role: 'Security Software Engineering Intern',
-      duration: '2022 - 2023',
-      location: 'Morrisville, North Carolina',
-      description: 'Worked on Global Security Lab for Lenovo Products, developing security solutions using modern web technologies.',
-      technologies: ['Security Engineering', 'Global Security Lab', 'NestJS', 'Software Development', 'Lenovo Products'],
-      logo: ''
-    }
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { x: -50, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
-
   return (
-    <section className="py-20 relative" ref={ref}>
-      <div className="container mx-auto px-6">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="text-gradient">Experience</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Building the future of AI infrastructure at the world's leading tech companies
-          </p>
-        </motion.div>
+    <section id="cursus" className="section relative overflow-hidden">
+      {/* a faint moss wash on the far margin */}
+      <div className="pointer-events-none absolute -right-20 top-20 w-[420px] h-[420px] opacity-60">
+        <Watercolor pigment="moss" intensity={0.2} className="w-full h-full" />
+      </div>
 
-        {/* Timeline */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          className="relative"
-        >
-          {/* Timeline line */}
-          <div className="absolute left-4 md:left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500 via-blue-500 to-purple-500" />
+      <div className="container relative">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          {/* margin */}
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-6">
+            <div className="marginalia">Plate I</div>
+            <VineMargin className="mt-12 w-14 h-[280px] opacity-70" />
+          </aside>
 
-          {experiences.map((exp, index) => (
+          {/* content */}
+          <div className="col-span-12 md:col-span-11">
             <motion.div
-              key={index}
-              variants={itemVariants}
-              className="relative flex items-start mb-12 last:mb-0"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.2, ease: 'easeOut' }}
             >
-              {/* Timeline dot */}
-              <div className="absolute left-2.5 md:left-6 w-4 h-4 rounded-full bg-emerald-500 border-4 border-background z-10 shadow-lg">
-                <div className="absolute inset-0 rounded-full bg-emerald-500 animate-ping opacity-20" />
-              </div>
-
-              {/* Content card */}
-              <div className="ml-12 md:ml-20 w-full">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="card-blur rounded-lg p-6 group cursor-pointer"
-                >
-                  {/* Header */}
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-gradient transition-all duration-300">
-                        {exp.role}
-                      </h3>
-                      <div className="flex items-center text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-                        <Building2 className="w-4 h-4 mr-2" />
-                        {exp.company}
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {exp.location}
-                      </div>
-                    </div>
-                    <div className="flex flex-col lg:items-end text-sm text-gray-500 dark:text-gray-400 mt-2 lg:mt-0">
-                      <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {exp.duration}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <div className="mb-4">
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {exp.description}
-                    </p>
-                  </div>
-
-                  {/* Tech stack */}
-                  <div className="flex flex-wrap gap-2">
-                    {exp.technologies.map((tech, techIndex) => (
-                      <span
-                        key={techIndex}
-                        className="px-3 py-1 text-xs bg-emerald-500/20 text-emerald-400 rounded-full border border-emerald-500/30 group-hover:border-emerald-500/60 transition-colors duration-300"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Hover effect overlay */}
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                </motion.div>
-              </div>
+              <span className="folio">i · Cursus Vitæ</span>
+              <h2 className="display mt-8 text-[clamp(2.4rem,6vw,4.5rem)] ink text-balance">
+                A short course
+                <br />
+                <span className="display-italic">through the ateliers.</span>
+              </h2>
             </motion.div>
-          ))}
-        </motion.div>
 
+            <div className="mt-16 md:mt-24">
+              {ENTRIES.map((e, i) => (
+                <motion.a
+                  key={e.company}
+                  href={e.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: 1.1, delay: i * 0.08, ease: 'easeOut' }}
+                  className="group block relative py-10 md:py-12 grid grid-cols-12 gap-x-6 items-baseline border-t border-[hsl(var(--rule)/0.25)]"
+                >
+                  {/* year in the gutter */}
+                  <span className="col-span-3 md:col-span-2 marginalia ink-faint group-hover:text-sienna transition-colors">
+                    {e.year}
+                  </span>
+
+                  {/* company line */}
+                  <span className="col-span-9 md:col-span-7 block">
+                    <span className="display text-3xl md:text-5xl ink group-hover:gilded transition-colors duration-500">
+                      {e.company}
+                    </span>
+                    <span className="block mt-2 font-serif italic text-base md:text-lg ink-soft">
+                      {e.role} · {e.place}
+                    </span>
+                    <span className="block mt-4 max-w-xl font-serif text-base ink-soft text-pretty">
+                      {e.note}
+                    </span>
+                  </span>
+
+                  {/* marginal mark on hover */}
+                  <span className="col-span-12 md:col-span-3 hidden md:flex justify-end items-baseline">
+                    <span className="font-display text-3xl text-sienna opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      {i + 1}
+                    </span>
+                  </span>
+                </motion.a>
+              ))}
+              <div className="border-t border-[hsl(var(--rule)/0.25)]" />
+
+              <div className="mt-24 flex justify-center">
+                <Dingbat className="w-60 h-7 opacity-90" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

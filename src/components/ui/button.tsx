@@ -4,26 +4,51 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  [
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg",
+    "text-sm font-medium tracking-tight",
+    "transition-all duration-200 ease-out-expo",
+    "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20",
+    "disabled:pointer-events-none disabled:opacity-50",
+    "select-none",
+  ].join(" "),
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        // Primary — solid foreground (Linear-style)
+        default:
+          "bg-foreground text-background hover:bg-foreground/90 active:bg-foreground/80 shadow-sm",
+        // Primary accent — uses brand indigo
+        primary:
+          "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/85 shadow-sm shadow-primary/20",
+        // Outline — subtle border
+        outline:
+          "border border-border bg-background-elevated text-foreground hover:border-foreground/30 hover:bg-background-subtle",
+        // Ghost
+        ghost:
+          "text-foreground hover:bg-background-subtle hover:text-foreground",
+        // Subtle — soft chip-like button
+        subtle:
+          "bg-background-subtle text-foreground border border-border-subtle hover:border-border hover:bg-background-elevated",
+        // Link
+        link:
+          "text-primary underline-offset-4 hover:underline px-0 h-auto",
+        // Destructive
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        // Legacy aliases — map to new variants for backwards compatibility
+        neon:
+          "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/85 shadow-sm shadow-primary/20",
+        cyber:
+          "border border-border bg-background-elevated text-foreground hover:border-foreground/30 hover:bg-background-subtle",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        neon: "bg-gradient-to-r from-emerald-500 to-blue-500 text-white hover:from-emerald-600 hover:to-blue-600 shadow-lg hover:shadow-emerald-500/25 transition-all duration-300",
-        cyber: "bg-black border-2 border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-black transition-all duration-300 font-mono",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
+        sm: "h-8 px-3 text-xs",
+        lg: "h-12 px-6 text-base",
+        xl: "h-14 px-8 text-base",
         icon: "h-10 w-10",
       },
     },
