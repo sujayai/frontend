@@ -1,100 +1,84 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ======================================================================
-   FABRIC — Editorial enterprise. Single Microsoft-AI blue, restraint
-   over flash. Inter Display, generous whitespace, polite motion.
+   AETHER — weightless frosted glass in a dark void.
+   Minimal. Slow. Refractive. Built for orchestrated motion.
    ====================================================================== */
 :root {
-  /* Surfaces */
-  --background: 0 0% 100%;
-  --background-subtle: 218 30% 97%;
-  --background-elevated: 0 0% 100%;
-  --background-deep: 218 25% 93%;
+  /* The void — deep obsidian with an indigo undertone */
+  --bg:            232 28% 6%;
+  --bg-2:          230 30% 8%;
+  --bg-deep:       234 32% 4%;
 
-  /* Foreground */
-  --foreground: 218 38% 10%;
-  --foreground-muted: 218 12% 38%;
-  --foreground-subtle: 218 10% 54%;
+  /* Foreground — soft moonlight, never pure white */
+  --fg:            220 30% 96%;
+  --fg-muted:      220 14% 66%;
+  --fg-faint:      222 12% 44%;
 
-  /* Borders */
-  --border: 218 22% 91%;
-  --border-subtle: 218 24% 94%;
-  --input: 218 22% 88%;
+  /* Glass — translucent white films */
+  --glass-fill:    255 255 255;          /* rgb base for rgba() films */
+  --glass-stroke:  255 255 255;
 
-  /* Primary — Microsoft-style blue */
-  --primary: 207 100% 42%;
-  --primary-foreground: 0 0% 100%;
-  --primary-subtle: 207 90% 95%;
+  /* Accent — icy aurora, used as light, not paint */
+  --accent:        198 100% 72%;
+  --accent-2:      258 90% 76%;
+  --accent-3:      168 80% 64%;
 
-  /* Soft cyan-teal for small inline highlights (used sparingly) */
-  --accent-hl: 192 70% 42%;
+  /* Hairlines */
+  --line:          220 20% 100%;          /* used at low alpha */
 
-  /* Semantic */
-  --success: 152 56% 38%;
-  --destructive: 0 65% 50%;
+  /* shadcn parity (kept so primitives compile) */
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --border: 224 20% 18%;
+  --border-subtle: 224 20% 14%;
+  --input: 224 20% 20%;
+  --primary: var(--accent);
+  --primary-foreground: 232 40% 8%;
+  --ring: var(--accent);
+  --card: 230 30% 8%;
+  --card-foreground: var(--fg);
+  --popover: 230 30% 8%;
+  --popover-foreground: var(--fg);
+  --secondary: 224 20% 16%;
+  --secondary-foreground: var(--fg);
+  --muted: 224 20% 16%;
+  --muted-foreground: var(--fg-muted);
+  --accent-foreground: var(--fg);
+  --destructive: 0 70% 60%;
   --destructive-foreground: 0 0% 100%;
+  --radius: 1.5rem;
 
-  /* shadcn parity */
-  --card: 0 0% 100%;
-  --card-foreground: 218 38% 10%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 218 38% 10%;
-  --secondary: 218 30% 97%;
-  --secondary-foreground: 218 38% 14%;
-  --muted: 218 30% 97%;
-  --muted-foreground: 218 12% 38%;
-  --accent: 207 90% 95%;
-  --accent-foreground: 207 100% 38%;
-  --ring: 207 100% 42%;
-  --radius: 0.625rem;
+  --foreground-muted: var(--fg-muted);
+  --foreground-subtle: var(--fg-faint);
+  --background-subtle: var(--bg-2);
+  --background-elevated: 230 28% 10%;
+  --success: 152 60% 55%;
 }
 
-.dark {
-  /* Deep navy surfaces */
-  --background: 214 50% 8%;
-  --background-subtle: 214 42% 11%;
-  --background-elevated: 214 38% 14%;
-  --background-deep: 215 55% 5%;
-
-  /* Foreground */
-  --foreground: 214 30% 96%;
-  --foreground-muted: 214 16% 70%;
-  --foreground-subtle: 214 12% 52%;
-
-  /* Borders */
-  --border: 214 30% 20%;
-  --border-subtle: 214 28% 16%;
-  --input: 214 30% 22%;
-
-  /* Primary — brighter on navy */
-  --primary: 205 100% 64%;
-  --primary-foreground: 214 50% 8%;
-  --primary-subtle: 207 55% 18%;
-
-  /* Accent highlight */
-  --accent-hl: 192 80% 60%;
-
-  /* Semantic */
-  --success: 152 55% 55%;
-  --destructive: 0 65% 60%;
-  --destructive-foreground: 0 0% 100%;
-
-  --card: 214 42% 11%;
-  --card-foreground: 214 30% 96%;
-  --popover: 214 38% 14%;
-  --popover-foreground: 214 30% 96%;
-  --secondary: 214 30% 20%;
-  --secondary-foreground: 214 30% 96%;
-  --muted: 214 30% 20%;
-  --muted-foreground: 214 16% 70%;
-  --accent: 207 55% 18%;
-  --accent-foreground: 205 100% 78%;
-  --ring: 205 100% 64%;
+/* A "daylight" frosted variant — still glass, just lit from white */
+.light {
+  --bg:            220 40% 96%;
+  --bg-2:          220 36% 92%;
+  --bg-deep:       220 44% 99%;
+  --fg:            228 40% 10%;
+  --fg-muted:      224 14% 36%;
+  --fg-faint:      222 10% 54%;
+  --glass-fill:    255 255 255;
+  --glass-stroke:  255 255 255;
+  --accent:        212 100% 50%;
+  --accent-2:      262 84% 60%;
+  --accent-3:      176 70% 42%;
+  --line:          228 40% 10%;
+  --border: 222 24% 84%;
+  --border-subtle: 222 26% 89%;
+  --background-elevated: 0 0% 100%;
+  --primary-foreground: 0 0% 100%;
 }
 
 /* ======================================================================
@@ -112,10 +96,11 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-feature-settings: "ss01", "cv11";
     overscroll-behavior-y: none;
     -webkit-tap-highlight-color: transparent;
-    -webkit-overflow-scrolling: touch;
+    position: relative;
+    overflow-x: hidden;
   }
 
   html, body {
@@ -125,137 +110,220 @@
   }
 
   ::selection {
-    background: hsl(var(--primary) / 0.22);
-    color: hsl(var(--foreground));
+    background: hsl(var(--accent) / 0.25);
+    color: hsl(var(--fg));
   }
 
   :focus-visible {
-    outline: 2px solid hsl(var(--primary) / 0.55);
-    outline-offset: 3px;
+    outline: 1px solid hsl(var(--accent) / 0.6);
+    outline-offset: 4px;
     border-radius: 4px;
   }
 
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
+    background: hsl(var(--fg) / 0.12);
     border-radius: 8px;
-    border: 2px solid hsl(var(--background));
+    border: 2px solid transparent;
+    background-clip: content-box;
   }
-  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--fg) / 0.22); background-clip: content-box; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 }
 
 /* ======================================================================
-   Components
+   The living backdrop — slow auroral light, seen through everything
+   ====================================================================== */
+.void {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% -10%, hsl(var(--bg-2)) 0%, hsl(var(--bg)) 45%, hsl(var(--bg-deep)) 100%);
+}
+.void::after {
+  /* fine grain so the void never looks flat */
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  opacity: 0.6;
+  mix-blend-mode: screen;
+}
+.aurora-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.light .aurora-orb { opacity: 0.4; filter: blur(90px); }
+
+/* ======================================================================
+   Liquid glass
    ====================================================================== */
 @layer components {
-  .section { @apply relative py-24 md:py-32; }
-  .section-tight { @apply relative py-16 md:py-20; }
+  /* Base glass film. Refraction comes from backdrop-filter: url(#aether-refract). */
+  .glass {
+    position: relative;
+    background:
+      linear-gradient(135deg, rgba(var(--glass-fill), 0.16) 0%, rgba(var(--glass-fill), 0.06) 48%, rgba(var(--glass-fill), 0.11) 100%);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid rgba(var(--glass-stroke), 0.32);
+    border-radius: var(--radius);
+    box-shadow:
+      0 30px 70px -24px rgba(0, 0, 0, 0.62),
+      0 0 0 1px rgba(var(--glass-stroke), 0.05),
+      inset 0 0 0 1px rgba(var(--glass-stroke), 0.08),
+      inset 0 1px 0 rgba(var(--glass-stroke), 0.55),
+      inset 0 -1px 0 rgba(var(--glass-stroke), 0.08),
+      inset 0 0 80px rgba(var(--glass-fill), 0.08);
+  }
+  .light .glass {
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.5) 100%);
+    border-color: rgba(255,255,255,0.8);
+    box-shadow:
+      0 24px 60px -24px rgba(40, 60, 120, 0.30),
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      inset 0 -1px 0 rgba(255,255,255,0.2);
+  }
 
-  /* Eyebrow — small uppercase label with a leading dot */
+  /* Refraction-enabled glass (warps the backdrop). Falls back to plain blur. */
+  @supports (backdrop-filter: url(#aether-refract)) {
+    .glass-refract {
+      backdrop-filter: blur(6px) saturate(160%) url(#aether-refract);
+      -webkit-backdrop-filter: blur(6px) saturate(160%);
+    }
+  }
+
+  /* Specular sweep — a soft moving highlight across the top edge */
+  .glass-specular::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      130deg,
+      rgba(var(--glass-stroke), 0.85) 0%,
+      rgba(var(--glass-stroke), 0.12) 30%,
+      rgba(var(--glass-stroke), 0.05) 60%,
+      rgba(var(--glass-stroke), 0.4) 100%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Iridescent edge — faint aurora caught in the rim */
+  .glass-iris::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from 120deg,
+      hsl(var(--accent) / 0.0),
+      hsl(var(--accent) / 0.5),
+      hsl(var(--accent-2) / 0.4),
+      hsl(var(--accent-3) / 0.45),
+      hsl(var(--accent) / 0.0) 75%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    pointer-events: none;
+  }
+  .glass-iris:hover::after { opacity: 1; }
+
+  /* A small frosted pill */
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium;
+    background: rgba(var(--glass-fill), 0.06);
+    border: 1px solid rgba(var(--glass-stroke), 0.14);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: hsl(var(--fg-muted));
+  }
+  .light .pill {
+    background: rgba(255,255,255,0.6);
+    border-color: rgba(255,255,255,0.8);
+  }
+
+  /* Eyebrow */
   .eyebrow {
-    @apply inline-flex items-center gap-2.5 text-[12px] font-medium uppercase
-           tracking-[0.14em] text-primary;
+    @apply inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.3em];
+    color: hsl(var(--fg-faint));
   }
   .eyebrow::before {
     content: "";
-    @apply inline-block w-1.5 h-1.5 rounded-full bg-current;
+    @apply inline-block w-1.5 h-1.5 rounded-full;
+    background: hsl(var(--accent));
+    box-shadow: 0 0 12px hsl(var(--accent) / 0.8);
   }
 
-  /* Section heading — confident editorial */
-  .section-title {
-    @apply font-display text-4xl md:text-5xl lg:text-[56px] font-semibold tracking-tight
-           text-foreground leading-[1.05];
+  /* Display heading — light, vast, tight */
+  .display {
+    @apply font-sans font-light tracking-[-0.03em];
+    line-height: 0.95;
+  }
+  .light .display { font-weight: 300; }
+
+  /* Aurora text — accent used as light, applied with restraint */
+  .text-aurora {
+    background: linear-gradient(120deg, hsl(var(--accent)), hsl(var(--accent-2)) 50%, hsl(var(--accent-3)));
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
   }
 
-  .section-subtitle {
-    @apply mt-5 text-lg md:text-xl text-foreground-muted max-w-2xl leading-relaxed;
-  }
-
-  /* Surface — flat, sober card */
-  .surface {
-    @apply rounded-xl border border-border bg-background-elevated transition-all duration-500;
-  }
-  .surface-hover { @apply hover:border-foreground/20; }
-  .dark .surface-hover { @apply hover:border-foreground/30; }
-  .surface-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px -12px hsl(var(--primary) / 0.18);
-  }
-
-  /* Glass — frosted but very subtle */
-  .glass {
-    @apply backdrop-blur-xl border;
-    background: hsl(var(--background) / 0.7);
-    border-color: hsl(var(--border) / 0.7);
-  }
+  .text-muted { color: hsl(var(--fg-muted)); }
+  .text-faint { color: hsl(var(--fg-faint)); }
 
   .text-balance { text-wrap: balance; }
   .text-pretty  { text-wrap: pretty; }
 
-  /* Inline blue accent — use to color ONE word per headline max */
-  .text-accent { color: hsl(var(--primary)); }
+  .link-quiet {
+    @apply inline-flex items-center gap-2 transition-colors duration-300;
+    color: hsl(var(--fg-muted));
+  }
+  .link-quiet:hover { color: hsl(var(--fg)); }
 
-  /* Chip */
-  .chip {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full
-           bg-background-subtle border border-border-subtle text-foreground-muted
-           transition-colors duration-200;
-  }
-  .chip-primary {
-    @apply bg-primary-subtle border-primary/25 text-[hsl(var(--accent-foreground))];
-  }
+  .hairline { background: hsl(var(--line) / 0.10); }
+  .light .hairline { background: hsl(var(--line) / 0.10); }
 
-  /* Animated underline link */
-  .link-underline { position: relative; transition: color 0.2s; }
-  .link-underline::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 100%;
-    height: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .link-underline:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
+  /* Section rhythm — generous void */
+  .section { @apply relative py-32 md:py-44; }
 
-  /* Input */
-  .input-field {
-    @apply w-full px-4 py-3 rounded-lg bg-background-subtle border border-border
-           text-foreground placeholder:text-foreground-subtle
-           focus:border-primary focus:ring-4 focus:ring-primary/15 focus:outline-none
-           transition-all duration-200;
+  .input-glass {
+    @apply w-full px-5 py-4 rounded-2xl text-base transition-all duration-300;
+    background: rgba(var(--glass-fill), 0.05);
+    border: 1px solid rgba(var(--glass-stroke), 0.14);
+    color: hsl(var(--fg));
   }
-
-  /* Mono label */
-  .label-mono {
-    @apply font-mono text-[11px] uppercase tracking-[0.16em] text-foreground-muted;
-  }
-
-  /* Editorial "arrow link" — used in story blocks */
-  .arrow-link {
-    @apply inline-flex items-center gap-2 font-medium text-primary
-           hover:text-primary/80 transition-colors duration-200;
-  }
-  .arrow-link svg {
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .arrow-link:hover svg {
-    transform: translateX(3px);
+  .input-glass::placeholder { color: hsl(var(--fg-faint)); }
+  .input-glass:focus {
+    outline: none;
+    border-color: hsl(var(--accent) / 0.5);
+    background: rgba(var(--glass-fill), 0.08);
   }
 }
 
@@ -266,70 +334,42 @@
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* Prose for the article reader */
-  .prose-fabric { @apply max-w-none; }
-  .prose-fabric h1 {
-    @apply font-display text-4xl md:text-5xl font-semibold tracking-tight text-foreground mt-12 mb-6 first:mt-0;
-  }
-  .prose-fabric h2 {
-    @apply font-display text-2xl md:text-3xl font-semibold tracking-tight text-foreground mt-12 mb-4;
-  }
-  .prose-fabric h3 {
-    @apply font-display text-xl md:text-2xl font-semibold text-foreground mt-8 mb-3;
-  }
-  .prose-fabric p {
-    @apply text-[1.0625rem] leading-[1.75] text-foreground/85 mb-5;
-  }
-  .prose-fabric strong { @apply text-foreground font-semibold; }
-  .prose-fabric em     { @apply text-foreground/90 italic; }
-  .prose-fabric a      { @apply text-primary underline underline-offset-2 hover:text-primary/80; }
-  .prose-fabric ul     { @apply list-disc marker:text-primary pl-6 mb-5 space-y-2 text-foreground/85; }
-  .prose-fabric ol     { @apply list-decimal marker:text-primary pl-6 mb-5 space-y-2 text-foreground/85; }
-  .prose-fabric code   {
-    @apply font-mono text-[0.875em] px-1.5 py-0.5 rounded-md bg-background-subtle border border-border-subtle text-foreground;
-  }
-  .prose-fabric hr {
-    @apply my-12 border-0 h-px;
-    background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
-  }
-  .prose-fabric blockquote {
-    @apply border-l-2 border-primary pl-5 italic text-foreground-muted my-6;
-  }
+  .perspective { perspective: 1600px; }
+  .preserve-3d { transform-style: preserve-3d; }
+  .backface-hidden { backface-visibility: hidden; }
+
+  /* Article reader */
+  .prose-aether { @apply max-w-none; }
+  .prose-aether h1 { @apply font-sans font-light text-4xl md:text-5xl tracking-tight text-[hsl(var(--fg))] mt-14 mb-6 first:mt-0; }
+  .prose-aether h2 { @apply font-sans font-light text-2xl md:text-3xl tracking-tight text-[hsl(var(--fg))] mt-14 mb-4; }
+  .prose-aether h3 { @apply font-sans font-normal text-xl md:text-2xl text-[hsl(var(--fg))] mt-10 mb-3; }
+  .prose-aether p  { @apply text-[1.075rem] leading-[1.85] mb-6; color: hsl(var(--fg-muted)); }
+  .prose-aether strong { @apply font-medium text-[hsl(var(--fg))]; }
+  .prose-aether em { @apply italic; color: hsl(var(--fg)); }
+  .prose-aether a  { color: hsl(var(--accent)); @apply underline underline-offset-4 decoration-1; }
+  .prose-aether ul { @apply list-disc pl-6 mb-6 space-y-2.5; color: hsl(var(--fg-muted)); }
+  .prose-aether ul { marker: hsl(var(--accent)); }
+  .prose-aether ol { @apply list-decimal pl-6 mb-6 space-y-2.5; color: hsl(var(--fg-muted)); }
+  .prose-aether code { @apply font-mono text-[0.85em] px-1.5 py-0.5 rounded-md; background: rgba(var(--glass-fill),0.08); border: 1px solid rgba(var(--glass-stroke),0.12); color: hsl(var(--fg)); }
+  .prose-aether hr { @apply my-14 border-0 h-px; background: hsl(var(--line) / 0.12); }
+  .prose-aether blockquote { @apply pl-6 my-8 italic text-xl font-light; border-left: 1px solid hsl(var(--accent) / 0.5); color: hsl(var(--fg)); }
 }
 
 /* ======================================================================
-   Code block
+   Code block (reader)
    ====================================================================== */
 .code-block {
-  @apply font-mono text-sm rounded-xl border border-border overflow-hidden bg-background-subtle my-8;
+  @apply font-mono text-sm rounded-2xl overflow-hidden my-8;
+  background: rgba(var(--glass-fill), 0.04);
+  border: 1px solid rgba(var(--glass-stroke), 0.12);
 }
 .code-block-header {
-  @apply flex items-center justify-between px-4 py-3 border-b border-border-subtle bg-background-elevated;
+  @apply flex items-center justify-between px-4 py-3;
+  border-bottom: 1px solid rgba(var(--glass-stroke), 0.1);
 }
 .code-line { @apply flex items-start; }
-.line-number {
-  @apply select-none pr-4 text-foreground-subtle text-right;
-  min-width: 3rem;
-}
-.line-content {
-  @apply pl-4 border-l border-border-subtle whitespace-pre flex-1 text-foreground/90;
-}
-.code-block.fullscreen {
-  position: fixed;
-  inset: 2rem;
-  z-index: 100;
-  background: hsl(var(--background));
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-}
+.line-number { @apply select-none pr-4 text-right; min-width: 3rem; color: hsl(var(--fg-faint)); }
+.line-content { @apply pl-4 whitespace-pre flex-1; border-left: 1px solid rgba(var(--glass-stroke), 0.1); color: hsl(var(--fg) / 0.9); }
+.code-block.fullscreen { position: fixed; inset: 2rem; z-index: 100; background: hsl(var(--bg)); display: flex; flex-direction: column; margin: 0; }
 .code-block.fullscreen .code-block-content { flex: 1; overflow: auto; }
 body.code-fullscreen-active { overflow: hidden; }
-
-/* Animated pulse used by SVG illustrations */
-@keyframes light-pulse {
-  0%   { stroke-dashoffset: 200; opacity: 0; }
-  20%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { stroke-dashoffset: 0;   opacity: 0; }
-}

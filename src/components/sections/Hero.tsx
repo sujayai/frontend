@@ -1,120 +1,230 @@
 import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import DatacenterScene from '@/components/illustrations/DatacenterScene';
-import { ease, fadeUpStagger, item } from '@/lib/motion';
+import { motion, useScroll, useTransform, useMotionTemplate } from 'framer-motion';
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import Glass from '@/components/ui/Glass';
+import Float from '@/components/ui/Float';
+import { useTilt, useParallaxLayer } from '@/lib/useTilt';
+import { gravitySettle, staggerSlow } from '@/lib/motion';
 
 const Hero: React.FC = () => {
   const { scrollY } = useScroll();
-  const visualY = useTransform(scrollY, [0, 600], [0, 60]);
+  const nameY = useTransform(scrollY, [0, 700], [0, -140]);
+  const stackY = useTransform(scrollY, [0, 700], [0, 90]);
+  const fade = useTransform(scrollY, [0, 560], [1, 0]);
+
+  const tilt = useTilt({ max: 14, mass: 1.6, stiffness: 80, damping: 13, lift: 30 });
+  const chipA = useParallaxLayer(tilt.px, tilt.py, 42);
+  const chipB = useParallaxLayer(tilt.px, tilt.py, 64);
+  const portrait = useParallaxLayer(tilt.px, tilt.py, 22);
+  const glare = useMotionTemplate`radial-gradient(220px circle at ${tilt.glareX} ${tilt.glareY}, rgba(255,255,255,0.18), transparent 60%)`;
 
   return (
-    <section className="relative overflow-hidden pt-20 md:pt-28 pb-24 md:pb-32">
-      {/* Soft top wash — no rainbow */}
-      <div
+    <section className="relative min-h-[100svh] flex items-center overflow-hidden pt-24 pb-20">
+      {/* Huge faint name, parallaxing behind everything */}
+      <motion.div
+        style={{ y: nameY, opacity: fade }}
         aria-hidden="true"
-        className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1400px] h-[600px] opacity-70 dark:opacity-100"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 70% at 50% 50%, hsl(var(--primary) / 0.12), transparent 70%)',
-          filter: 'blur(20px)',
-        }}
-      />
+        className="pointer-events-none absolute inset-x-0 top-[18%] flex justify-center select-none"
+      >
+        <span className="display text-[26vw] leading-none text-[hsl(var(--fg))] opacity-[0.035] whitespace-nowrap">
+          SREEDHAR
+        </span>
+      </motion.div>
 
       <motion.div
-        variants={fadeUpStagger(0.1, 0.12)}
+        style={{ opacity: fade }}
+        variants={staggerSlow(0.15, 0.14)}
         initial="hidden"
         animate="visible"
-        className="container relative"
+        className="container relative z-10"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-12 items-center">
-          {/* Left — copy */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          {/* Left — quiet copy */}
           <div className="lg:col-span-6">
-            <motion.div variants={item}>
-              <span className="eyebrow">AI Infrastructure</span>
+            <motion.div variants={gravitySettle}>
+              <span className="eyebrow">Aether — AI Infrastructure</span>
             </motion.div>
 
             <motion.h1
-              variants={item}
-              className="mt-7 font-display font-semibold text-[44px] sm:text-6xl lg:text-7xl xl:text-[80px] leading-[1.02] tracking-tight text-foreground text-balance"
+              variants={gravitySettle}
+              className="display mt-8 text-[clamp(3rem,8vw,7rem)] text-[hsl(var(--fg))]"
             >
-              The infrastructure behind <span className="text-accent">the AI era</span>.
+              Sujay
+              <br />
+              <span className="text-aurora">Sreedhar</span>
             </motion.h1>
 
             <motion.p
-              variants={item}
-              className="mt-7 text-lg sm:text-xl text-foreground-muted leading-relaxed text-pretty max-w-xl"
+              variants={gravitySettle}
+              className="mt-10 max-w-md text-lg md:text-xl font-light leading-relaxed text-muted text-pretty"
             >
-              I design the network fabric and operate the GPU clusters that keep
-              frontier AI training healthy at hundreds of thousands of accelerators.
+              I build the network fabric beneath large-scale AI — where two
+              hundred thousand GPUs train as one.
             </motion.p>
 
-            <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-3">
-              <Button
-                size="lg"
-                variant="primary"
+            <motion.div variants={gravitySettle} className="mt-12 flex items-center gap-5">
+              <button
                 onClick={() =>
-                  document
-                    .getElementById('network-story')
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })
                 }
-                className="group"
+                className="group glass glass-specular glass-iris rounded-full px-7 py-3.5 text-sm font-medium text-[hsl(var(--fg))] transition-transform duration-500 hover:-translate-y-0.5"
               >
-                Explore the work
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="ghost"
+                <span className="inline-flex items-center gap-2">
+                  Enter the work
+                  <ArrowDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
+                </span>
+              </button>
+              <button
                 onClick={() =>
                   window.dispatchEvent(new CustomEvent('switchTab', { detail: 'blog' }))
                 }
-                className="group"
+                className="link-quiet text-sm font-medium"
               >
                 Read the writing
-                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Button>
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
             </motion.div>
           </div>
 
-          {/* Right — data-center render with portrait inset */}
+          {/* Right — floating 3D glass stack */}
           <motion.div
-            variants={item}
-            style={{ y: visualY }}
-            className="lg:col-span-6"
+            variants={gravitySettle}
+            style={{ y: stackY }}
+            className="lg:col-span-6 flex justify-center lg:justify-end"
           >
-            <div className="relative overflow-hidden rounded-2xl border border-border bg-background-deep shadow-[0_30px_80px_-30px_hsl(var(--primary)/0.35)]">
-              <DatacenterScene className="block w-full h-auto" />
+            <div
+              ref={tilt.ref}
+              {...tilt.handlers}
+              className="perspective relative w-full max-w-md"
+              style={{ aspectRatio: '4 / 5' }}
+            >
+              {/* Soft halo lighting the glass from behind */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -inset-10 -z-10"
+                style={{
+                  background:
+                    'radial-gradient(60% 55% at 50% 45%, hsl(var(--accent) / 0.45), transparent 70%), radial-gradient(50% 50% at 70% 80%, hsl(var(--accent-2) / 0.4), transparent 70%)',
+                  filter: 'blur(30px)',
+                }}
+              />
+              <motion.div
+                className="preserve-3d absolute inset-0"
+                style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY }}
+              >
+                <Float amplitude={12} duration={9} className="absolute inset-0">
+                  {/* Main monolith */}
+                  <Glass
+                    refract
+                    iris
+                    className="relative h-full w-full p-8 flex flex-col justify-between overflow-hidden"
+                  >
+                    {/* moving glare */}
+                    <motion.div
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 rounded-[inherit]"
+                      style={{ background: glare }}
+                    />
 
-              {/* Portrait inset — bottom-left corner */}
-              <div className="absolute bottom-5 left-5 flex items-center gap-3 pl-1 pr-4 py-1 rounded-full bg-background/85 backdrop-blur-md border border-white/10">
-                <div className="relative">
-                  <img
-                    src="/profile.jpg"
-                    alt="Sujay Sreedhar"
-                    className="w-10 h-10 rounded-full object-cover ring-1 ring-white/10"
-                  />
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[hsl(var(--success))] border-2 border-background" />
-                </div>
-                <div>
-                  <div className="text-[13px] font-medium text-foreground leading-tight">
-                    Sujay Sreedhar
-                  </div>
-                  <div className="text-[11px] text-foreground-muted leading-tight">
-                    San Francisco · Available
-                  </div>
-                </div>
-              </div>
+                    {/* portrait */}
+                    <motion.div
+                      style={{ x: portrait.x, y: portrait.y }}
+                      className="relative"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="relative">
+                          <img
+                            src="/profile.jpg"
+                            alt="Sujay Sreedhar"
+                            className="w-16 h-16 rounded-2xl object-cover ring-1 ring-white/15"
+                          />
+                          <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[hsl(var(--accent-3))] ring-2 ring-[hsl(var(--bg))]" />
+                        </div>
+                        <div>
+                          <div className="text-[hsl(var(--fg))] font-medium">Sujay Sreedhar</div>
+                          <div className="text-sm text-faint">San Francisco · Available</div>
+                        </div>
+                      </div>
+                    </motion.div>
 
-              {/* Top-right meta label */}
-              <div className="absolute top-5 right-5 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md border border-white/10 text-[11px] font-mono uppercase tracking-[0.18em] text-foreground-muted">
-                <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--primary))]" />
-                Cluster · 200k GPUs
-              </div>
+                    {/* live readout */}
+                    <div className="relative">
+                      <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-faint">
+                        Cluster scale
+                      </div>
+                      <div className="mt-2 flex items-end gap-2">
+                        <span className="display text-6xl text-[hsl(var(--fg))]">200</span>
+                        <span className="display text-3xl text-aurora pb-1">K</span>
+                        <span className="text-sm text-muted pb-2">GPUs</span>
+                      </div>
+                      {/* tiny equaliser bars */}
+                      <div className="mt-4 flex items-end gap-1 h-8">
+                        {[40, 70, 45, 90, 60, 80, 50, 75, 55, 85, 48, 68].map((h, i) => (
+                          <motion.span
+                            key={i}
+                            className="flex-1 rounded-full bg-[hsl(var(--accent))]/50"
+                            animate={{ height: [`${h * 0.4}%`, `${h}%`, `${h * 0.4}%`] }}
+                            transition={{
+                              duration: 1.8 + (i % 4) * 0.4,
+                              repeat: Infinity,
+                              ease: 'easeInOut',
+                              delay: i * 0.08,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </Glass>
+                </Float>
+
+                {/* Floating chip A — front, parallax */}
+                <motion.div
+                  style={{ x: chipA.x, y: chipA.y, transform: 'translateZ(70px)' }}
+                  className="absolute -left-6 top-[28%]"
+                >
+                  <Float amplitude={9} duration={7} delay={0.6}>
+                    <Glass iris className="px-4 py-3 rounded-2xl">
+                      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-faint">
+                        Fabric
+                      </div>
+                      <div className="text-sm text-[hsl(var(--fg))] mt-0.5">RDMA · RoCE</div>
+                    </Glass>
+                  </Float>
+                </motion.div>
+
+                {/* Floating chip B — further front */}
+                <motion.div
+                  style={{ x: chipB.x, y: chipB.y, transform: 'translateZ(120px)' }}
+                  className="absolute -right-5 bottom-[16%]"
+                >
+                  <Float amplitude={11} duration={8} delay={1.1}>
+                    <Glass iris className="px-4 py-3 rounded-2xl">
+                      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-faint">
+                        Uptime
+                      </div>
+                      <div className="text-sm text-[hsl(var(--fg))] mt-0.5">
+                        weeks, unbroken
+                      </div>
+                    </Glass>
+                  </Float>
+                </motion.div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
+      </motion.div>
+
+      {/* scroll cue */}
+      <motion.div
+        style={{ opacity: fade }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+      >
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-faint">Scroll</span>
+        <motion.span
+          animate={{ y: [0, 8, 0], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+          className="block w-px h-10 bg-[hsl(var(--fg))]/30"
+        />
       </motion.div>
     </section>
   );

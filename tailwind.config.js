@@ -115,6 +115,18 @@ export default {
         "rotate-slow": {
           to: { transform: "rotate(360deg)" },
         },
+        "drift-1": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "50%": { transform: "translate(8vw, 6vh) scale(1.15)" },
+        },
+        "drift-2": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "50%": { transform: "translate(-6vw, 8vh) scale(0.9)" },
+        },
+        "drift-3": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "50%": { transform: "translate(5vw, -7vh) scale(1.1)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -130,6 +142,9 @@ export default {
         "rotate-slow": "rotate-slow 36s linear infinite",
         "rotate-slower": "rotate-slow 60s linear infinite",
         "rotate-reverse": "rotate-slow 48s linear infinite reverse",
+        "drift-1": "drift-1 26s ease-in-out infinite",
+        "drift-2": "drift-2 32s ease-in-out infinite",
+        "drift-3": "drift-3 38s ease-in-out infinite",
       },
       fontFamily: {
         // Inter for everything — tight geometric humanist

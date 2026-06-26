@@ -279,15 +279,15 @@ const BlogPost: React.FC<BlogPostProps> = ({ postId, onBack }) => {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mb-12"
         >
-          <div className="flex items-center gap-2">
-            <span className="chip chip-primary">{post.category}</span>
-            <span className="text-foreground-subtle text-xs">·</span>
-            <span className="label-mono text-[10px]">{post.readTime}</span>
+          <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
+            <span className="text-aurora">{post.category}</span>
+            <span className="w-5 h-px hairline" />
+            <span>{post.readTime}</span>
           </div>
-          <h1 className="mt-6 font-display text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-foreground leading-[1.05] text-balance">
+          <h1 className="mt-6 display text-[clamp(2.25rem,6vw,4rem)] text-[hsl(var(--fg))] leading-[1.05] text-balance">
             {post.title}
           </h1>
-          <p className="mt-6 text-lg md:text-xl text-foreground-muted leading-relaxed text-pretty">
+          <p className="mt-6 text-lg md:text-xl font-light text-muted leading-relaxed text-pretty">
             {post.summary}
           </p>
 
@@ -341,7 +341,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ postId, onBack }) => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="prose-fabric"
+          className="prose-aether"
         >
           {renderContent(post.content || '')}
         </motion.div>
@@ -355,7 +355,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ postId, onBack }) => {
         >
           <div className="flex flex-wrap items-center justify-between gap-6">
             <div>
-              <div className="label-mono text-[10px] mb-2">Share</div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-faint mb-2">Share</div>
               <div className="flex items-center gap-2">
                 <a
                   href={shareTwitter}

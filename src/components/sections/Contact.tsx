@@ -1,8 +1,9 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Github, Linkedin, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { fadeUp, inViewProps } from '@/lib/motion';
+import { motion, useMotionTemplate } from 'framer-motion';
+import { Github, Linkedin, ArrowUpRight } from 'lucide-react';
+import Glass from '@/components/ui/Glass';
+import { useTilt } from '@/lib/useTilt';
+import { glassRise, inViewProps } from '@/lib/motion';
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -17,70 +18,71 @@ const SOCIALS = [
 ];
 
 const Contact: React.FC = () => {
+  const tilt = useTilt({ max: 6, mass: 1.6, stiffness: 70, damping: 16 });
+  const glare = useMotionTemplate`radial-gradient(500px circle at ${tilt.glareX} ${tilt.glareY}, rgba(255,255,255,0.1), transparent 55%)`;
+
   return (
     <section id="contact" className="section">
       <div className="container">
         <motion.div
           {...inViewProps}
-          variants={fadeUp}
-          className="relative overflow-hidden rounded-3xl border border-border bg-background-elevated p-10 md:p-16"
+          variants={glassRise}
+          ref={tilt.ref}
+          {...tilt.handlers}
+          className="perspective"
         >
-          {/* Soft accent backdrop — no rainbow */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(60% 80% at 100% 0%, hsl(var(--primary) / 0.18), transparent 70%)',
-            }}
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 opacity-30"
-            style={{
-              backgroundImage:
-                'radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.08) 1px, transparent 0)',
-              backgroundSize: '28px 28px',
-              maskImage: 'radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%)',
-            }}
-          />
+          <motion.div
+            className="preserve-3d"
+            style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY }}
+          >
+            <Glass iris refract className="relative overflow-hidden p-12 md:p-20 text-center">
+              <motion.div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 rounded-[inherit]"
+                style={{ background: glare }}
+              />
 
-          <div className="relative z-10 max-w-3xl">
-            <span className="eyebrow">Let&apos;s talk</span>
+              <div className="relative">
+                <span className="eyebrow">Let&apos;s talk</span>
+                <h2 className="display mt-6 text-[clamp(2.5rem,6vw,5rem)] text-[hsl(var(--fg))] text-balance">
+                  Have a hard
+                  <br />
+                  <span className="text-aurora">infrastructure</span> problem?
+                </h2>
 
-            <h2 className="mt-6 font-display text-4xl md:text-5xl lg:text-[56px] font-semibold tracking-tight text-foreground leading-[1.05] text-balance">
-              Have a hard infrastructure problem? <br className="hidden md:block" />
-              <span className="text-accent">Let&apos;s build the next one</span>.
-            </h2>
+                <p className="mt-8 mx-auto max-w-md text-lg font-light text-muted text-pretty">
+                  Open to consulting, design reviews, and conversations about networking for AI.
+                </p>
 
-            <p className="mt-6 text-lg md:text-xl text-foreground-muted leading-relaxed max-w-xl text-pretty">
-              Open to consulting, infrastructure design reviews, and conversations about
-              networking for AI training. Email is the fastest way in.
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg" variant="primary" className="group">
-                <a href="mailto:support@sujay.ai">
-                  support@sujay.ai
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                </a>
-              </Button>
-              <div className="flex items-center gap-2">
-                {SOCIALS.map((s) => (
+                <div className="mt-12 flex flex-col items-center gap-8">
                   <a
-                    key={s.label}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.label}
-                    className="grid place-items-center w-11 h-11 rounded-lg border border-border bg-background-elevated text-foreground-muted hover:text-foreground hover:border-foreground/30 transition-colors"
+                    href="mailto:support@sujay.ai"
+                    className="group glass glass-specular glass-iris rounded-full px-8 py-4 text-base font-medium text-[hsl(var(--fg))] transition-transform duration-500 hover:-translate-y-1"
                   >
-                    <s.icon className="w-4 h-4" strokeWidth={1.75} />
+                    <span className="inline-flex items-center gap-2.5">
+                      support@sujay.ai
+                      <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </span>
                   </a>
-                ))}
+
+                  <div className="flex items-center gap-3">
+                    {SOCIALS.map((s) => (
+                      <a
+                        key={s.label}
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={s.label}
+                        className="grid place-items-center w-12 h-12 rounded-full glass text-faint hover:text-[hsl(var(--fg))] transition-colors duration-300"
+                      >
+                        <s.icon className="w-4 h-4" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </Glass>
+          </motion.div>
         </motion.div>
       </div>
     </section>

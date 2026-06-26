@@ -1,143 +1,137 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Github, ExternalLink, ArrowUpRight } from 'lucide-react';
-import Section from '@/components/ui/Section';
-import { Button } from '@/components/ui/button';
-import { ArtCDN, ArtML, ArtForecast, ArtAuctions } from '@/components/illustrations/ProjectArt';
-import { fadeUpStagger, item, inViewProps } from '@/lib/motion';
+import { motion, useMotionTemplate } from 'framer-motion';
+import { Github, ArrowUpRight } from 'lucide-react';
+import SectionHeading from '@/components/ui/SectionHeading';
+import Glass from '@/components/ui/Glass';
+import { useTilt } from '@/lib/useTilt';
+import { gravitySettle, staggerSlow, inViewProps } from '@/lib/motion';
 
 interface Project {
   title: string;
   blurb: string;
-  art: React.ComponentType<{ className?: string }>;
   tech: string[];
-  status: 'In production' | 'Research' | 'Archived';
+  status: 'Live' | 'Research' | 'Archived';
   github: string;
 }
 
 const PROJECTS: Project[] = [
   {
     title: 'Quickly v2',
-    blurb: 'A multi-tenant CDN provisioned on bare-metal Linux hosts with strong isolation.',
-    art: ArtCDN,
-    tech: ['Ansible', 'Open vSwitch', 'Docker', 'Libvirt', 'etcd'],
-    status: 'In production',
+    blurb: 'A multi-tenant CDN provisioned on bare-metal Linux with strong isolation.',
+    tech: ['Ansible', 'Open vSwitch', 'Libvirt', 'etcd'],
+    status: 'Live',
     github: 'https://github.com/sujaysreedharg/quicklyv2',
   },
   {
     title: 'Admission Oracle',
-    blurb: 'Graduate-admission ML model, containerized and deployed to Heroku.',
-    art: ArtML,
-    tech: ['Python', 'scikit-learn', 'Docker', 'Heroku'],
-    status: 'In production',
-    github:
-      'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
+    blurb: 'A graduate-admission model, containerized and deployed to the cloud.',
+    tech: ['Python', 'scikit-learn', 'Docker'],
+    status: 'Live',
+    github: 'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
   },
   {
     title: 'Prophet Forecasts',
-    blurb: 'A time-series forecasting pipeline using Facebook Prophet on COVID-19 data.',
-    art: ArtForecast,
+    blurb: 'A time-series forecasting pipeline built on Facebook Prophet.',
     tech: ['Python', 'Prophet', 'Jupyter'],
     status: 'Research',
-    github:
-      'https://github.com/sujaysreedharg/Covid-19-future-prediction-with-time-series-forecasting-using-prophet-model',
+    github: 'https://github.com/sujaysreedharg/Covid-19-future-prediction-with-time-series-forecasting-using-prophet-model',
   },
   {
     title: 'Auctions',
-    blurb: "eBay-style auction platform with listings, bidding, comments, watchlists.",
-    art: ArtAuctions,
-    tech: ['Python', 'Django', 'Postgres', 'Heroku'],
+    blurb: 'An auction marketplace — listings, bids, comments, watchlists.',
+    tech: ['Django', 'Postgres'],
     status: 'Archived',
     github: 'https://github.com/sujaysreedharg/Auctions-django-web-app-deployment-on-Heroku',
   },
 ];
 
-const statusStyle: Record<Project['status'], string> = {
-  'In production': 'bg-success/10 text-[hsl(var(--success))] border-[hsl(var(--success))]/30',
-  'Research': 'chip-primary',
-  'Archived': '',
-};
-
 const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
-  const Art = project.art;
-  return (
-    <motion.article
-      variants={item}
-      className="surface surface-hover overflow-hidden group flex flex-col h-full"
-    >
-      {/* Art */}
-      <div className="relative overflow-hidden border-b border-border">
-        <Art className="block w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]" />
-        <ArrowUpRight className="absolute top-3 right-3 w-4 h-4 text-foreground-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-      </div>
+  const tilt = useTilt({ max: 9, mass: 1.4, stiffness: 85, damping: 14 });
+  const glare = useMotionTemplate`radial-gradient(300px circle at ${tilt.glareX} ${tilt.glareY}, rgba(255,255,255,0.12), transparent 55%)`;
 
-      <div className="p-6 flex flex-col flex-1">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-xl font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
+  return (
+    <motion.div variants={gravitySettle} ref={tilt.ref} {...tilt.handlers} className="perspective h-full">
+      <motion.div
+        className="preserve-3d h-full"
+        style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY }}
+      >
+        <Glass iris refract className="relative h-full p-8 flex flex-col overflow-hidden">
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-[inherit]"
+            style={{ background: glare }}
+          />
+          <div className="relative flex items-start justify-between">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
+              {project.status}
+            </span>
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${project.title} repository`}
+              className="text-faint hover:text-[hsl(var(--fg))] transition-colors"
+            >
+              <Github className="w-4 h-4" />
+            </a>
+          </div>
+
+          <h3 className="relative mt-10 text-2xl md:text-3xl font-light tracking-tight text-[hsl(var(--fg))]">
             {project.title}
           </h3>
-          <span className={`chip whitespace-nowrap ${statusStyle[project.status]}`}>
-            {project.status}
-          </span>
-        </div>
+          <p className="relative mt-3 text-muted font-light leading-relaxed flex-1 text-pretty">
+            {project.blurb}
+          </p>
 
-        <p className="mt-3 text-sm text-foreground-muted leading-relaxed flex-1">
-          {project.blurb}
-        </p>
-
-        <div className="mt-5 flex flex-wrap gap-1.5">
-          {project.tech.map((t) => (
-            <span key={t} className="chip">{t}</span>
-          ))}
-        </div>
-
-        <div className="mt-6 pt-5 border-t border-border-subtle">
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium text-foreground-muted hover:text-primary transition-colors"
-          >
-            <Github className="w-4 h-4" />
-            Repository
-          </a>
-        </div>
-      </div>
-    </motion.article>
+          <div className="relative mt-8 flex flex-wrap gap-2">
+            {project.tech.map((t) => (
+              <span
+                key={t}
+                className="font-mono text-[11px] text-faint px-2.5 py-1 rounded-full border border-[hsl(var(--line)/0.12)]"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </Glass>
+      </motion.div>
+    </motion.div>
   );
 };
 
 const Projects: React.FC = () => {
   return (
-    <Section
-      id="projects"
-      eyebrow="Selected projects"
-      title="Things I've built."
-      subtitle="Side projects and coursework — from CDN automation to ML pipelines."
-    >
-      <motion.div
-        {...inViewProps}
-        variants={fadeUpStagger(0, 0.08)}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
-      >
-        {PROJECTS.map((p) => (
-          <ProjectCard key={p.title} project={p} />
-        ))}
-      </motion.div>
+    <section id="projects" className="section">
+      <div className="container">
+        <SectionHeading
+          eyebrow="Selected work"
+          title="Things I've built."
+          subtitle="A few projects, kept simple."
+        />
 
-      <div className="mt-12 flex justify-center">
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={() =>
-            window.open('https://github.com/sujaysreedharg?tab=repositories', '_blank', 'noopener,noreferrer')
-          }
+        <motion.div
+          {...inViewProps}
+          variants={staggerSlow(0.1, 0.1)}
+          className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          See all repositories
-          <ExternalLink className="w-4 h-4" />
-        </Button>
+          {PROJECTS.map((p) => (
+            <ProjectCard key={p.title} project={p} />
+          ))}
+        </motion.div>
+
+        <div className="mt-12">
+          <a
+            href="https://github.com/sujaysreedharg?tab=repositories"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-quiet text-sm font-medium"
+          >
+            Every repository
+            <ArrowUpRight className="w-4 h-4" />
+          </a>
+        </div>
       </div>
-    </Section>
+    </section>
   );
 };
 

@@ -46,3 +46,31 @@ export const inViewProps = {
   whileInView: 'visible' as const,
   viewport: { once: true, margin: '-80px' },
 };
+
+/** Heavy settle — element falls into place with weight, like it has mass. */
+export const gravitySettle: Variants = {
+  hidden: { opacity: 0, y: -22, filter: 'blur(5px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { type: 'spring', mass: 1.1, stiffness: 80, damping: 17 },
+  },
+};
+
+/** Rise — for glass panels entering on scroll, slow and soft. */
+export const glassRise: Variants = {
+  hidden: { opacity: 0, y: 40, scale: 0.97, filter: 'blur(8px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: { duration: 1.1, ease },
+  },
+};
+
+export const staggerSlow = (delay = 0, stagger = 0.12): Variants => ({
+  hidden: {},
+  visible: { transition: { delayChildren: delay, staggerChildren: stagger } },
+});
