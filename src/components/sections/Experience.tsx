@@ -1,65 +1,131 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import SectionHeading from '@/components/ui/SectionHeading';
-import { gravitySettle, staggerSlow, inViewProps } from '@/lib/motion';
+import { Dingbat, VineMargin } from '@/components/painted/Ornament';
+import Watercolor from '@/components/painted/Watercolor';
 
-interface Job {
+interface Entry {
+  year: string;
   company: string;
   role: string;
-  year: string;
+  place: string;
+  note: string;
   href?: string;
 }
 
-const EXPERIENCES: Job[] = [
-  { company: 'Arista Networks', role: 'Technical Solutions Engineer', year: '2025', href: 'https://www.arista.com' },
-  { company: 'xAI', role: 'Supercompute Network Engineer', year: '2024', href: 'https://x.ai' },
-  { company: 'Tesla', role: 'Software Engineering Intern', year: '2023', href: 'https://www.tesla.com' },
-  { company: 'Lenovo', role: 'Security Software Intern', year: '2022', href: 'https://www.lenovo.com' },
+const ENTRIES: Entry[] = [
+  {
+    year: 'MMXXV',
+    company: 'Arista Networks',
+    role: 'Technical Solutions',
+    place: 'San Francisco',
+    note: 'On the fabrics of hyperscalers; the inked routes through their cities of light.',
+    href: 'https://www.arista.com',
+  },
+  {
+    year: 'MMXXIV',
+    company: 'xAI',
+    role: 'Supercompute Network',
+    place: 'Memphis',
+    note: 'A cathedral of two hundred thousand minds, learning to think as one. I kept the choir in tune.',
+    href: 'https://x.ai',
+  },
+  {
+    year: 'MMXXIII',
+    company: 'Tesla',
+    role: 'Software Engineering',
+    place: 'Austin',
+    note: 'An intern among machines that drive themselves; small tools, swiftly forged.',
+    href: 'https://www.tesla.com',
+  },
+  {
+    year: 'MMXXII',
+    company: 'Lenovo',
+    role: 'Security Software',
+    place: 'Morrisville',
+    note: 'A first apprenticeship — the Global Security Lab, a workshop in trust.',
+    href: 'https://www.lenovo.com',
+  },
 ];
 
 const Experience: React.FC = () => {
   return (
-    <section id="work" className="section">
-      <div className="container">
-        <SectionHeading
-          eyebrow="Trajectory"
-          title="Where I've shipped."
-          subtitle="A short line through the teams I've built network and infrastructure with."
-        />
+    <section id="cursus" className="section relative overflow-hidden">
+      {/* a faint moss wash on the far margin */}
+      <div className="pointer-events-none absolute -right-20 top-20 w-[420px] h-[420px] opacity-60">
+        <Watercolor pigment="moss" intensity={0.2} className="w-full h-full" />
+      </div>
 
-        <motion.ol
-          {...inViewProps}
-          variants={staggerSlow(0.1, 0.1)}
-          className="mt-16 border-t border-[hsl(var(--line)/0.1)]"
-        >
-          {EXPERIENCES.map((exp) => (
-            <motion.li key={exp.company} variants={gravitySettle}>
-              <a
-                href={exp.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative grid grid-cols-[auto_1fr_auto] items-center gap-6 md:gap-12 py-8 md:py-10 border-b border-[hsl(var(--line)/0.1)] transition-colors duration-500"
-              >
-                {/* hover glass wash */}
-                <span className="pointer-events-none absolute inset-x-[-1.5rem] inset-y-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 glass" />
+      <div className="container relative">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          {/* margin */}
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-6">
+            <div className="marginalia">Plate I</div>
+            <VineMargin className="mt-12 w-14 h-[280px] opacity-70" />
+          </aside>
 
-                <span className="relative font-mono text-sm text-faint tabular-nums">
-                  {exp.year}
-                </span>
-                <span className="relative min-w-0">
-                  <span className="block text-3xl md:text-5xl font-light tracking-tight text-[hsl(var(--fg))] transition-colors duration-300 group-hover:text-aurora">
-                    {exp.company}
+          {/* content */}
+          <div className="col-span-12 md:col-span-11">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.2, ease: 'easeOut' }}
+            >
+              <span className="folio">i · Cursus Vitæ</span>
+              <h2 className="display mt-8 text-[clamp(2.4rem,6vw,4.5rem)] ink text-balance">
+                A short course
+                <br />
+                <span className="display-italic">through the ateliers.</span>
+              </h2>
+            </motion.div>
+
+            <div className="mt-16 md:mt-24">
+              {ENTRIES.map((e, i) => (
+                <motion.a
+                  key={e.company}
+                  href={e.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: 1.1, delay: i * 0.08, ease: 'easeOut' }}
+                  className="group block relative py-10 md:py-12 grid grid-cols-12 gap-x-6 items-baseline border-t border-[hsl(var(--rule)/0.25)]"
+                >
+                  {/* year in the gutter */}
+                  <span className="col-span-3 md:col-span-2 marginalia ink-faint group-hover:text-sienna transition-colors">
+                    {e.year}
                   </span>
-                  <span className="mt-1 block text-sm md:text-base text-muted font-light">
-                    {exp.role}
+
+                  {/* company line */}
+                  <span className="col-span-9 md:col-span-7 block">
+                    <span className="display text-3xl md:text-5xl ink group-hover:gilded transition-colors duration-500">
+                      {e.company}
+                    </span>
+                    <span className="block mt-2 font-serif italic text-base md:text-lg ink-soft">
+                      {e.role} · {e.place}
+                    </span>
+                    <span className="block mt-4 max-w-xl font-serif text-base ink-soft text-pretty">
+                      {e.note}
+                    </span>
                   </span>
-                </span>
-                <ArrowUpRight className="relative w-5 h-5 text-faint transition-all duration-500 group-hover:text-[hsl(var(--fg))] group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </a>
-            </motion.li>
-          ))}
-        </motion.ol>
+
+                  {/* marginal mark on hover */}
+                  <span className="col-span-12 md:col-span-3 hidden md:flex justify-end items-baseline">
+                    <span className="font-display text-3xl text-sienna opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      {i + 1}
+                    </span>
+                  </span>
+                </motion.a>
+              ))}
+              <div className="border-t border-[hsl(var(--rule)/0.25)]" />
+
+              <div className="mt-24 flex justify-center">
+                <Dingbat className="w-60 h-7 opacity-90" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

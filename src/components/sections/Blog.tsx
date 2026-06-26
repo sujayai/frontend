@@ -1,31 +1,37 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
 import BlogPost from './BlogPost';
 import { samplePosts, BlogPostInterface } from '@/data/blogPosts';
-import { gravitySettle, staggerSlow, inViewProps } from '@/lib/motion';
+import { Dingbat } from '@/components/painted/Ornament';
+import Watercolor from '@/components/painted/Watercolor';
 
-const BlogRow: React.FC<{ post: BlogPostInterface; onClick: () => void }> = ({ post, onClick }) => (
-  <motion.li variants={gravitySettle}>
-    <button
-      onClick={onClick}
-      className="group relative w-full text-left grid grid-cols-[1fr_auto] items-center gap-6 py-10 border-b border-[hsl(var(--line)/0.1)]"
-    >
-      <span className="pointer-events-none absolute inset-x-[-1.5rem] inset-y-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 glass" />
-      <span className="relative min-w-0">
-        <span className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
-          <span>{post.category}</span>
-          <span className="w-5 h-px hairline" />
-          <span>{post.date}</span>
-        </span>
-        <span className="mt-4 block text-2xl md:text-4xl font-light tracking-tight text-[hsl(var(--fg))] transition-colors duration-300 group-hover:text-aurora text-balance">
+const toRoman = (n: number): string => {
+  const map: [number, string][] = [[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+  let r = '';
+  for (const [v, s] of map) { while (n >= v) { r += s; n -= v; } }
+  return r;
+};
+
+const FolioRow: React.FC<{ post: BlogPostInterface; index: number; onClick: () => void }> = ({ post, index, onClick }) => (
+  <motion.li
+    initial={{ opacity: 0, y: 12 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: '-40px' }}
+    transition={{ duration: 1, delay: index * 0.06 }}
+  >
+    <button onClick={onClick} className="group w-full text-left grid grid-cols-12 gap-x-6 md:gap-x-10 items-baseline py-10 border-b border-[hsl(var(--rule)/0.25)]">
+      <span className="col-span-2 plate-no">Folio · {toRoman(index + 1)}</span>
+      <span className="col-span-10 md:col-span-8">
+        <span className="display text-2xl md:text-4xl ink leading-[1.1] group-hover:text-sienna transition-colors duration-500 text-balance block">
           {post.title}
         </span>
-        <span className="mt-3 block max-w-2xl text-muted font-light leading-relaxed text-pretty">
+        <span className="font-serif italic text-base ink-soft mt-3 block max-w-2xl text-pretty">
           {post.summary}
         </span>
       </span>
-      <ArrowUpRight className="relative w-5 h-5 text-faint transition-all duration-500 group-hover:text-[hsl(var(--fg))] group-hover:translate-x-1 group-hover:-translate-y-1" />
+      <span className="hidden md:block md:col-span-2 marginalia text-right">
+        {post.date}
+      </span>
     </button>
   </motion.li>
 );
@@ -34,10 +40,7 @@ const Blog: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
 
   const posts = useMemo(
-    () =>
-      samplePosts
-        .slice()
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+    () => samplePosts.slice().sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
     []
   );
 
@@ -47,31 +50,53 @@ const Blog: React.FC = () => {
     return () => window.removeEventListener('openArticle', handle);
   }, []);
 
-  if (selectedPost) {
-    return <BlogPost postId={selectedPost} onBack={() => setSelectedPost(null)} />;
-  }
+  if (selectedPost) return <BlogPost postId={selectedPost} onBack={() => setSelectedPost(null)} />;
 
   return (
-    <section className="section pt-40">
-      <div className="container">
-        <div className="max-w-2xl">
-          <span className="eyebrow">Writing</span>
-          <h1 className="display mt-6 text-[clamp(2.5rem,7vw,5rem)] text-[hsl(var(--fg))]">
-            Notes from
-            <br />
-            <span className="text-aurora">the field.</span>
-          </h1>
-        </div>
+    <section className="section pt-36 md:pt-48 relative overflow-hidden">
+      <div className="pointer-events-none absolute right-[-12%] top-0 w-[520px] h-[520px] opacity-70">
+        <Watercolor pigment="gilt" intensity={0.2} className="w-full h-full" />
+      </div>
+      <div className="pointer-events-none absolute left-[-12%] bottom-10 w-[480px] h-[480px] opacity-60">
+        <Watercolor pigment="moss" intensity={0.18} className="w-full h-full" />
+      </div>
 
-        <motion.ol
-          {...inViewProps}
-          variants={staggerSlow(0.1, 0.1)}
-          className="mt-16 border-t border-[hsl(var(--line)/0.1)]"
-        >
-          {posts.map((post) => (
-            <BlogRow key={post.id} post={post} onClick={() => setSelectedPost(post.slug)} />
-          ))}
-        </motion.ol>
+      <div className="container relative">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-6">
+            <div className="marginalia">Liber Folia</div>
+          </aside>
+
+          <div className="col-span-12 md:col-span-11">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2 }}
+            >
+              <span className="folio">A book of folia</span>
+              <h1 className="display mt-8 text-[clamp(2.8rem,8vw,6rem)] ink">
+                The writings,
+                <br />
+                <span className="display-italic gilded">collected.</span>
+              </h1>
+            </motion.div>
+
+            <motion.ol
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="mt-20 border-t border-[hsl(var(--rule)/0.25)]"
+            >
+              {posts.map((post, i) => (
+                <FolioRow key={post.id} post={post} index={i} onClick={() => setSelectedPost(post.slug)} />
+              ))}
+            </motion.ol>
+
+            <div className="mt-20 flex justify-center">
+              <Dingbat className="w-60 h-7 opacity-90" />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

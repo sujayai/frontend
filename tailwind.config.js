@@ -147,11 +147,12 @@ export default {
         "drift-3": "drift-3 38s ease-in-out infinite",
       },
       fontFamily: {
-        // Inter for everything — tight geometric humanist
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        display: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        serif: ['"Source Serif 4"', "Georgia", "serif"],
-        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        // A hand-set book — no sans, no mono.
+        sans: ['"EB Garamond"', "Georgia", "serif"],
+        display: ['"Cormorant Garamond"', "Georgia", "serif"],
+        serif: ['"EB Garamond"', "Georgia", "serif"],
+        sc: ['"Cormorant SC"', '"Cormorant Garamond"', "serif"],
+        mono: ['"EB Garamond"', "serif"],
       },
       letterSpacing: {
         tightest: "-0.04em",

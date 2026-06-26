@@ -1,9 +1,8 @@
 import React from 'react';
-import { motion, useMotionTemplate } from 'framer-motion';
-import { Github, Linkedin, ArrowUpRight } from 'lucide-react';
-import Glass from '@/components/ui/Glass';
-import { useTilt } from '@/lib/useTilt';
-import { glassRise, inViewProps } from '@/lib/motion';
+import { motion } from 'framer-motion';
+import { Github, Linkedin } from 'lucide-react';
+import { Dingbat } from '@/components/painted/Ornament';
+import Watercolor from '@/components/painted/Watercolor';
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -18,72 +17,88 @@ const SOCIALS = [
 ];
 
 const Contact: React.FC = () => {
-  const tilt = useTilt({ max: 6, mass: 1.6, stiffness: 70, damping: 16 });
-  const glare = useMotionTemplate`radial-gradient(500px circle at ${tilt.glareX} ${tilt.glareY}, rgba(255,255,255,0.1), transparent 55%)`;
-
   return (
-    <section id="contact" className="section">
-      <div className="container">
-        <motion.div
-          {...inViewProps}
-          variants={glassRise}
-          ref={tilt.ref}
-          {...tilt.handlers}
-          className="perspective"
-        >
-          <motion.div
-            className="preserve-3d"
-            style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY }}
-          >
-            <Glass iris refract className="relative overflow-hidden p-12 md:p-20 text-center">
-              <motion.div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-[inherit]"
-                style={{ background: glare }}
-              />
+    <section id="epistola" className="section relative overflow-hidden">
+      <div className="pointer-events-none absolute left-[-10%] top-0 w-[600px] h-[600px] opacity-70">
+        <Watercolor pigment="sienna" intensity={0.22} className="w-full h-full" />
+      </div>
 
-              <div className="relative">
-                <span className="eyebrow">Let&apos;s talk</span>
-                <h2 className="display mt-6 text-[clamp(2.5rem,6vw,5rem)] text-[hsl(var(--fg))] text-balance">
-                  Have a hard
-                  <br />
-                  <span className="text-aurora">infrastructure</span> problem?
-                </h2>
+      <div className="container relative">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-6">
+            <div className="marginalia">Plate IV</div>
+          </aside>
 
-                <p className="mt-8 mx-auto max-w-md text-lg font-light text-muted text-pretty">
-                  Open to consulting, design reviews, and conversations about networking for AI.
-                </p>
+          <div className="col-span-12 md:col-span-11 max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.2 }}
+            >
+              <span className="folio">iv · Epistola</span>
+              <h2 className="display mt-8 text-[clamp(2.6rem,7vw,5rem)] ink text-balance">
+                Write&nbsp;to&nbsp;me,
+                <br />
+                <span className="display-italic gilded">if you would.</span>
+              </h2>
+            </motion.div>
 
-                <div className="mt-12 flex flex-col items-center gap-8">
-                  <a
-                    href="mailto:support@sujay.ai"
-                    className="group glass glass-specular glass-iris rounded-full px-8 py-4 text-base font-medium text-[hsl(var(--fg))] transition-transform duration-500 hover:-translate-y-1"
-                  >
-                    <span className="inline-flex items-center gap-2.5">
-                      support@sujay.ai
-                      <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </span>
-                  </a>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 1.2, delay: 0.1 }}
+              className="dropcap mt-14 font-serif text-lg md:text-xl leading-[1.75] ink-soft max-w-2xl"
+            >
+              I take a small number of consulting engagements each year — usually
+              upon the network fabric for AI training, sometimes upon the design
+              of a new system. A short letter is the surest way.
+            </motion.p>
 
-                  <div className="flex items-center gap-3">
-                    {SOCIALS.map((s) => (
-                      <a
-                        key={s.label}
-                        href={s.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={s.label}
-                        className="grid place-items-center w-12 h-12 rounded-full glass text-faint hover:text-[hsl(var(--fg))] transition-colors duration-300"
-                      >
-                        <s.icon className="w-4 h-4" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Glass>
-          </motion.div>
-        </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+              className="mt-16"
+            >
+              <a
+                href="mailto:support@sujay.ai"
+                className="block display text-[clamp(2rem,5vw,3.4rem)] gilded leading-none hover:text-sienna transition-colors duration-500"
+              >
+                support@sujay.ai
+              </a>
+              <div className="mt-2 marginalia">Postmarked San Francisco</div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 1.2, delay: 0.35 }}
+              className="mt-14 flex items-center gap-8"
+            >
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="ink-button-quiet"
+                >
+                  <s.icon className="w-3.5 h-3.5" />
+                  {s.label}
+                </a>
+              ))}
+            </motion.div>
+
+            <div className="mt-24 flex justify-start">
+              <Dingbat className="w-60 h-7 opacity-90" />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

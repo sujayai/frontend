@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './components/sections/Hero';
-import Manifesto from './components/sections/Manifesto';
 import Experience from './components/sections/Experience';
 import Projects from './components/sections/Projects';
 import FeaturedBlog from './components/sections/FeaturedBlog';
 import Contact from './components/sections/Contact';
 import Blog from './components/sections/Blog';
-import Void from './components/effects/Void';
-import AetherDefs from './components/effects/AetherDefs';
 import { EasterEggsProvider } from './components/providers/EasterEggsProvider';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ThemeToggle } from './components/ui/ThemeToggle';
@@ -17,7 +14,7 @@ import { cn } from './lib/utils';
 
 const NAV = [
   { id: 'home', label: 'Index' },
-  { id: 'blog', label: 'Writing' },
+  { id: 'blog', label: 'Folia' },
 ];
 
 function Shell() {
@@ -32,7 +29,7 @@ function Shell() {
   };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -57,133 +54,123 @@ function Shell() {
   }, []);
 
   return (
-    <div className="relative min-h-screen text-[hsl(var(--fg))] antialiased">
-      <Void />
-      <AetherDefs />
+    <div className="relative min-h-screen">
+      {/* Header — a typographic running head, no chrome */}
+      <header
+        className={cn(
+          'sticky top-0 z-40 transition-all duration-700',
+          scrolled
+            ? 'bg-[hsl(var(--paper)/0.92)] backdrop-blur-[2px] border-b border-[hsl(var(--rule)/0.25)]'
+            : 'bg-transparent'
+        )}
+      >
+        <div className="container flex items-baseline justify-between gap-6 h-16 md:h-20">
+          {/* the wordmark, set as a small running title */}
+          <button
+            onClick={() => switchTab('home')}
+            className="display text-2xl ink hover:text-sienna transition-colors duration-300"
+            aria-label="Home"
+          >
+            Sujay <span className="display-italic">Sreedhar</span>
+          </button>
 
-      {/* Floating glass nav */}
-      <div className="fixed top-0 inset-x-0 z-50 flex justify-center px-4">
-        <motion.header
-          initial={{ y: -24, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className={cn(
-            'mt-4 w-full max-w-3xl rounded-full transition-all duration-500',
-            scrolled ? 'glass glass-specular' : ''
-          )}
-        >
-          <div className="flex items-center justify-between gap-4 pl-5 pr-3 h-14">
-            <button
-              onClick={() => switchTab('home')}
-              className="inline-flex items-center gap-2.5 group"
-              aria-label="Home"
-            >
-              <span className="relative grid place-items-center w-7 h-7">
-                <span className="absolute inset-0 rounded-full bg-[hsl(var(--accent))] blur-md opacity-50 group-hover:opacity-80 transition-opacity" />
-                <span className="relative w-2.5 h-2.5 rounded-full bg-[hsl(var(--fg))]" />
-              </span>
-              <span className="font-medium tracking-tight text-[hsl(var(--fg))]">
-                sujay<span className="text-faint">.ai</span>
-              </span>
-            </button>
-
-            <nav className="hidden sm:flex items-center gap-1">
-              {NAV.map((nav) => (
-                <button
-                  key={nav.id}
-                  onClick={() => switchTab(nav.id as 'home' | 'blog')}
-                  className={cn(
-                    'relative px-4 py-2 rounded-full text-sm transition-colors duration-300',
-                    activeTab === nav.id ? 'text-[hsl(var(--fg))]' : 'text-faint hover:text-[hsl(var(--fg))]'
-                  )}
-                >
-                  {nav.label}
-                  {activeTab === nav.id && (
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full"
-                      style={{ background: 'rgba(255,255,255,0.06)' }}
-                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                </button>
-              ))}
-            </nav>
-
-            <div className="flex items-center gap-1.5">
-              <ThemeToggle size="sm" />
-              <a
-                href="#contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (activeTab !== 'home') switchTab('home');
-                  setTimeout(
-                    () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }),
-                    activeTab !== 'home' ? 200 : 0
-                  );
-                }}
-                className="hidden sm:inline-flex items-center h-9 px-4 rounded-full text-sm font-medium bg-[hsl(var(--fg))] text-[hsl(var(--bg))] hover:opacity-90 transition-opacity"
-              >
-                Contact
-              </a>
+          {/* center nav, the folio numbers */}
+          <nav className="hidden sm:flex items-baseline gap-8">
+            {NAV.map((nav) => (
               <button
-                onClick={() => setMobileOpen((v) => !v)}
-                aria-label="Menu"
-                className="sm:hidden grid place-items-center w-9 h-9 rounded-full text-[hsl(var(--fg))]"
+                key={nav.id}
+                onClick={() => switchTab(nav.id as 'home' | 'blog')}
+                className={cn(
+                  'relative font-sc text-[0.74rem] tracking-[0.32em] uppercase pb-1 transition-colors duration-300',
+                  activeTab === nav.id ? 'text-sienna' : 'ink-faint hover:text-sienna'
+                )}
               >
-                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {nav.label}
+                {activeTab === nav.id && (
+                  <motion.span
+                    layoutId="folio-mark"
+                    className="absolute left-0 right-0 -bottom-0.5 h-px"
+                    style={{ background: 'hsl(var(--sienna))' }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                  />
+                )}
               </button>
-            </div>
-          </div>
+            ))}
+          </nav>
 
-          <AnimatePresence>
-            {mobileOpen && (
-              <motion.nav
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="sm:hidden overflow-hidden px-3 pb-3"
-              >
+          <div className="flex items-baseline gap-5">
+            <ThemeToggle size="sm" />
+            <a
+              href="#epistola"
+              onClick={(e) => {
+                e.preventDefault();
+                if (activeTab !== 'home') switchTab('home');
+                setTimeout(
+                  () => document.getElementById('epistola')?.scrollIntoView({ behavior: 'smooth' }),
+                  activeTab !== 'home' ? 200 : 0
+                );
+              }}
+              className="hidden sm:inline-block font-sc text-[0.74rem] tracking-[0.32em] uppercase ink-faint hover:text-sienna transition-colors"
+            >
+              Write
+            </a>
+            <button
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label="Menu"
+              className="sm:hidden ink"
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.nav
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="sm:hidden overflow-hidden border-t border-[hsl(var(--rule)/0.25)] bg-[hsl(var(--paper)/0.95)] backdrop-blur-sm"
+            >
+              <div className="container py-6 flex flex-col gap-4">
                 {NAV.map((nav) => (
                   <button
                     key={nav.id}
                     onClick={() => switchTab(nav.id as 'home' | 'blog')}
                     className={cn(
-                      'block w-full text-left px-4 py-3 rounded-2xl text-base transition-colors',
-                      activeTab === nav.id ? 'text-[hsl(var(--fg))]' : 'text-faint'
+                      'text-left display text-3xl',
+                      activeTab === nav.id ? 'text-sienna' : 'ink hover:text-sienna'
                     )}
                   >
                     {nav.label}
                   </button>
                 ))}
                 <a
-                  href="#contact"
+                  href="#epistola"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full text-left px-4 py-3 rounded-2xl text-base text-[hsl(var(--accent))]"
+                  className="display text-3xl gilded"
                 >
-                  Contact
+                  Write to me
                 </a>
-              </motion.nav>
-            )}
-          </AnimatePresence>
-        </motion.header>
-      </div>
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+      </header>
 
-      {/* Main */}
       <main className="relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 12, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -8, filter: 'blur(6px)' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 8, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0)' }}
+            exit={{ opacity: 0, y: -6, filter: 'blur(4px)' }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             {activeTab === 'home' ? (
               <>
                 <Hero />
-                <Manifesto />
                 <Experience />
                 <Projects />
                 <FeaturedBlog />
@@ -196,22 +183,15 @@ function Shell() {
         </AnimatePresence>
       </main>
 
-      {/* Footer */}
+      {/* Footer — the colophon */}
       <footer className="relative z-10">
-        <div className="container py-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-[hsl(var(--line)/0.1)]">
-          <div>
-            <div className="font-medium tracking-tight">
-              sujay<span className="text-faint">.ai</span>
-            </div>
-            <p className="mt-2 text-sm text-faint font-light">
-              Network fabric for large-scale AI. © {new Date().getFullYear()}
-            </p>
-          </div>
-          <div className="flex items-center gap-6 text-sm">
-            <button onClick={() => switchTab('home')} className="link-quiet">Index</button>
-            <button onClick={() => switchTab('blog')} className="link-quiet">Writing</button>
-            <a href="mailto:support@sujay.ai" className="link-quiet">Email</a>
-          </div>
+        <div className="container py-16 flex flex-col items-center text-center gap-2 border-t border-[hsl(var(--rule)/0.25)]">
+          <div className="folio">Colophon</div>
+          <p className="font-serif italic ink-soft mt-4 max-w-md text-pretty">
+            Set in Cormorant &amp; Garamond. Painted by hand, sent to press in the
+            {' '}{new Date().getFullYear()}<sup className="text-xs ml-0.5">th</sup> year of the common reckoning,
+            by S. Sreedhar of San Francisco.
+          </p>
         </div>
       </footer>
     </div>

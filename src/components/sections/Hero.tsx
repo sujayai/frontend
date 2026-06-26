@@ -1,231 +1,136 @@
 import React from 'react';
-import { motion, useScroll, useTransform, useMotionTemplate } from 'framer-motion';
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
-import Glass from '@/components/ui/Glass';
-import Float from '@/components/ui/Float';
-import { useTilt, useParallaxLayer } from '@/lib/useTilt';
-import { gravitySettle, staggerSlow } from '@/lib/motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import AutumnBranch from '@/components/painted/AutumnBranch';
+import Watercolor from '@/components/painted/Watercolor';
+import { Dingbat } from '@/components/painted/Ornament';
 
 const Hero: React.FC = () => {
   const { scrollY } = useScroll();
-  const nameY = useTransform(scrollY, [0, 700], [0, -140]);
-  const stackY = useTransform(scrollY, [0, 700], [0, 90]);
-  const fade = useTransform(scrollY, [0, 560], [1, 0]);
-
-  const tilt = useTilt({ max: 14, mass: 1.6, stiffness: 80, damping: 13, lift: 30 });
-  const chipA = useParallaxLayer(tilt.px, tilt.py, 42);
-  const chipB = useParallaxLayer(tilt.px, tilt.py, 64);
-  const portrait = useParallaxLayer(tilt.px, tilt.py, 22);
-  const glare = useMotionTemplate`radial-gradient(220px circle at ${tilt.glareX} ${tilt.glareY}, rgba(255,255,255,0.18), transparent 60%)`;
+  const branchY = useTransform(scrollY, [0, 700], [0, -90]);
+  const dustY = useTransform(scrollY, [0, 700], [0, -40]);
 
   return (
-    <section className="relative min-h-[100svh] flex items-center overflow-hidden pt-24 pb-20">
-      {/* Huge faint name, parallaxing behind everything */}
+    <section className="relative overflow-hidden pt-28 pb-24 md:pt-40 md:pb-32">
+      {/* Watercolor washes — like wet paint blooming into the page */}
       <motion.div
-        style={{ y: nameY, opacity: fade }}
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-[18%] flex justify-center select-none"
+        style={{ y: dustY }}
+        className="pointer-events-none absolute -left-32 -top-20 w-[720px] h-[720px] opacity-90"
       >
-        <span className="display text-[26vw] leading-none text-[hsl(var(--fg))] opacity-[0.035] whitespace-nowrap">
-          SREEDHAR
-        </span>
+        <Watercolor pigment="sienna" intensity={0.35} className="w-full h-full" />
+      </motion.div>
+      <motion.div
+        style={{ y: dustY }}
+        className="pointer-events-none absolute right-[-12%] top-[40%] w-[600px] h-[600px] opacity-80"
+      >
+        <Watercolor pigment="gilt" intensity={0.3} className="w-full h-full" />
       </motion.div>
 
-      <motion.div
-        style={{ opacity: fade }}
-        variants={staggerSlow(0.15, 0.14)}
-        initial="hidden"
-        animate="visible"
-        className="container relative z-10"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          {/* Left — quiet copy */}
-          <div className="lg:col-span-6">
-            <motion.div variants={gravitySettle}>
-              <span className="eyebrow">Aether — AI Infrastructure</span>
+      <div className="relative container">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          {/* Marginalia rail */}
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-3">
+            <div className="marginalia rotate-180" style={{ writingMode: 'vertical-rl' }}>
+              Folio · I
+            </div>
+          </aside>
+
+          {/* Left: title page */}
+          <div className="col-span-12 md:col-span-7 relative">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+              className="folio"
+            >
+              <span>Anno&nbsp;MMXXVI</span>
+              <span className="ml-3 ink-faint">·</span>
+              <span className="ml-3">An Index of Works</span>
             </motion.div>
 
+            {/* Name set as a frontispiece */}
             <motion.h1
-              variants={gravitySettle}
-              className="display mt-8 text-[clamp(3rem,8vw,7rem)] text-[hsl(var(--fg))]"
+              initial={{ opacity: 0, y: 16, filter: 'blur(6px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0)' }}
+              transition={{ duration: 1.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="display mt-10 md:mt-14 text-[clamp(3.4rem,11vw,9rem)] ink"
             >
               Sujay
               <br />
-              <span className="text-aurora">Sreedhar</span>
+              <span className="display-italic gilded inline-block pr-2">Sreedhar</span>
             </motion.h1>
 
-            <motion.p
-              variants={gravitySettle}
-              className="mt-10 max-w-md text-lg md:text-xl font-light leading-relaxed text-muted text-pretty"
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.6, delay: 0.6 }}
+              className="mt-10"
             >
-              I build the network fabric beneath large-scale AI — where two
-              hundred thousand GPUs train as one.
+              <Dingbat className="w-60 h-7 opacity-90" />
+            </motion.div>
+
+            {/* The opening leaf — drop cap on the very first sentence */}
+            <motion.p
+              initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0)' }}
+              transition={{ duration: 1.4, delay: 0.8, ease: 'easeOut' }}
+              className="dropcap mt-12 max-w-xl font-serif text-lg md:text-xl leading-[1.7] text-[hsl(var(--ink))/0.92]"
+            >
+              An engineer of <em>fabric</em>, of weave and weft &mdash; the
+              networks that carry two hundred thousand minds when they think
+              as one. Late nights at xAI; afternoons at Arista; a manuscript
+              kept by candlelight.
             </motion.p>
 
-            <motion.div variants={gravitySettle} className="mt-12 flex items-center gap-5">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 1.2, ease: 'easeOut' }}
+              className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-6"
+            >
               <button
-                onClick={() =>
-                  document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })
-                }
-                className="group glass glass-specular glass-iris rounded-full px-7 py-3.5 text-sm font-medium text-[hsl(var(--fg))] transition-transform duration-500 hover:-translate-y-0.5"
+                onClick={() => document.getElementById('cursus')?.scrollIntoView({ behavior: 'smooth' })}
+                className="ink-button"
               >
-                <span className="inline-flex items-center gap-2">
-                  Enter the work
-                  <ArrowDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
-                </span>
+                Read on
+                <span aria-hidden>&rarr;</span>
               </button>
               <button
-                onClick={() =>
-                  window.dispatchEvent(new CustomEvent('switchTab', { detail: 'blog' }))
-                }
-                className="link-quiet text-sm font-medium"
+                onClick={() => window.dispatchEvent(new CustomEvent('switchTab', { detail: 'blog' }))}
+                className="ink-button-quiet"
               >
-                Read the writing
-                <ArrowUpRight className="w-4 h-4" />
+                Folia · the writings
               </button>
             </motion.div>
           </div>
 
-          {/* Right — floating 3D glass stack */}
+          {/* Right: the painted branch hanging into the page */}
           <motion.div
-            variants={gravitySettle}
-            style={{ y: stackY }}
-            className="lg:col-span-6 flex justify-center lg:justify-end"
+            style={{ y: branchY }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 2.2, delay: 0.4, ease: 'easeOut' }}
+            className="hidden md:block md:col-span-4 relative"
           >
-            <div
-              ref={tilt.ref}
-              {...tilt.handlers}
-              className="perspective relative w-full max-w-md"
-              style={{ aspectRatio: '4 / 5' }}
-            >
-              {/* Soft halo lighting the glass from behind */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -inset-10 -z-10"
-                style={{
-                  background:
-                    'radial-gradient(60% 55% at 50% 45%, hsl(var(--accent) / 0.45), transparent 70%), radial-gradient(50% 50% at 70% 80%, hsl(var(--accent-2) / 0.4), transparent 70%)',
-                  filter: 'blur(30px)',
-                }}
-              />
-              <motion.div
-                className="preserve-3d absolute inset-0"
-                style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY }}
-              >
-                <Float amplitude={12} duration={9} className="absolute inset-0">
-                  {/* Main monolith */}
-                  <Glass
-                    refract
-                    iris
-                    className="relative h-full w-full p-8 flex flex-col justify-between overflow-hidden"
-                  >
-                    {/* moving glare */}
-                    <motion.div
-                      aria-hidden
-                      className="pointer-events-none absolute inset-0 rounded-[inherit]"
-                      style={{ background: glare }}
-                    />
-
-                    {/* portrait */}
-                    <motion.div
-                      style={{ x: portrait.x, y: portrait.y }}
-                      className="relative"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <img
-                            src="/profile.jpg"
-                            alt="Sujay Sreedhar"
-                            className="w-16 h-16 rounded-2xl object-cover ring-1 ring-white/15"
-                          />
-                          <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[hsl(var(--accent-3))] ring-2 ring-[hsl(var(--bg))]" />
-                        </div>
-                        <div>
-                          <div className="text-[hsl(var(--fg))] font-medium">Sujay Sreedhar</div>
-                          <div className="text-sm text-faint">San Francisco · Available</div>
-                        </div>
-                      </div>
-                    </motion.div>
-
-                    {/* live readout */}
-                    <div className="relative">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-faint">
-                        Cluster scale
-                      </div>
-                      <div className="mt-2 flex items-end gap-2">
-                        <span className="display text-6xl text-[hsl(var(--fg))]">200</span>
-                        <span className="display text-3xl text-aurora pb-1">K</span>
-                        <span className="text-sm text-muted pb-2">GPUs</span>
-                      </div>
-                      {/* tiny equaliser bars */}
-                      <div className="mt-4 flex items-end gap-1 h-8">
-                        {[40, 70, 45, 90, 60, 80, 50, 75, 55, 85, 48, 68].map((h, i) => (
-                          <motion.span
-                            key={i}
-                            className="flex-1 rounded-full bg-[hsl(var(--accent))]/50"
-                            animate={{ height: [`${h * 0.4}%`, `${h}%`, `${h * 0.4}%`] }}
-                            transition={{
-                              duration: 1.8 + (i % 4) * 0.4,
-                              repeat: Infinity,
-                              ease: 'easeInOut',
-                              delay: i * 0.08,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </Glass>
-                </Float>
-
-                {/* Floating chip A — front, parallax */}
-                <motion.div
-                  style={{ x: chipA.x, y: chipA.y, transform: 'translateZ(70px)' }}
-                  className="absolute -left-6 top-[28%]"
-                >
-                  <Float amplitude={9} duration={7} delay={0.6}>
-                    <Glass iris className="px-4 py-3 rounded-2xl">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-faint">
-                        Fabric
-                      </div>
-                      <div className="text-sm text-[hsl(var(--fg))] mt-0.5">RDMA · RoCE</div>
-                    </Glass>
-                  </Float>
-                </motion.div>
-
-                {/* Floating chip B — further front */}
-                <motion.div
-                  style={{ x: chipB.x, y: chipB.y, transform: 'translateZ(120px)' }}
-                  className="absolute -right-5 bottom-[16%]"
-                >
-                  <Float amplitude={11} duration={8} delay={1.1}>
-                    <Glass iris className="px-4 py-3 rounded-2xl">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-faint">
-                        Uptime
-                      </div>
-                      <div className="text-sm text-[hsl(var(--fg))] mt-0.5">
-                        weeks, unbroken
-                      </div>
-                    </Glass>
-                  </Float>
-                </motion.div>
-              </motion.div>
-            </div>
+            <AutumnBranch className="absolute -top-20 -right-10 w-[120%] h-auto" />
           </motion.div>
         </div>
-      </motion.div>
 
-      {/* scroll cue */}
-      <motion.div
-        style={{ opacity: fade }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
-      >
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-faint">Scroll</span>
-        <motion.span
-          animate={{ y: [0, 8, 0], opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          className="block w-px h-10 bg-[hsl(var(--fg))]/30"
-        />
-      </motion.div>
+        {/* A whispered folio index at the bottom of the page */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.4, delay: 1.6 }}
+          className="mt-32 md:mt-44 grid grid-cols-12 gap-6 items-baseline"
+        >
+          <div className="hidden md:block col-span-1" />
+          <div className="col-span-12 md:col-span-11 flex flex-wrap items-baseline gap-x-10 gap-y-3 folio">
+            <span>i. Cursus</span>
+            <span>ii. Plates</span>
+            <span>iii. Folia</span>
+            <span>iv. Epistola</span>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };

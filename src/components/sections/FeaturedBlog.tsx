@@ -1,10 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import SectionHeading from '@/components/ui/SectionHeading';
-import Glass from '@/components/ui/Glass';
 import { samplePosts } from '@/data/blogPosts';
-import { glassRise, inViewProps } from '@/lib/motion';
+import { Dingbat } from '@/components/painted/Ornament';
+import Watercolor from '@/components/painted/Watercolor';
 
 const FeaturedBlog: React.FC = () => {
   const featured = samplePosts
@@ -19,67 +17,72 @@ const FeaturedBlog: React.FC = () => {
   const all = () => window.dispatchEvent(new CustomEvent('switchTab', { detail: { tab: 'blog' } }));
 
   return (
-    <section id="writing" className="section">
-      <div className="container">
-        <SectionHeading eyebrow="Writing" title="Notes from the field." />
+    <section id="folia" className="section relative overflow-hidden">
+      <div className="pointer-events-none absolute right-[-10%] top-10 w-[420px] h-[420px] opacity-70">
+        <Watercolor pigment="gilt" intensity={0.2} className="w-full h-full" />
+      </div>
 
-        <motion.div {...inViewProps} variants={glassRise} className="mt-14">
-          <Glass
-            iris
-            refract
-            as="div"
-            className="group cursor-pointer p-2 overflow-hidden"
-            onClick={open}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12">
-              {/* glyph panel */}
-              <div className="lg:col-span-5 relative min-h-[260px] rounded-[calc(var(--radius)-0.5rem)] overflow-hidden">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      'radial-gradient(120% 120% at 20% 10%, hsl(var(--accent) / 0.4), transparent 55%), radial-gradient(120% 120% at 90% 90%, hsl(var(--accent-2) / 0.4), transparent 55%)',
-                  }}
-                />
-                <div className="absolute inset-0 grid place-items-center">
-                  <span className="font-mono text-[11px] uppercase tracking-[0.4em] text-[hsl(var(--fg))]/70">
-                    {featured.category}
-                  </span>
-                </div>
+      <div className="container relative">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-6">
+            <div className="marginalia">Plate III</div>
+          </aside>
+
+          <div className="col-span-12 md:col-span-11">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.2 }}
+            >
+              <span className="folio">iii · Folia</span>
+              <h2 className="display mt-8 text-[clamp(2.4rem,6vw,4.5rem)] ink text-balance">
+                Pages set down
+                <br />
+                <span className="display-italic">by candlelight.</span>
+              </h2>
+            </motion.div>
+
+            <motion.button
+              onClick={open}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 1.2, delay: 0.1 }}
+              className="group mt-20 grid grid-cols-12 gap-x-6 md:gap-x-10 items-baseline text-left w-full border-t border-b border-[hsl(var(--rule)/0.25)] py-14"
+            >
+              <div className="col-span-12 md:col-span-2">
+                <span className="plate-no">Folio · I</span>
+                <span className="block mt-2 marginalia">{featured.date}</span>
               </div>
-
-              {/* body */}
-              <div className="lg:col-span-7 p-8 md:p-12 flex flex-col justify-center">
-                <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
-                  <span>{featured.date}</span>
-                  <span className="w-6 h-px hairline" />
-                  <span>{featured.readTime}</span>
-                </div>
-                <h3 className="mt-5 text-3xl md:text-4xl font-light tracking-tight text-[hsl(var(--fg))] leading-tight group-hover:text-aurora transition-colors duration-500 text-balance">
+              <div className="col-span-12 md:col-span-8 mt-4 md:mt-0">
+                <h3 className="display text-3xl md:text-5xl ink leading-[1.05] group-hover:text-sienna transition-colors duration-500 text-balance">
                   {featured.title}
                 </h3>
-                <p className="mt-4 text-muted font-light leading-relaxed text-pretty">
+                <p className="mt-4 font-serif italic text-lg ink-soft max-w-2xl text-pretty">
                   {featured.summary}
                 </p>
-                <div className="mt-8 flex items-center gap-6">
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-[hsl(var(--fg))]">
-                    Read article
-                    <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      all();
-                    }}
-                    className="link-quiet text-sm"
-                  >
-                    All writing
-                  </button>
-                </div>
               </div>
+              <div className="col-span-12 md:col-span-2 mt-4 md:mt-0 md:text-right">
+                <span className="ink-button-quiet">
+                  Read
+                  <span aria-hidden>&rarr;</span>
+                </span>
+              </div>
+            </motion.button>
+
+            <div className="mt-12 flex items-center gap-8">
+              <button onClick={all} className="ink-button">
+                All folia
+                <span aria-hidden>&rarr;</span>
+              </button>
             </div>
-          </Glass>
-        </motion.div>
+
+            <div className="mt-24 flex justify-center">
+              <Dingbat className="w-60 h-7 opacity-90" />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,134 +1,134 @@
 import React from 'react';
-import { motion, useMotionTemplate } from 'framer-motion';
-import { Github, ArrowUpRight } from 'lucide-react';
-import SectionHeading from '@/components/ui/SectionHeading';
-import Glass from '@/components/ui/Glass';
-import { useTilt } from '@/lib/useTilt';
-import { gravitySettle, staggerSlow, inViewProps } from '@/lib/motion';
+import { motion } from 'framer-motion';
+import { Dingbat } from '@/components/painted/Ornament';
+import Watercolor from '@/components/painted/Watercolor';
+import { GlyphCDN, GlyphML, GlyphProphet, GlyphAuction } from '@/components/painted/PlateGlyphs';
 
-interface Project {
+interface Plate {
+  no: string;
   title: string;
   blurb: string;
-  tech: string[];
-  status: 'Live' | 'Research' | 'Archived';
-  github: string;
+  craft: string;
+  year: string;
+  href: string;
+  Glyph: React.FC<{ className?: string }>;
 }
 
-const PROJECTS: Project[] = [
+const PLATES: Plate[] = [
   {
-    title: 'Quickly v2',
-    blurb: 'A multi-tenant CDN provisioned on bare-metal Linux with strong isolation.',
-    tech: ['Ansible', 'Open vSwitch', 'Libvirt', 'etcd'],
-    status: 'Live',
-    github: 'https://github.com/sujaysreedharg/quicklyv2',
+    no: 'I',
+    title: 'Quickly · the second edition',
+    blurb: 'A delivery network laid into bare iron, every tenant kept in its own cloister.',
+    craft: 'Ansible · Open vSwitch · Libvirt · etcd',
+    year: 'MMXXI',
+    href: 'https://github.com/sujaysreedharg/quicklyv2',
+    Glyph: GlyphCDN,
   },
   {
-    title: 'Admission Oracle',
-    blurb: 'A graduate-admission model, containerized and deployed to the cloud.',
-    tech: ['Python', 'scikit-learn', 'Docker'],
-    status: 'Live',
-    github: 'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
+    no: 'II',
+    title: 'The Oracle of Admissions',
+    blurb: 'A small model that augurs a student’s passage into graduate study.',
+    craft: 'Python · scikit-learn · Docker',
+    year: 'MMXX',
+    href: 'https://github.com/sujaysreedharg/Graduate-admission-prediction-dockerized-deployment',
+    Glyph: GlyphML,
   },
   {
-    title: 'Prophet Forecasts',
-    blurb: 'A time-series forecasting pipeline built on Facebook Prophet.',
-    tech: ['Python', 'Prophet', 'Jupyter'],
-    status: 'Research',
-    github: 'https://github.com/sujaysreedharg/Covid-19-future-prediction-with-time-series-forecasting-using-prophet-model',
+    no: 'III',
+    title: 'Of forecasts in a plague year',
+    blurb: 'Sine waves laid against the news; a time-series learning to draw the days ahead.',
+    craft: 'Python · Prophet · Jupyter',
+    year: 'MMXX',
+    href: 'https://github.com/sujaysreedharg/Covid-19-future-prediction-with-time-series-forecasting-using-prophet-model',
+    Glyph: GlyphProphet,
   },
   {
-    title: 'Auctions',
-    blurb: 'An auction marketplace — listings, bids, comments, watchlists.',
-    tech: ['Django', 'Postgres'],
-    status: 'Archived',
-    github: 'https://github.com/sujaysreedharg/Auctions-django-web-app-deployment-on-Heroku',
+    no: 'IV',
+    title: 'An auction-house',
+    blurb: 'Listings, bids, vigil-keepers — a Django marketplace in the old style.',
+    craft: 'Django · Postgres · Heroku',
+    year: 'MMXIX',
+    href: 'https://github.com/sujaysreedharg/Auctions-django-web-app-deployment-on-Heroku',
+    Glyph: GlyphAuction,
   },
 ];
 
-const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
-  const tilt = useTilt({ max: 9, mass: 1.4, stiffness: 85, damping: 14 });
-  const glare = useMotionTemplate`radial-gradient(300px circle at ${tilt.glareX} ${tilt.glareY}, rgba(255,255,255,0.12), transparent 55%)`;
-
-  return (
-    <motion.div variants={gravitySettle} ref={tilt.ref} {...tilt.handlers} className="perspective h-full">
-      <motion.div
-        className="preserve-3d h-full"
-        style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY }}
-      >
-        <Glass iris refract className="relative h-full p-8 flex flex-col overflow-hidden">
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[inherit]"
-            style={{ background: glare }}
-          />
-          <div className="relative flex items-start justify-between">
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
-              {project.status}
-            </span>
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${project.title} repository`}
-              className="text-faint hover:text-[hsl(var(--fg))] transition-colors"
-            >
-              <Github className="w-4 h-4" />
-            </a>
-          </div>
-
-          <h3 className="relative mt-10 text-2xl md:text-3xl font-light tracking-tight text-[hsl(var(--fg))]">
-            {project.title}
-          </h3>
-          <p className="relative mt-3 text-muted font-light leading-relaxed flex-1 text-pretty">
-            {project.blurb}
-          </p>
-
-          <div className="relative mt-8 flex flex-wrap gap-2">
-            {project.tech.map((t) => (
-              <span
-                key={t}
-                className="font-mono text-[11px] text-faint px-2.5 py-1 rounded-full border border-[hsl(var(--line)/0.12)]"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </Glass>
-      </motion.div>
-    </motion.div>
-  );
-};
-
 const Projects: React.FC = () => {
   return (
-    <section id="projects" className="section">
-      <div className="container">
-        <SectionHeading
-          eyebrow="Selected work"
-          title="Things I've built."
-          subtitle="A few projects, kept simple."
-        />
+    <section id="plates" className="section relative overflow-hidden">
+      <div className="pointer-events-none absolute left-[-12%] top-[40%] w-[520px] h-[520px] opacity-70">
+        <Watercolor pigment="oxblood" intensity={0.2} className="w-full h-full" />
+      </div>
+      <div className="pointer-events-none absolute right-[-8%] bottom-0 w-[480px] h-[480px] opacity-80">
+        <Watercolor pigment="persimmon" intensity={0.22} className="w-full h-full" />
+      </div>
 
-        <motion.div
-          {...inViewProps}
-          variants={staggerSlow(0.1, 0.1)}
-          className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          {PROJECTS.map((p) => (
-            <ProjectCard key={p.title} project={p} />
-          ))}
-        </motion.div>
+      <div className="container relative">
+        <div className="grid grid-cols-12 gap-x-6 md:gap-x-12">
+          <aside className="hidden md:flex md:col-span-1 flex-col items-end pt-6">
+            <div className="marginalia">Plate II</div>
+          </aside>
 
-        <div className="mt-12">
-          <a
-            href="https://github.com/sujaysreedharg?tab=repositories"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-quiet text-sm font-medium"
-          >
-            Every repository
-            <ArrowUpRight className="w-4 h-4" />
-          </a>
+          <div className="col-span-12 md:col-span-11">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.2 }}
+            >
+              <span className="folio">ii · Plates</span>
+              <h2 className="display mt-8 text-[clamp(2.4rem,6vw,4.5rem)] ink text-balance">
+                A small <span className="display-italic">portfolio</span>
+                <br /> kept in this hand.
+              </h2>
+            </motion.div>
+
+            <div className="mt-20 md:mt-28 space-y-24">
+              {PLATES.map((p, i) => {
+                const G = p.Glyph;
+                const reverse = i % 2 === 1;
+                return (
+                  <motion.a
+                    key={p.no}
+                    href={p.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-60px' }}
+                    transition={{ duration: 1.2, ease: 'easeOut' }}
+                    className="group block grid grid-cols-12 gap-x-6 md:gap-x-10 items-baseline"
+                  >
+                    {/* number */}
+                    <div className={`col-span-12 md:col-span-2 ${reverse ? 'md:order-last md:text-right' : ''}`}>
+                      <div className="plate-no">Plate · {p.no}</div>
+                      <div className="marginalia mt-2">{p.year}</div>
+                    </div>
+
+                    {/* glyph */}
+                    <div className={`col-span-3 md:col-span-2 ${reverse ? 'md:order-1' : ''}`}>
+                      <G className="w-20 h-20 md:w-24 md:h-24 text-sienna group-hover:scale-[1.04] transition-transform duration-700" />
+                    </div>
+
+                    {/* the typeset entry */}
+                    <div className={`col-span-9 md:col-span-8 ${reverse ? 'md:order-2 md:text-right' : ''}`}>
+                      <h3 className="display text-3xl md:text-5xl ink leading-[1.05] group-hover:text-sienna transition-colors duration-500 text-balance">
+                        {p.title}
+                      </h3>
+                      <p className="mt-4 font-serif italic text-base md:text-lg ink-soft max-w-xl text-pretty">
+                        {p.blurb}
+                      </p>
+                      <p className="mt-3 marginalia">{p.craft}</p>
+                    </div>
+                  </motion.a>
+                );
+              })}
+            </div>
+
+            <div className="mt-28 flex justify-center">
+              <Dingbat className="w-60 h-7 opacity-90" />
+            </div>
+          </div>
         </div>
       </div>
     </section>

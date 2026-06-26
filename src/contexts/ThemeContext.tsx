@@ -43,7 +43,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     // Update meta theme-color for mobile browsers (warm charcoal / ivory)
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', theme === 'dark' ? '#0B0D14' : '#EDF1F8');
+      metaThemeColor.setAttribute('content', theme === 'dark' ? '#1F1813' : '#ECE2C7');
     }
   }, [theme]);
 
